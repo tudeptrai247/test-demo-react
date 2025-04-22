@@ -22,30 +22,30 @@ const ManageUser =(props) =>{
 
     const [showModalViewUser , setShowModalViewUser] = useState(false);
     
-    const [listUsers ,setListUsers] = useState({})
+    const [listUsers ,setListUsers] = useState([])
 
     const [showModalDeleteUser , setShowModalDeleteUser] = useState(false);
     const [dataDelete , setDataDelete] = useState()
 
-//     useEffect(() =>{
-//         // fetchListUsers();
-//         fetchListUsersWithPaginate(1); // xem trang thu 1
-//    }, []);
+    useEffect(() =>{
+        // fetchListUsers();
+        fetchListUsersWithPaginate(1); // xem trang thu 1
+   }, []);
 
-//    const fetchListUsers = async () =>{
-//        let res =await getAllUser();
+   const fetchListUsers = async () =>{
+       let res =await getAllUser();
        
-//        if(res.EC === 0 ){
-//            setListUsers(res.DT)
-//        }
-//    }
+       if(res.EC === 0 ){
+           setListUsers(res.DT)
+       }
+   }
 
    const fetchListUsersWithPaginate = async (page) =>{
     let res =await getUserWithPaginate(page , LIMIT_USER);
-    
     if(res.EC === 0 ){
         console.log('res.dt =',res.DT)
-        setListUsers(res.DT.users)
+        setListUsers(res.DT.users) // cập nhật lại khi có thêm người dùng mới
+        console.log("user from data",res.DT.user)
         setPageCount(res.DT.totalPages)
     }
 }
@@ -98,7 +98,7 @@ const ManageUser =(props) =>{
             <ModalCreateUser show={showModalCreateUser}
             setShow ={setShowModalCreateUser}
             // fetchListUsers={fetchListUsers }
-            // fetchListUsersWithPaginate ={fetchListUsersWithPaginate}
+            fetchListUsersWithPaginate ={fetchListUsersWithPaginate}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
             />
@@ -111,13 +111,13 @@ const ManageUser =(props) =>{
             fetchListUsersWithPaginate ={fetchListUsersWithPaginate}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
-            />
+            />*/
             <ModalViewUser
             show = {showModalViewUser}
             setShow ={setShowModalViewUser}
             dataUpdate = {dataUpdate}
             resertUpdateData ={resertUpdateData}
-            /> */}
+            /> }
             </div>
             {/* <ModalDeleteUser 
                 show={showModalDeleteUser} // mở modal

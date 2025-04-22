@@ -18,9 +18,9 @@ const ModalCreateUser =(props) => {
   };
   const handleShow = () => setShow(true);
 
-  const [email , setEmail]=useState(" ");
-  const [password , setPassword]=useState(" ");
-  const [username ,setUsername]=useState(" ");
+  const [email , setEmail]=useState("");
+  const [password , setPassword]=useState("");
+  const [username ,setUsername]=useState("");
   const [role , setRole] =useState("USER");
 
   const validateEmail = (email) => {
@@ -32,15 +32,11 @@ const ModalCreateUser =(props) => {
   };
 
   const handleSubmitCreateUser = async() =>{
-    //validate
-    // const isValidEmail = validateEmail(email);
-    // if(!isValidEmail){
-    //   toast.error('invalid email')
-    //   // toast.error()
-    //   // toast.error()
-      
-    //   return;
-    // }
+    const isValidEmail = validateEmail(email);
+    if(!isValidEmail){
+      toast.error('invalid email')
+      return;
+    }
     if(!password){
       toast.error('invalid password') 
       return;
@@ -49,12 +45,12 @@ const ModalCreateUser =(props) => {
 
    let data = await postCreateNewUser(email,password,username,role);
    console.log('<< component res :' , data)
-   if(data && data.EC === 0){
-    toast.success("Add Success");
+   if(data?.EC === 0){ // ? dùng để kiểm tra data có tồn tại ko trước khi truy cập EC
+    toast.success(data.message);
     handleClose();
     // await props.fetchListUsers();
     props.setCurrentPage(1)
-    await props.fetchListUsersWithPaginate(1);
+    await props.fetchListUsersWithPaginate(1); // lấy lại danh sách người dùng mới 
    }
 
    if(data && data.EC != 0){

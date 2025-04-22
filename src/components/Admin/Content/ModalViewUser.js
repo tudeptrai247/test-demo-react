@@ -14,8 +14,6 @@ const ModalViewUser =(props) => {
     setEmail("")
     setPassword("")
     setRole("USER")
-    setImage("")
-    setPreviewImage("")
     props.resertUpdateData("")
   };
   const handleShow = () => setShow(true);
@@ -24,8 +22,6 @@ const ModalViewUser =(props) => {
   const [password , setPassword]=useState(" ");
   const [username ,setUsername]=useState(" ");
   const [role , setRole] =useState("USER");
-  const [image ,setImage]=useState(" ");
-  const [previewImage ,setPreviewImage] =useState("");
 
   useEffect(() =>{  // useEffect cập nhật lại các state khi có thay đổi giá trị
       
@@ -33,23 +29,10 @@ const ModalViewUser =(props) => {
         setEmail(dataUpdate.email);
         setUsername(dataUpdate.username);
         setRole(dataUpdate.role);
-        setImage("")
-        if(dataUpdate.image){
-        setPreviewImage(`data:image/jpeg;base64,${dataUpdate.image}`)
-      }
       }
           //update state
   
     }, [dataUpdate]);
-
-  const handleUploadImage = (event) =>{
-    if(event.target && event.target.value && event.target.files[0])
-    {
-      setPreviewImage(URL.createObjectURL(event.target.files[0]))
-      setImage(event.target.files[0])
-    }
-  }
-
   
   return (
     <>
@@ -93,19 +76,6 @@ const ModalViewUser =(props) => {
       <option  value="ADMIN">Admin</option>
     </select>
   </div>
-    <div className='col-md-12'>
-      
-        <label  className="form-label lable-upload" htmlFor='lableUpload'>
-         </label>
-        <input type='file' hidden id='lableUpload' disabled onChange={(event) => handleUploadImage(event)}/>
-    </div>
-    <div className='col-md-12 img-preview'>
-      {previewImage ?
-      <img src={previewImage}/>
-      :
-      <span>Preview Image</span>
-    }
-    </div>
 </form>
 
         </Modal.Body>
