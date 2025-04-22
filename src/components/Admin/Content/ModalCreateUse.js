@@ -14,8 +14,7 @@ const ModalCreateUser =(props) => {
     setEmail("")
     setPassword("")
     setRole("USER")
-    setImage("")
-    setPreviewImage("")
+   
   };
   const handleShow = () => setShow(true);
 
@@ -23,16 +22,6 @@ const ModalCreateUser =(props) => {
   const [password , setPassword]=useState(" ");
   const [username ,setUsername]=useState(" ");
   const [role , setRole] =useState("USER");
-  const [image ,setImage]=useState(" ");
-  const [previewImage ,setPreviewImage] =useState("");
-
-  const handleUploadImage = (event) =>{
-    if(event.target && event.target.value && event.target.files[0])
-    {
-      setPreviewImage(URL.createObjectURL(event.target.files[0]))
-      setImage(event.target.files[0])
-    }
-  }
 
   const validateEmail = (email) => {
     return String(email)
@@ -58,16 +47,18 @@ const ModalCreateUser =(props) => {
     }
    
 
-   let data = await postCreateNewUser(email,password,username,role,image);
+   let data = await postCreateNewUser(email,password,username,role);
    console.log('<< component res :' , data)
    if(data && data.EC === 0){
-    toast.success(data.EM);
+    toast.success("Add Success");
     handleClose();
-    await props.fetchListUsers();
+    // await props.fetchListUsers();
+    props.setCurrentPage(1)
+    await props.fetchListUsersWithPaginate(1);
    }
 
    if(data && data.EC != 0){
-    toast.error(data.EM);
+    toast.error("Error");
    }
   }
 
@@ -113,19 +104,6 @@ const ModalCreateUser =(props) => {
       <option  value="ADMIN">Admin</option>
     </select>
   </div>
-    <div className='col-md-12'>
-      
-        <label  className="form-label lable-upload" htmlFor='lableUpload'>
-          <FiPlus /> Upload File Image</label>
-        <input type='file' hidden id='lableUpload' onChange={(event) => handleUploadImage(event)}/>
-    </div>
-    <div className='col-md-12 img-preview'>
-      {previewImage ?
-      <img src={previewImage}/>
-      :
-      <span>Preview Image</span>
-    }
-    </div>
 </form>
 
         </Modal.Body>

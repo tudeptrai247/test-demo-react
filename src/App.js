@@ -1,5 +1,5 @@
 import "./App.scss"
-import Header from './components/Header/Header';
+import Header from './components/Header/Header.js';
 import { Outlet, Link } from "react-router-dom";
 
 const App = () => {
@@ -16,7 +16,8 @@ const App = () => {
 
         </div>
         <div className="app-content">
-            <Outlet />
+            <Outlet /> 
+            {/* Outlet này dùng để hiện thị những trang con của index.js */}
         </div>
       </div>
       

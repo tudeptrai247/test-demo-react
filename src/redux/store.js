@@ -3,6 +3,19 @@ import thunk from 'redux-thunk'
 import rootReducer from './reducer/rootReducer';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)))
+import { persistStore, persistReducer } from 'redux-persist'
+import storage from 'redux-persist/lib/storage' 
 
-export default store;
+//dispatch hàm gửi action , thay đổi state
+
+const persistConfig = {
+  key: 'root',
+  storage,
+}
+
+  const persistedReducer = persistReducer(persistConfig, rootReducer)
+  const store = createStore(persistedReducer, composeWithDevTools(applyMiddleware(thunk)))
+  let persistor = persistStore(store)
+
+
+export { store, persistor }

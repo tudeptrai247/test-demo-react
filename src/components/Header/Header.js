@@ -3,9 +3,35 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import { NavLink } from "react-router-dom";
+import { NavLink ,useNavigate} from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../../service/apiService';
+import { toast } from 'react-toastify';
+import { doLogout } from '../../redux/action/userAction';
 
 const  Header = () => {
+  const navigate = useNavigate();
+
+  const isAuthenticated = useSelector(state =>state.user.isAuthenticated);
+  const account = useSelector(state => state.user.account)
+  const dispatch = useDispatch();
+
+  
+  const handleLogin = () =>{
+    navigate("/login")
+  }
+
+  const handleLogOut = async() =>{
+    let rs = await logout("account.email",account.refresh_token);
+    if(rs && rs.EC ===0){
+      //xoa data cua redux
+      dispatch(doLogout())
+        navigate("/login")
+    }else{
+      toast.error(rs.EM);
+    }
+  }
+
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container>
@@ -20,14 +46,18 @@ const  Header = () => {
             
           </Nav>
           <Nav>
-            <button className='btn-login'>Login</button>
-            <button className='btn-signup'>Sign Up</button>
-          {/* <NavDropdown title="Settings" id="basic-nav-dropdown">
-                <NavDropdown.Item >Log in</NavDropdown.Item>
-                <NavDropdown.Item >Log out 
-                </NavDropdown.Item>
+            {isAuthenticated === false ?
+            <>
+            <button className='btn-login'onClick={() => handleLogin()}>Login</button>
+            <button className='btn-signup' onClick={() =>navigate('/register')}>Sign Up</button>
+            </>
+            :
+          <NavDropdown title="Settings" id="basic-nav-dropdown">   
                 <NavDropdown.Item href="#action/3.1">Profile</NavDropdown.Item>
-            </NavDropdown> */}
+                <NavDropdown.Item onClick={() =>handleLogOut()} >Log out 
+                </NavDropdown.Item>
+            </NavDropdown>
+            }
           </Nav>
         </Navbar.Collapse>
       </Container>
