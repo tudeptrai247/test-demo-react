@@ -22,14 +22,11 @@ const  Header = () => {
   }
 
   const handleLogOut = async() =>{
-    let rs = await logout("account.email",account.refresh_token);
-    if(rs && rs.EC ===0){
-      //xoa data cua redux
-      dispatch(doLogout())
-        navigate("/login")
-    }else{
-      toast.error(rs.EM);
-    }
+    localStorage.clear();
+    dispatch(doLogout());
+    toast.success("Logout success")
+    navigate("/login")
+   
   }
 
   return (

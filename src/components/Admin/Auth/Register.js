@@ -14,11 +14,30 @@ const Register = (props) =>{
 
     const [showpass , setShowpass] = useState(false);
 
+    const validateEmail = (email) => {
+        return String(email)
+          .toLowerCase()
+          .match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          );
+      };
+
     const handleRegister =async() =>{
+        if(username ==="" || email === "" || password ===""){
+            toast.error("Please Fill All Information");
+            return
+        }
+
+        const isValidEmail = validateEmail(email);
+        if(!isValidEmail){
+            toast.error("Invalid Email")
+            return
+        }
+
         let data = await postRegister(username,email,password)
         console.log("check data " , data)
         if (data && data.EC === 0 ){
-            toast.success(data.EM)
+            toast.success(data.message)
             navigate('/login')
         }
 

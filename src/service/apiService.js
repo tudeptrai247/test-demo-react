@@ -14,36 +14,49 @@ const getAllUser =() =>{
 
 }
 
-const putUpdateUser =(id,username,role,image) =>{
-    const data = new FormData();
-    data.append('id', id);
-    data.append('username', username);
-    data.append('role', role);
-    data.append('userImage', image);
-    return axios.put('api/v1/participant', data);
+const putUpdateUser =(id,username,role) =>{  //form data ko phải là dạng json nên sẽ undefined 
+    return axios.put(`api/v1/user/${id}`,{
+        username,
+        role
+    });
 
 }
 
 const deleteUser =(userId) =>{
-    return axios.delete('api/v1/participant',{data :{id: userId} });
+    return axios.delete(`api/v1/user/${userId}`);
 }
+//Người dùng
 
 const getUserWithPaginate =(page,limit) =>{
     return axios.get(`api/v1/user?page=${page}&limit=${limit}`);
 }
+//Phân trang người dùng
 
 const postLogin = (email,password)  =>{
-    return axios.post(`api/v1/login`,{email,password});
+    return axios.post(`api/v1/auth/login`,{email,password});
 }
 
 const postRegister = (username,email,password)  =>{
-    return axios.post(`api/v1/register`,{username,email,password});
+    return axios.post(`api/v1/auth/register`,{username,email,password});
 }
 
 const logout =(email , refresh_token) =>{
     return axios.post(`api/v1/logout`,{email,refresh_token});
 }
 
+//đăng nhập , đăng ký
+
+const postCreateNewSupplier =(name,address,number) =>{
+    return axios.post('api/v1/supplier',{
+        name,
+        address,
+        number
+    });
+};
+
+//nhà cung cấp
+
 export {postCreateNewUser , getAllUser ,putUpdateUser ,deleteUser
-    ,getUserWithPaginate ,postLogin , postRegister , logout
+    ,getUserWithPaginate ,postLogin , postRegister , logout ,
+    postCreateNewSupplier
 }

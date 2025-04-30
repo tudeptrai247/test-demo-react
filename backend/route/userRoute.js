@@ -39,7 +39,7 @@ router.get('/',async(req,res) =>{
         res.status(200).json({
             EC:0,
             DT:{
-                users:rows, //trả về danh sách người dùng hiện t
+                user:rows, //trả về danh sách người dùng hiện t
                 totalPages:totalPages
             }
         });
@@ -50,6 +50,45 @@ router.get('/',async(req,res) =>{
             message :'Something Wrong'
         })
     }
-});
+})
+
+// xóa người dùng
+router.delete('/:id',async(req,res) =>{
+    const userId = req.params.id;
+    console.log(req.params.id)
+    try{
+        const [result] = await pool.execute(
+            'DELETE FROM user WHERE id= ?',[userId]
+        );
+        res.status(200).json({
+            EC:0, // error code =0 là success , khác 0 là lỗi
+            message:'Delete User Success',
+            name:result.id});
+    }catch(err){
+        console.error(err);
+        res.status(500).json({
+            EC:1,
+            error:'Something Wrong '})
+    }
+}) 
+
+router.put('/:id',async(req,res) =>{
+    const userId = req.params.id;
+    const {username,role} = req.body;
+    try{
+        const [result] = await pool.execute(
+            'UPDATE user set username = ? ,role = ? WHERE id =? ',[username, role,userId]
+        );
+        res.status(200).json({
+            EC:0, // error code =0 là success , khác 0 là lỗi
+            message:'User Update Success',
+            name:result.id});
+    }catch(err){
+        console.error(err);
+        res.status(500).json({
+            EC:1,
+            error:'Something Wrong '})
+    }
+}) 
 
 export default router

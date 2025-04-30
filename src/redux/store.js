@@ -13,7 +13,7 @@ const persistConfig = {
   storage,
 }
 
-  const persistedReducer = persistReducer(persistConfig, rootReducer)
+  const persistedReducer = persistReducer(persistConfig, rootReducer)  //persistReducer giúp lưu vào localStorage , F5 vẫn còn lưu dữ liệu
   const store = createStore(persistedReducer, composeWithDevTools(applyMiddleware(thunk)))
   let persistor = persistStore(store)
 

@@ -1,9 +1,24 @@
 import "./App.scss"
 import Header from './components/Header/Header.js';
 import { Outlet, Link } from "react-router-dom";
+import { FETCH_USER_LOGIN_SUCCESS } from "./redux/action/userAction.js";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
 
 const App = () => {
  
+  //đọc localstorage để set Redux lại để giữ lại đăng nhập , khôi phục session
+  const dispatch =useDispatch();
+  useEffect(() =>{
+    const storedAccount =localStorage.getItem('account');
+    if(storedAccount){
+      const accountData =JSON.parse(storedAccount);
+      dispatch({
+        type:FETCH_USER_LOGIN_SUCCESS,
+        payload:{DT:accountData}
+      });
+    }
+  }, []);
 
   return (
    

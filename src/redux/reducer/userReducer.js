@@ -7,7 +7,6 @@ const INITIAL_STATE = {
         access_token: '',
         refresh_token:' ',
         username:' ',
-        image:'',
         role:'',
         email:''
     },
@@ -18,15 +17,15 @@ const userReducer = (state = INITIAL_STATE, action) => {
         case FETCH_USER_LOGIN_SUCCESS:
             console.log('check action',action)
             return {
-                ...state, account:{
+                ...state, account:{     // ban đầu state account set ở trên là rỗng , rồi set data vào state account
                     access_token: action?.payload?.DT?.access_token,
                     refresh_token: action?.payload?.DT?.refresh_token,
                     username: action?.payload?.DT?.username,
-                    image: action?.payload?.DT?.image,
                     role: action?.payload?.DT?.role,
                     email: action?.payload?.DT?.email
                 },
-                isAuthenticated: true
+                isAuthenticated: true   //khi có được data rồi sẽ set authenticated là true để phần header ko hiện 2 button login register
+                
             };
 
         case FETCH_USER_LOGOUT_SUCCESS:
@@ -35,7 +34,6 @@ const userReducer = (state = INITIAL_STATE, action) => {
                         access_token: '',
                         refresh_token:' ',
                         username:' ',
-                        image:'',
                         role:'',
                         email:''
                     },

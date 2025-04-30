@@ -15,18 +15,43 @@ const Login =(props) =>{
     const [password, setPassword] = useState("");
     const [isLoading , setIsLoading] = useState(false);
 
+    const validateEmail = (email) => {
+        return String(email)
+          .toLowerCase()
+          .match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          );
+      };
+
     const handleLogin = async() =>{
+
+        if(email === "" || password ===""){
+            toast.error("Please Fill Email And Password");
+            return
+        }
+
+        const isValidEmail = validateEmail(email);
+        if(!isValidEmail){
+            toast.error("Invalid Email")
+            return
+        }
+
         setIsLoading(true);
         //goi api , dùng api cần phải tốn tgian , nên phải xài await và async cho đồng bộ
         let data = await postLogin(email,password)
             console.log(">>check data" ,data , +data.EC != 0 ,data.EC)
         if(data && data.EC === 0){ // EC là error code , nếu ko có lỗi thì success  
             // sử dụng dispatch để đưa yêu cầu cho redux
-            dispatch(doLogin(data))
-            toast.success(data.EM);
+            dispatch(doLogin(data))  // lưu localstorage setup ở file userAction
+            toast.success(data.message);
             setIsLoading(false);
             navigate('/')
            }
+        if(data && data.EC === 2){
+            toast.error(data.message)
+            setIsLoading(false);
+            return
+        }
         
            if(data && +data.EC != 0){ //+ để convert sang number
             toast.error(data.EM);

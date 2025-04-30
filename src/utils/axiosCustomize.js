@@ -3,7 +3,7 @@ import nProgress from "nprogress";
 
 nProgress.configure({
   showSpinner :false,
-  trickleSpeed:200
+  trickleSpeed:1000
 })
 
 const instance = axios.create({
@@ -29,6 +29,7 @@ instance.interceptors.response.use(function (response) {
     // Do something with response data
     return response && response.data ? response.data:response;
   }, function (error) {
+    nProgress.done();
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
     console.log(">>run error", error.response)

@@ -60,13 +60,23 @@ const Sidebar =(props) =>{
           <SubMenu
           
             icon={<FaGem />}
-            title="Features"
+            title="User Management"
           >
-            <MenuItem> Quản lý User
+            <MenuItem> User
             <Link to="/admins/manage-user" />
             </MenuItem>
-            <MenuItem> Quản Lý Bài Quiz</MenuItem>
-            <MenuItem> Quản Lý Câu Hỏi</MenuItem>
+          </SubMenu>
+          
+        </Menu>
+        <Menu iconShape="circle">
+          <SubMenu
+          
+            icon={<FaGem />}
+            title="Supplier Management"
+          >
+            <MenuItem> Supplier 
+            <Link to="/admins/manage-supplier" />
+            </MenuItem>
           </SubMenu>
           
         </Menu>
