@@ -1,7 +1,7 @@
 import axios from "axios";
 import nProgress from "nprogress";
 
-nProgress.configure({
+nProgress.configure({  // thanh loading khi gọi api
   showSpinner :false,
   trickleSpeed:1000
 })

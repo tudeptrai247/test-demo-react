@@ -18,7 +18,7 @@ const ModalUpdateUser =(props) => {
     props.resertUpdateData("")
   };
 
-  useEffect(() =>{ //cập nhật lại state mỗi khi click vào user khác
+  useEffect(() =>{ //cập nhật state mỗi khi render lần đầu , nếu ko có sẽ ko hiện thông tin ở trong form được
     
     if(!_.isEmpty(dataUpdate)){
       setEmail(dataUpdate.email);
@@ -38,7 +38,7 @@ const ModalUpdateUser =(props) => {
   const handleSubmitUpdateUser = async() =>{
   
    let data = await putUpdateUser(dataUpdate.id,username,role);
-   console.log('<< component res :' , data)
+  //  console.log('<< component res :' , data)
    if(data && data.EC === 0){
     toast.success(data.message);
     handleClose();

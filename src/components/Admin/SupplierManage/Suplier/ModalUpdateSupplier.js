@@ -1,43 +1,50 @@
+import { useEffect, useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
-import { Button } from 'react-bootstrap';
-import { useState } from 'react';
+import Button from 'react-bootstrap/Button';
+import _ from 'lodash';
+import { putUpdateSupplier } from '../../../../service/apiService';
 import { toast } from 'react-toastify';
-import { postCreateNewSupplier } from '../../../../service/apiService';
 
 
+const ModalUpdateSupplier =(props) =>{
 
-const ModalCreateSupplier =(props) =>{
-    const {show , setShow} = props;
+    const {show , setShow , dataUpdate} = props
 
     const handleClose =() =>{
         setShow(false);
         setName("");
         setAddress("");
         setNumber("")
+        props.resertUpdateData("")
     };
+
+    useEffect(() =>{
+        if(!_.isEmpty(dataUpdate)){
+            setName(dataUpdate.name);
+            setAddress(dataUpdate.address);
+            setNumber(dataUpdate.number);
+        }
+    } ,[dataUpdate]);
 
     const [name , setName] = useState("");
     const [address , setAddress] = useState("");
     const [number , setNumber] = useState("");
 
-    const handleSubmitCreateSupplier = async() =>{
-      let data = await postCreateNewSupplier(name,address,number);
-      console.log('<<res supplier', data)
-      if(data?.EC === 0){
+
+    const handleSubmitUpdateSupplier = async() =>{
+        let data = await putUpdateSupplier(dataUpdate.id,name,address,number);
+        console.log('data update' ,data)
         toast.success(data.message);
         handleClose();
-        props.setCurrentPage(1)
-        await props.fetchListSuppliersWithPaginate(1)
-      }
-      if(data && data.EC != 0){
-        toast.error("Error");
-       
-      }
-    }
+        await props.fetchListSuppliersWithPaginate(props.setCurrentPage);
 
+    if(data && data.EC !=0){
+        toast.error(data.EM)
+    }
+}
     return(
         <>
-        <Modal 
+            <Modal 
       show={show} 
       onHide={handleClose} 
       size="xl"
@@ -45,7 +52,7 @@ const ModalCreateSupplier =(props) =>{
       className='modal-add-supplier'
       >
         <Modal.Header closeButton>
-          <Modal.Title>Add New Supplier</Modal.Title>
+          <Modal.Title>Update Supplier Information</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
@@ -70,7 +77,7 @@ const ModalCreateSupplier =(props) =>{
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={() =>handleSubmitCreateSupplier()}>
+          <Button variant="primary" onClick={() =>handleSubmitUpdateSupplier()}>
             Save
           </Button>
         </Modal.Footer>
@@ -78,4 +85,4 @@ const ModalCreateSupplier =(props) =>{
         </>
     )
 }
-export default ModalCreateSupplier
+export default ModalUpdateSupplier

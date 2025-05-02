@@ -81,6 +81,6 @@ return(
        />
         </div>
     </>
-)
+    )
 }
 export default TableUserPaginate

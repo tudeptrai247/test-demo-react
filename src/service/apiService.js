@@ -54,9 +54,24 @@ const postCreateNewSupplier =(name,address,number) =>{
     });
 };
 
-//nhà cung cấp
+const deleteSupplier =(supplierId) =>{
+    return axios.delete(`api/v1/supplier/${supplierId}`);
+}
 
+const putUpdateSupplier =(id,name,address,number) =>{  //form data ko phải là dạng json nên sẽ undefined 
+    return axios.put(`api/v1/supplier/${id}`,{
+        name,
+        address,
+        number
+    });
+
+}
+
+//nhà cung cấp
+const getSupplierWithPaginate =(page,limit) =>{
+    return axios.get(`api/v1/supplier?page=${page}&limit=${limit}`);
+}
 export {postCreateNewUser , getAllUser ,putUpdateUser ,deleteUser
     ,getUserWithPaginate ,postLogin , postRegister , logout ,
-    postCreateNewSupplier
+    postCreateNewSupplier , getSupplierWithPaginate , deleteSupplier ,putUpdateSupplier
 }

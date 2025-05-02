@@ -71,7 +71,7 @@ router.delete('/:id',async(req,res) =>{
             error:'Something Wrong '})
     }
 }) 
-
+// cập nhật
 router.put('/:id',async(req,res) =>{
     const userId = req.params.id;
     const {username,role} = req.body;
