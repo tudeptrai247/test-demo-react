@@ -33,11 +33,11 @@ const ModalUpdateSupplier =(props) =>{
 
     const handleSubmitUpdateSupplier = async() =>{
         let data = await putUpdateSupplier(dataUpdate.id,name,address,number);
-        console.log('data update' ,data)
+       if(data && data.EC === 0){
         toast.success(data.message);
         handleClose();
-        await props.fetchListSuppliersWithPaginate(props.setCurrentPage);
-
+        await props.fetchListSuppliersWithPaginate(props.currentPage);
+      }
     if(data && data.EC !=0){
         toast.error(data.EM)
     }

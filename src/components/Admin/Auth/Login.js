@@ -40,13 +40,21 @@ const Login =(props) =>{
         //goi api , dùng api cần phải tốn tgian , nên phải xài await và async cho đồng bộ
         let data = await postLogin(email,password)
             console.log(">>check data" ,data , +data.EC != 0 ,data.EC)
-        if(data && data.EC === 0){ // EC là error code , nếu ko có lỗi thì success  
+        if(data && data.EC === 0 && data.DT.role === "USER"){ // EC là error code , nếu ko có lỗi thì success  
             // sử dụng dispatch để đưa yêu cầu cho redux
             dispatch(doLogin(data))  // lưu localstorage setup ở file userAction
             toast.success(data.message);
             setIsLoading(false);
             navigate('/')
            }
+
+        if(data && data.EC === 0 && data.DT.role === "ADMIN"){
+            toast.success(data.message)
+            setIsLoading(false);
+
+            navigate('/admins')
+        }
+
         if(data && data.EC === 2){
             toast.error(data.message)
             setIsLoading(false);

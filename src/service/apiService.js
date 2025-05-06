@@ -67,11 +67,77 @@ const putUpdateSupplier =(id,name,address,number) =>{  //form data ko phải là
 
 }
 
-//nhà cung cấp
 const getSupplierWithPaginate =(page,limit) =>{
     return axios.get(`api/v1/supplier?page=${page}&limit=${limit}`);
 }
+//nhà cung cấp
+const postCreateNewSize =(size) =>{
+    return axios.post('api/v1/size',{
+        size
+    });
+};
+
+const getSizeWithPaginate =(page,limit) =>{
+    return axios.get(`api/v1/size?page=${page}&limit=${limit}`);
+}
+
+const deleteSize =(sizeId) =>{
+    return axios.delete(`api/v1/size/${sizeId}`);
+}
+
+const putUpdateSize =(id,size) =>{  //form data ko phải là dạng json nên sẽ undefined 
+    return axios.put(`api/v1/size/${id}`,{
+        size
+    });
+
+}
+//size
+const postCreateNewBrand =(brand) =>{
+    return axios.post('api/v1/brand',{
+        brand
+    });
+};
+
+const getBrandWithPaginate =(page,limit) =>{
+    return axios.get(`api/v1/brand?page=${page}&limit=${limit}`);
+}
+
+const deleteBrand =(brandId) =>{
+    return axios.delete(`api/v1/brand/${brandId}`);
+}
+const putUpdateBrand =(id,brand) =>{  //form data ko phải là dạng json nên sẽ undefined 
+    return axios.put(`api/v1/brand/${id}`,{
+        brand
+    });
+
+}
+
+//brand
+const postCreateNewCategory =(category) =>{
+    return axios.post('api/v1/category',{
+        category
+    });
+};
+
+const getCategoryWithPaginate =(page,limit) =>{
+    return axios.get(`api/v1/category?page=${page}&limit=${limit}`);
+}
+
+const deleteCategory =(categoryId) =>{
+    return axios.delete(`api/v1/category/${categoryId}`);
+}
+
+const putUpdateCategory =(id,category) =>{  //form data ko phải là dạng json nên sẽ undefined 
+    return axios.put(`api/v1/category/${id}`,{
+        category
+    });
+
+}
+//category
 export {postCreateNewUser , getAllUser ,putUpdateUser ,deleteUser
     ,getUserWithPaginate ,postLogin , postRegister , logout ,
-    postCreateNewSupplier , getSupplierWithPaginate , deleteSupplier ,putUpdateSupplier
+    postCreateNewSupplier , getSupplierWithPaginate , deleteSupplier ,putUpdateSupplier,
+    postCreateNewSize ,getSizeWithPaginate ,deleteSize ,putUpdateSize,
+    postCreateNewBrand ,getBrandWithPaginate ,deleteBrand ,putUpdateBrand,
+    postCreateNewCategory ,getCategoryWithPaginate ,deleteCategory ,putUpdateCategory
 }

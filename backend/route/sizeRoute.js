@@ -3,26 +3,28 @@ import cors from 'cors';
 const router = express.Router();
 import pool from '../connectDB.js';
 
-// thêm người dùng
+//Thêm size
 router.post('/',async(req,res) =>{
-    const {email,password,username,role} = req.body;
+    const {size} =req.body;
     try{
-        const [result] = await pool.execute(
-            'INSERT INTO user (email, password, username, role) VALUES (?, ?, ?, ?)',[email, password, username, role]
+        const[result] = await pool.execute(
+            'INSERT INTO size (size) VALUES (?)',[size]
         );
         res.status(200).json({
-            EC:0, // error code =0 là success , khác 0 là lỗi
-            message:'User created',
-            name:result.id});
+            EC:0,
+            message:'Size Created',
+            name:result.id
+        });
     }catch(err){
-        console.error(err);
+        console.log(err);
         res.status(500).json({
             EC:1,
-            error:'Something Wrong '})
+            error:'Something Wrong'
+        })
     }
-}) 
+})
 
-// lấy danh sách người dùng phân trang
+//phân trang danh sách size
 router.get('/',async(req,res) =>{
     // lấy giá trị page và limit từ querry trên URL , nếu ko có tham số truyền vào mặc định sẽ là 1 và 3
     let page =+req.query.page || 1; //ép kiểu string sang number
@@ -30,17 +32,17 @@ router.get('/',async(req,res) =>{
     let offset = (page -1) * limit ; // vị trí bắt đầu khi lấy dũ liệu , vd trang 1 -1 =0 *3 =0 lấy vị trị 0
 
     try {
-        const [countRow] = await pool.execute(`SELECT COUNT(*) as count FROM user`); // đếm tổng số user , countRow là 1 mảng
-        const totalUsers = countRow[0].count; //lấy ra tổng số user dùng để tính phân trang
-        const totalPages =Math.ceil(totalUsers/limit)
+        const [countRow] = await pool.execute(`SELECT COUNT(*) as count FROM size`); // đếm tổng số size , countRow là 1 mảng
+        const totalSize = countRow[0].count; //lấy ra tổng số size , dùng để tính phân trang
+        const totalPages =Math.ceil(totalSize/limit)
 
-        const [rows] =await pool.query(`SELECT * FROM user LIMIT ? OFFSET ?`,[limit,offset])
+        const [rows] =await pool.query(`SELECT * FROM size LIMIT ? OFFSET ?`,[limit,offset])
 
         res.status(200).json({
             EC:0,
             DT:{
-                user:rows, //trả về danh sách người dùng hiện t
-                totalPages:totalPages
+                size:rows, //trả về danh sách size hiện tại
+                totalPages:totalPages // trả về tổng số trang
             }
         });
     }catch(err){
@@ -52,17 +54,17 @@ router.get('/',async(req,res) =>{
     }
 })
 
-// xóa người dùng
+// xóa size
 router.delete('/:id',async(req,res) =>{
-    const userId = req.params.id;
+    const sizeId = req.params.id;
     console.log(req.params.id)
     try{
         const [result] = await pool.execute(
-            'DELETE FROM user WHERE id= ?',[userId]
+            'DELETE FROM size WHERE id= ?',[sizeId]
         );
         res.status(200).json({
             EC:0, // error code =0 là success , khác 0 là lỗi
-            message:'Delete User Success',
+            message:'Delete Size Success',
             name:result.id});
     }catch(err){
         console.error(err);
@@ -71,17 +73,18 @@ router.delete('/:id',async(req,res) =>{
             error:'Something Wrong '})
     }
 }) 
-// cập nhật
+
+//update
 router.put('/:id',async(req,res) =>{
-    const userId = req.params.id;
-    const {username,role} = req.body;
+    const sizeId = req.params.id;
+    const {size} = req.body;
     try{
         const [result] = await pool.execute(
-            'UPDATE user set username = ? ,role = ? WHERE id =? ',[username, role,userId]
+            'UPDATE size set size = ? WHERE id =? ',[size,sizeId]
         );
         res.status(200).json({
             EC:0, // error code =0 là success , khác 0 là lỗi
-            message:'User Update Success',
+            message:'Size Update Success',
             name:result.id});
     }catch(err){
         console.error(err);

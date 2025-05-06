@@ -11,6 +11,7 @@ import ModalUpdateSupplier from "../Suplier/ModalUpdateSupplier"
 const ManageSupplier = (props) =>{
 
     const LIMIT_SUPPLIER =3;
+    
     const [pageCount , setPageCount] = useState(0);
     const [currentPage , setCurrentPage] = useState(1);
     const [showModalCreateSupplier , setShowModalCreateSupplier] = useState(false)

@@ -80,6 +80,27 @@ const Sidebar =(props) =>{
           </SubMenu>
           
         </Menu>
+        <Menu iconShape="circle">
+          <SubMenu
+          
+            icon={<FaGem />}
+            title="Product Management"
+          >
+            <MenuItem> Product 
+            <Link to="/admins/manage-supplier" />
+            </MenuItem>
+            <MenuItem> Size 
+            <Link to="/admins/manage-size" />
+            </MenuItem>
+            <MenuItem> Brand 
+            <Link to="/admins/manage-brand" />
+            </MenuItem>
+            <MenuItem> Category 
+            <Link to="/admins/manage-category" />
+            </MenuItem>
+          </SubMenu>
+          
+        </Menu>
       </SidebarContent>
 
       <SidebarFooter style={{ textAlign: 'center' }}>

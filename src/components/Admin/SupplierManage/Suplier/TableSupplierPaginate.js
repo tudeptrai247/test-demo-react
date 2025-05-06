@@ -28,7 +28,7 @@ const TableSupplierPaginate = (props) =>{
             
             listSupplier.map( (item,index) =>{
                 return(
-                <tr key={`table-user-${index}`}>
+                <tr key={`table-supplier-${index}`}>
                     <th>{item.id}</th>
                     <td>{item.name}</td>
                     <td>{item.address}</td>

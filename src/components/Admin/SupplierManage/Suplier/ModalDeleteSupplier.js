@@ -4,13 +4,13 @@ import { deleteSupplier } from '../../../../service/apiService';
 import { toast } from 'react-toastify';
 
 
-const showModalDeleteSupplier =(props) =>{
+const ModalDeleteSupplier =(props) =>{
 
     const {show , setShow ,dataDelete} = props;
 
     const handleClose =() =>{setShow(false)};
 
-    const handleSubmitDeleteUser = async() =>{
+    const handleSubmitDeleteSupplier = async() =>{
         let data =await deleteSupplier(dataDelete.id);
         if(data && data.EC ===0){
             toast.success(data.message);
@@ -37,7 +37,7 @@ const showModalDeleteSupplier =(props) =>{
           <Button variant="secondary" onClick={handleClose}>
             Cancel
           </Button>
-          <Button variant="primary" onClick={() =>handleSubmitDeleteUser()}>
+          <Button variant="primary" onClick={() =>handleSubmitDeleteSupplier()}>
             Confirm
           </Button>
         </Modal.Footer>
@@ -45,4 +45,4 @@ const showModalDeleteSupplier =(props) =>{
         </>
     )
 }
-export default showModalDeleteSupplier
+export default ModalDeleteSupplier

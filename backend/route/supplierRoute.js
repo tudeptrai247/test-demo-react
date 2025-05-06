@@ -33,7 +33,7 @@ router.get('/',async(req,res) =>{
  
      try {
          const [countRow] = await pool.execute(`SELECT COUNT(*) as count FROM supplier`); // đếm tổng số supplier , countRow là 1 mảng
-         const totalSupplier = countRow[0].count; //lấy ra tổng số supplier , countRow[0] lấy object đầu  và .count để lấy tổng số supplier
+         const totalSupplier = countRow[0].count; //lấy ra tổng số supplier dùng để tính phân trang
          const totalPages =Math.ceil(totalSupplier/limit)
  
          const [rows] =await pool.query(`SELECT * FROM supplier LIMIT ? OFFSET ?`,[limit,offset])

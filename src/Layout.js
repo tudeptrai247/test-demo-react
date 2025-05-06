@@ -13,6 +13,9 @@ import { BrowserRouter,
    } from "react-router-dom";
 import Register from './components/Admin/Auth/Register.js';
 import ManageSupplier from './components/Admin/SupplierManage/Suplier/ManageSupplier.js';
+import ManageSize from './components/Admin/ProductManage/Size/ManageSize.js';
+import ManageBrand from './components/Admin/ProductManage/Brand/ManageBrand.js';
+import ManageCategory from './components/Admin/ProductManage/Category/ManageCategory.js';
 const Layout =(props) =>{
     return(
         <div>
@@ -26,6 +29,10 @@ const Layout =(props) =>{
                       <Route index element={<Dashboard />} />
                       <Route path="manage-user" element={<ManageUser />}/>
                       <Route path="manage-supplier" element={<ManageSupplier />} />
+                      <Route path="manage-size" element={<ManageSize />} />
+                      <Route path="manage-brand" element={<ManageBrand />} />
+                      <Route path="manage-category" element={<ManageCategory />} />
+
                   </Route>
                   
                   <Route path="login" element={<Login />}/>
