@@ -28,7 +28,6 @@ const ManageCategory =() =>{
         if(res.EC==0){
             console.log('res.dt',res.DT)
             setListCategory(res.DT.category) // gán danh sách fetch api vào listsize
-            console.log("supplier from data" ,res.DT.supplier)
             setPageCount(res.DT.totalPages) // gán tổng trang vào pagecount , truyền props xuống con để đưa vào paginatetable
         }
     }

@@ -16,6 +16,7 @@ import ManageSupplier from './components/Admin/SupplierManage/Suplier/ManageSupp
 import ManageSize from './components/Admin/ProductManage/Size/ManageSize.js';
 import ManageBrand from './components/Admin/ProductManage/Brand/ManageBrand.js';
 import ManageCategory from './components/Admin/ProductManage/Category/ManageCategory.js';
+import ManageProduct from './components/Admin/ProductManage/Product/ManageProduct.js';
 const Layout =(props) =>{
     return(
         <div>
@@ -32,7 +33,8 @@ const Layout =(props) =>{
                       <Route path="manage-size" element={<ManageSize />} />
                       <Route path="manage-brand" element={<ManageBrand />} />
                       <Route path="manage-category" element={<ManageCategory />} />
-
+                      <Route path='manage-product' element={<ManageProduct />} />
+                    
                   </Route>
                   
                   <Route path="login" element={<Login />}/>

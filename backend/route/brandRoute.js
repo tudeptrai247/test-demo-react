@@ -94,4 +94,23 @@ router.put('/:id',async(req,res) =>{
     }
 }) 
 
+//Tất cả brand
+
+router.get('/all',async(req,res) =>{
+    try{
+        const [rows] = await pool.query('SELECT * FROM brand')
+
+        res.status(200).json({
+            EC:0,
+            brand:rows
+        })
+    } catch(err){
+        console.log(err);
+        res.status(500).json({
+            EC:1,
+            message :'Something Wrong'
+        })
+    }
+})
+
 export default router

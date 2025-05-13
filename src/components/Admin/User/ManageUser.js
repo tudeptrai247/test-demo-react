@@ -4,7 +4,7 @@ import './ManageUser.scss';
 import { FiPlus } from "react-icons/fi";
 import TableUser from './TableUser';
 import { use, useEffect, useState } from "react"
-import {getAllUser , getUserWithPaginate} from '../../../service/apiService'
+import {getUserWithPaginate} from '../../../service/apiService'
 import ModalUpdateUser from './ModalUpdateUser';
 import ModalViewUser from './ModalViewUser';
 import ModalDeleteUser from './ModalDeleteUser';
@@ -32,13 +32,13 @@ const ManageUser =(props) =>{
         fetchListUsersWithPaginate(1); // xem trang thu 1
    }, []);
 
-   const fetchListUsers = async () =>{
-       let res =await getAllUser();
+//    const fetchListUsers = async () =>{
+//        let res =await getAllUser();
        
-       if(res.EC === 0 ){
-           setListUsers(res.DT)
-       }
-   }
+//        if(res.EC === 0 ){
+//            setListUsers(res.DT)
+//        }
+//    }
 
    const fetchListUsersWithPaginate = async (page) =>{
     let res =await getUserWithPaginate(page , LIMIT_USER);
@@ -106,7 +106,7 @@ const ManageUser =(props) =>{
             show = {showModalUpdateUser}
             setShow ={setShowModalUpdateUser}
             dataUpdate = {dataUpdate}
-            fetchListUsers={fetchListUsers }
+            // fetchListUsers={fetchListUsers }
             resertUpdateData ={resertUpdateData}
             fetchListUsersWithPaginate ={fetchListUsersWithPaginate}
             currentPage={currentPage}
@@ -123,7 +123,7 @@ const ManageUser =(props) =>{
                 show={showModalDeleteUser} // mở modal
                 setShow={setShowModalDeleteUser} 
                 dataDelete ={dataDelete}
-                fetchListUsers={fetchListUsers } // tải lại danh sách người dùng
+                // fetchListUsers={fetchListUsers } // tải lại danh sách người dùng
                 fetchListUsersWithPaginate ={fetchListUsersWithPaginate}
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}

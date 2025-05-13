@@ -1,0 +1,43 @@
+.manage-container{
+    padding: 10px;
+   .content{
+        .btn-add-new{
+            margin: 15px 0px;
+        }
+    }
+    .title{
+        font-weight: 600;
+        font-size: 20px;
+    }
+}
+    .modal-add-product{
+        .img-review{
+            border: 1px solid red;
+            height: 150px;
+            border: 1px dashed #ccc;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center; //giữa chiều ngang
+            align-items: center; // giữa chiều dọc
+            color: #ccc;
+            
+            img{
+                max-height: 100%;
+                max-width: 100%;
+            }
+        }
+        .lable-upload{
+            border-radius: 5px;
+            padding: 3px 5px;
+            cursor: pointer;
+            background: #eeee;
+            border: none;
+
+            &:hover{
+                background-color: #dcdc;
+            }
+        }
+
+
+        
+    }

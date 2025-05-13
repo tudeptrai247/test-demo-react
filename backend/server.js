@@ -4,8 +4,11 @@ import userRoute from './route/userRoute.js';
 import authRoute from './route/authRoute.js';
 import supplierRoute from './route/supplierRoute.js';
 import sizeRoute from './route/sizeRoute.js';
-import brandRoute from './route/brandRoute.js'
-import categoryRoute from './route/categoryRoute.js'
+import brandRoute from './route/brandRoute.js';
+import categoryRoute from './route/categoryRoute.js';
+import productRoute from './route/productRoute.js';
+import path from 'path'
+import { fileURLToPath } from 'url';
 
 const app = express();
 const PORT =8081;
@@ -21,7 +24,11 @@ app.use('/api/v1/supplier' , supplierRoute)
 app.use('/api/v1/size' , sizeRoute)
 app.use('/api/v1/brand' , brandRoute)
 app.use('/api/v1/category' , categoryRoute)
+app.use('/api/v1/product' , productRoute)
 
+
+const __dirname=path.resolve()
+app.use('/uploads',express.static(path.join(__dirname,'uploads')));
 
 //chạy server
 app.listen(PORT ,()=>{

@@ -87,7 +87,7 @@ const Sidebar =(props) =>{
             title="Product Management"
           >
             <MenuItem> Product 
-            <Link to="/admins/manage-supplier" />
+            <Link to="/admins/manage-product" />
             </MenuItem>
             <MenuItem> Size 
             <Link to="/admins/manage-size" />

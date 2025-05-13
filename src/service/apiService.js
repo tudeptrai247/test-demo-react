@@ -1,5 +1,6 @@
 import axios from '../utils/axiosCustomize';
 
+//Người dùng
 const postCreateNewUser =(email , password,username,role) =>{
     return axios.post('api/v1/user',{
         email,
@@ -9,10 +10,10 @@ const postCreateNewUser =(email , password,username,role) =>{
     });
 };
 
-const getAllUser =() =>{
-    return axios.get('api/v1/participant/all');
+// const getAllUser =() =>{
+//     return axios.get('api/v1/participant/all');
 
-}
+// }
 
 const putUpdateUser =(id,username,role) =>{  //form data ko phải là dạng json nên sẽ undefined 
     return axios.put(`api/v1/user/${id}`,{
@@ -25,12 +26,12 @@ const putUpdateUser =(id,username,role) =>{  //form data ko phải là dạng js
 const deleteUser =(userId) =>{
     return axios.delete(`api/v1/user/${userId}`);
 }
-//Người dùng
+
 
 const getUserWithPaginate =(page,limit) =>{
     return axios.get(`api/v1/user?page=${page}&limit=${limit}`);
 }
-//Phân trang người dùng
+//đăng nhập , đăng ký
 
 const postLogin = (email,password)  =>{
     return axios.post(`api/v1/auth/login`,{email,password});
@@ -44,7 +45,7 @@ const logout =(email , refresh_token) =>{
     return axios.post(`api/v1/logout`,{email,refresh_token});
 }
 
-//đăng nhập , đăng ký
+//nhà cung cấp
 
 const postCreateNewSupplier =(name,address,number) =>{
     return axios.post('api/v1/supplier',{
@@ -70,7 +71,13 @@ const putUpdateSupplier =(id,name,address,number) =>{  //form data ko phải là
 const getSupplierWithPaginate =(page,limit) =>{
     return axios.get(`api/v1/supplier?page=${page}&limit=${limit}`);
 }
-//nhà cung cấp
+//size
+
+const getAllSize =() =>{
+    return axios.get('api/v1/size/all');
+
+}
+
 const postCreateNewSize =(size) =>{
     return axios.post('api/v1/size',{
         size
@@ -91,7 +98,13 @@ const putUpdateSize =(id,size) =>{  //form data ko phải là dạng json nên s
     });
 
 }
-//size
+
+//brand
+
+const getAllBrand =() =>{
+    return axios.get('api/v1/brand/all');
+}
+
 const postCreateNewBrand =(brand) =>{
     return axios.post('api/v1/brand',{
         brand
@@ -112,7 +125,12 @@ const putUpdateBrand =(id,brand) =>{  //form data ko phải là dạng json nên
 
 }
 
-//brand
+//category
+
+const getAllCategory =() =>{
+    return axios.get('api/v1/category/all');
+
+}
 const postCreateNewCategory =(category) =>{
     return axios.post('api/v1/category',{
         category
@@ -133,11 +151,25 @@ const putUpdateCategory =(id,category) =>{  //form data ko phải là dạng jso
     });
 
 }
-//category
-export {postCreateNewUser , getAllUser ,putUpdateUser ,deleteUser
+
+//sản phẩm
+const postCreateNewProduct =(formData) =>{
+    return axios.post('api/v1/product',formData,{
+       headers:{
+        'Content-Type':'multipart/form-data'
+       }
+    });
+};
+
+const getProductWithPaginate =(page,limit) =>{
+    return axios.get(`api/v1/product?page=${page}&limit=${limit}`);
+}
+
+export {postCreateNewUser,putUpdateUser ,deleteUser
     ,getUserWithPaginate ,postLogin , postRegister , logout ,
     postCreateNewSupplier , getSupplierWithPaginate , deleteSupplier ,putUpdateSupplier,
-    postCreateNewSize ,getSizeWithPaginate ,deleteSize ,putUpdateSize,
-    postCreateNewBrand ,getBrandWithPaginate ,deleteBrand ,putUpdateBrand,
-    postCreateNewCategory ,getCategoryWithPaginate ,deleteCategory ,putUpdateCategory
+    postCreateNewSize ,getSizeWithPaginate ,deleteSize ,putUpdateSize,getAllSize,
+    postCreateNewBrand ,getBrandWithPaginate ,deleteBrand ,putUpdateBrand,getAllBrand,
+    postCreateNewCategory ,getCategoryWithPaginate ,deleteCategory ,putUpdateCategory,getAllCategory,
+    postCreateNewProduct,getProductWithPaginate
 }
