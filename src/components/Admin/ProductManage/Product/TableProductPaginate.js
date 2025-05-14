@@ -49,10 +49,13 @@ const TableProductPaginate =(props) =>{
                             <td>
                             
                             <button className="btn btn-btn btn-warning mx-3"
+                            onClick={()=>props.handleClickBtnUpdate(item)}
                             >
                                 Update
                             </button>
-                            <button className="btn btn-danger">
+                            <button className="btn btn-danger"
+                            onClick={()=>props.handleClickBtnDelete(item)}
+                            >
                                 Delete
                             </button>
                         </td>

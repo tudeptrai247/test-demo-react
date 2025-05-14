@@ -165,11 +165,21 @@ const getProductWithPaginate =(page,limit) =>{
     return axios.get(`api/v1/product?page=${page}&limit=${limit}`);
 }
 
+const deleteProduct =(productId) =>{
+    return axios.delete(`api/v1/product/${productId}`);
+}
+const putUpdateProduct =(formData) =>{  //form data ko phải là dạng json nên sẽ undefined 
+    const id =formData.get('id')
+    return axios.put(`api/v1/product/${id}`,formData,{
+        'Content-Type': 'multipart/form-data'
+    });
+
+}
 export {postCreateNewUser,putUpdateUser ,deleteUser
     ,getUserWithPaginate ,postLogin , postRegister , logout ,
     postCreateNewSupplier , getSupplierWithPaginate , deleteSupplier ,putUpdateSupplier,
     postCreateNewSize ,getSizeWithPaginate ,deleteSize ,putUpdateSize,getAllSize,
     postCreateNewBrand ,getBrandWithPaginate ,deleteBrand ,putUpdateBrand,getAllBrand,
     postCreateNewCategory ,getCategoryWithPaginate ,deleteCategory ,putUpdateCategory,getAllCategory,
-    postCreateNewProduct,getProductWithPaginate
+    postCreateNewProduct,getProductWithPaginate ,deleteProduct ,putUpdateProduct
 }

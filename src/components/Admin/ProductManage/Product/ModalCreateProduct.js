@@ -61,7 +61,7 @@ import { toast } from 'react-toastify';
 
     const handleSubmitCreateProduct =async()=>{
            
-        if(name==="" &&size===""&&brand===""&category===""&&price===""&&description===""&&image===""){
+        if(name==="" || size==="" || brand==="" || category==="" || price==="" || description==="" || image===""){
             toast.error("Please Fill All Information")
             return
         }
@@ -81,6 +81,8 @@ import { toast } from 'react-toastify';
            if(data?.EC === 0){ // ? dùng để kiểm tra data có tồn tại ko trước khi truy cập EC
             toast.success(data.message);
             handleClose();
+            props.setCurrentPage(1);
+            props.fetchListProductWithPaginate(1)
            }
         
            if(data && data.EC != 0){

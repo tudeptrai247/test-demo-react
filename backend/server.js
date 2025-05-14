@@ -26,7 +26,7 @@ app.use('/api/v1/brand' , brandRoute)
 app.use('/api/v1/category' , categoryRoute)
 app.use('/api/v1/product' , productRoute)
 
-
+// đưa thư mục uploads để public trên host
 const __dirname=path.resolve()
 app.use('/uploads',express.static(path.join(__dirname,'uploads')));
 

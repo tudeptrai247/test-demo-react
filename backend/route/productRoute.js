@@ -4,20 +4,19 @@ const router = express.Router();
 import pool from '../connectDB.js';
 import multer from 'multer';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'url'; //đổi url thành đường dẫn hệ thống
 
 //Cấu hình multer , để lưu trữ vào folder uploads khi gửi ảnh lên , tạo tên file đặc quyền
 
-//import.meta.url chuyển về đường dẫn chuẩn windows
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url); //import.meta.url trả về URL file hiện tại ,fileURLToPath truyển thành dường dẫn hệ thống vd /home/user/app.js
+const __dirname = path.dirname(__filename);//path.dirname(__filename) trả về URL chứa file vd: /home/user
 
-//path.join để kết nối đường dẫn giữa dirname và uploads
+// thiết lập multer để lưu ảnh từ form
 const storage = multer.diskStorage({
     destination:(req,file,cb) =>{
-        cb(null,path.join(__dirname,'../uploads'))
+        cb(null,path.join(__dirname,'../uploads')) // nối tự mục hiện tại với folder uploads
     },
-    filename:(req,file,cb)=>{
+    filename:(req,file,cb)=>{ // tạo file name với tên duy nhất
         const uniqueSuffix=Date.now() +'-'+Math.round(Math.random()* 1E9);
         cb(null ,uniqueSuffix+ '-'+file.originalname)
     }
@@ -27,8 +26,8 @@ const storage = multer.diskStorage({
 const upload = multer({storage:storage});
 import fs from 'fs';
 const uploadDir =path.join(__dirname,'../uploads')
-if(!fs.existsSync(uploadDir)){
-    fs.mkdirSync(uploadDir);
+if(!fs.existsSync(uploadDir)){  
+    fs.mkdirSync(uploadDir);    // tạo thư mục uploads nếu ko tồn tại
 }
 
 //Thêm product
@@ -84,5 +83,49 @@ router.get('/',async(req,res) =>{
         })
     }
 })
+
+// xóa 
+router.delete('/:id',async(req,res) =>{
+    const productId = req.params.id;
+    console.log(req.params.id)
+    try{
+        const [result] = await pool.execute(
+            'DELETE FROM product WHERE id= ?',[productId]
+        );
+        res.status(200).json({
+            EC:0, // error code =0 là success , khác 0 là lỗi
+            message:'Delete Product Success',
+            name:result.id});
+    }catch(err){
+        console.error(err);
+        res.status(500).json({
+            EC:1,
+            error:'Something Wrong '})
+    }
+}) 
+
+//update phải có upload.single để parse multi/form data tạo file ảnh vào uploads
+router.put('/:id',upload.single('image'),async(req,res) =>{
+    const productId = req.params.id;
+    const {name,idsize,idbrand,idcategory,price,description} = req.body;
+    const image = req.file ?req.file.filename :null;  // sd req.file để multer bắt ảnh
+    console.log("body",req.body)
+    console.log("file",req.file)
+    try{
+        const [result] = await pool.execute(
+            'UPDATE product set name = ? ,idsize=? ,idbrand=?,idcategory=?,price=?,description=?,image=? WHERE id =? ',[name,idsize,idbrand,idcategory,price,description,image,productId]
+        );
+        res.status(200).json({
+            EC:0, // error code =0 là success , khác 0 là lỗi
+            message:'Product Update Success',
+            name:result.id
+            });
+    }catch(err){
+        console.error(err);
+        res.status(500).json({
+            EC:1,
+            error:'Something Wrong '})
+    }
+}) 
 
 export default router

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import ModalCreateProduct from "./ModalCreateProduct";
 import TableProductPaginate from "./TableProductPaginate";
 import { getProductWithPaginate } from "../../../../service/apiService";
+import ModalDeleteProduct from "./ModalDeleteProduct";
+import ModalUpdateProduct from "./ModalUpdateProduct";
 
 const ManageProduct =() =>{
 
@@ -13,6 +15,9 @@ const ManageProduct =() =>{
     const[listProduct ,setListProduct] =useState([])
     const [pageCount,setPageCount]=useState(0)
     const [currentPage,setCurrentPage]=useState(1)
+    const [showModalDeleteProduct,setShowModalDeleteProduct] =useState(false)
+    const [showModalUpdateProduct,setShowModalUpdateProduct]=useState(false)
+    const [dataUpdate,setDataUpdate]=useState("")
 
     useEffect(()=>{
         fetchListProductWithPaginate(1)
@@ -25,6 +30,21 @@ const ManageProduct =() =>{
             setListProduct(res.DT.product)
             setPageCount(res.DT.totalPages)
         }
+    }
+
+    const handleClickBtnDelete =(product)=>{
+        setShowModalDeleteProduct(true);
+        setDataUpdate(product)
+    }
+
+    const handleClickBtnUpdate =(product) =>{
+        setShowModalUpdateProduct(true)
+        setDataUpdate(product)
+        console.log('check data',product)
+    }
+
+    const dataUpdateResert=()=>{
+        setDataUpdate("")
     }
     
 
@@ -44,13 +64,31 @@ const ManageProduct =() =>{
                         setListProduct={setListProduct}   
                         currentPage={currentPage}
                         setCurrentPage={setCurrentPage}   
-                        pageCount={pageCount}                  
+                        pageCount={pageCount}  
+                        handleClickBtnDelete={handleClickBtnDelete}    
+                        handleClickBtnUpdate={handleClickBtnUpdate}            
                     />
                     <ModalCreateProduct 
                         show={showModalCreateProduct}
                         setShow={setShowModalCreateProduct}
+                        fetchListProductWithPaginate={fetchListProductWithPaginate}
+                        setCurrentPage={setCurrentPage}
                     />
-                   
+                    <ModalDeleteProduct
+                        show={showModalDeleteProduct}
+                        setShow={setShowModalDeleteProduct}
+                        dataUpdate={dataUpdate}
+                        fetchListProductWithPaginate={fetchListProductWithPaginate}
+                        setCurrentPage={setCurrentPage}
+                    />
+                   <ModalUpdateProduct
+                        show={showModalUpdateProduct}
+                        setShow={setShowModalUpdateProduct}
+                        dataUpdate={dataUpdate}
+                        fetchListProductWithPaginate={fetchListProductWithPaginate}
+                        setCurrentPage={setCurrentPage}
+                        dataUpdateResert={dataUpdateResert}
+                   />
                 </div>  
             </div>
         </div>
