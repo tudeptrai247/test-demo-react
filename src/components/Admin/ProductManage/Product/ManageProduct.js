@@ -6,6 +6,9 @@ import TableProductPaginate from "./TableProductPaginate";
 import { getProductWithPaginate } from "../../../../service/apiService";
 import ModalDeleteProduct from "./ModalDeleteProduct";
 import ModalUpdateProduct from "./ModalUpdateProduct";
+import { updateShowProduct } from "../../../../service/apiService";
+import { toast } from "react-toastify";
+
 
 const ManageProduct =() =>{
 
@@ -46,6 +49,19 @@ const ManageProduct =() =>{
     const dataUpdateResert=()=>{
         setDataUpdate("")
     }
+
+    const toogleShowHide = async(id , status) =>{
+
+        const changeStatus = status === 1 ? 0 : 1; // toán tử điều kiện , nếu status = 1 thì chuyển 0 , status =0 thì chuyển 1
+        
+        let data = await updateShowProduct(id,changeStatus)
+        if(data && data.EC=== 0){
+        fetchListProductWithPaginate(currentPage)
+        toast.success(data.message)
+        }
+       
+        
+    }
     
 
     return(
@@ -66,7 +82,8 @@ const ManageProduct =() =>{
                         setCurrentPage={setCurrentPage}   
                         pageCount={pageCount}  
                         handleClickBtnDelete={handleClickBtnDelete}    
-                        handleClickBtnUpdate={handleClickBtnUpdate}            
+                        handleClickBtnUpdate={handleClickBtnUpdate}     
+                        toogleShowHide={toogleShowHide}       
                     />
                     <ModalCreateProduct 
                         show={showModalCreateProduct}

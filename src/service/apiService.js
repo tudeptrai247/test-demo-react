@@ -71,6 +71,11 @@ const putUpdateSupplier =(id,name,address,number) =>{  //form data ko phải là
 const getSupplierWithPaginate =(page,limit) =>{
     return axios.get(`api/v1/supplier?page=${page}&limit=${limit}`);
 }
+
+const getAllSupplier =() =>{
+    return axios.get('api/v1/supplier/all');
+
+}
 //size
 
 const getAllSize =() =>{
@@ -175,11 +180,52 @@ const putUpdateProduct =(formData) =>{  //form data ko phải là dạng json n�
     });
 
 }
+
+const updateShowProduct =(productId ,status) =>{
+    return axios.put(`api/v1/product/${productId}/status`,{
+        status
+    })
+}
+
+const getAllProduct =() =>{
+    return axios.get('api/v1/product/all');
+
+}
+
+// Phiếu Nhập
+
+const postCreateNewReceipt =(supplier,product,size,quantity,unitprice,note) =>{
+    return axios.post('api/v1/receipt',{
+       supplier,
+       product,
+       size,
+       quantity,
+       unitprice,
+       note
+    });
+
+};
+
+const getReceiptWithPaginate =(page,limit) =>{
+    return axios.get(`api/v1/receipt?page=${page}&limit=${limit}`);
+}
+
+const getReceiptDetail =(receipt_id)=>{
+    return axios.get(`api/v1/receipt/${receipt_id}/recieptdetail`);
+}
+
+const deleteSoftReceipt =(receiptId ,status) =>{
+    return axios.put(`api/v1/receipt/${receiptId}/`,{
+        status
+    })
+}
+
 export {postCreateNewUser,putUpdateUser ,deleteUser
     ,getUserWithPaginate ,postLogin , postRegister , logout ,
-    postCreateNewSupplier , getSupplierWithPaginate , deleteSupplier ,putUpdateSupplier,
+    postCreateNewSupplier , getSupplierWithPaginate , deleteSupplier ,putUpdateSupplier,getAllSupplier,
     postCreateNewSize ,getSizeWithPaginate ,deleteSize ,putUpdateSize,getAllSize,
     postCreateNewBrand ,getBrandWithPaginate ,deleteBrand ,putUpdateBrand,getAllBrand,
     postCreateNewCategory ,getCategoryWithPaginate ,deleteCategory ,putUpdateCategory,getAllCategory,
-    postCreateNewProduct,getProductWithPaginate ,deleteProduct ,putUpdateProduct
+    postCreateNewProduct,getProductWithPaginate ,deleteProduct ,putUpdateProduct ,updateShowProduct ,getAllProduct,
+    postCreateNewReceipt ,getReceiptWithPaginate ,getReceiptDetail ,deleteSoftReceipt
 }

@@ -17,6 +17,8 @@ import ManageSize from './components/Admin/ProductManage/Size/ManageSize.js';
 import ManageBrand from './components/Admin/ProductManage/Brand/ManageBrand.js';
 import ManageCategory from './components/Admin/ProductManage/Category/ManageCategory.js';
 import ManageProduct from './components/Admin/ProductManage/Product/ManageProduct.js';
+import ManageReceipt from './components/Admin/SupplierManage/Receipt/ManageReceipt.js'
+
 const Layout =(props) =>{
     return(
         <div>
@@ -34,6 +36,7 @@ const Layout =(props) =>{
                       <Route path="manage-brand" element={<ManageBrand />} />
                       <Route path="manage-category" element={<ManageCategory />} />
                       <Route path='manage-product' element={<ManageProduct />} />
+                      <Route path='manage-receipt' element={<ManageReceipt />}/>
                     
                   </Route>
                   

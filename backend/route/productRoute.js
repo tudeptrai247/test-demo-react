@@ -128,4 +128,44 @@ router.put('/:id',upload.single('image'),async(req,res) =>{
     }
 }) 
 
+// cập nhật show hide
+router.put('/:id/status',async(req,res) =>{
+    const {id} =req.params.id;
+    const {status} =req.body;
+    try{
+        const [result] = await pool.execute(
+            'UPDATE product SET status = ? WHERE id=?',[status,id]
+        );
+        res.status(200).json({
+            EC:0,
+            message:'Change Show/Hide Product Success',
+            name:result.id
+        })
+    }catch(err){
+        console.log(err);
+        res.status(500).json({
+            EC:1,
+            error:'something wrong'
+        })
+    }
+})
+
+// lấy tất cả sản phẩm
+router.get('/all',async(req,res) =>{
+    try{
+        const [rows] = await pool.query('SELECT * FROM product')
+
+        res.status(200).json({
+            EC:0,
+            product:rows
+        })
+    } catch(err){
+        console.log(err);
+        res.status(500).json({
+            EC:1,
+            message :'Something Wrong'
+        })
+    }
+})
+
 export default router

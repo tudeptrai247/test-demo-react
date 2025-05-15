@@ -77,6 +77,10 @@ const Sidebar =(props) =>{
             <MenuItem> Supplier 
             <Link to="/admins/manage-supplier" />
             </MenuItem>
+             <MenuItem> Receipt 
+            <Link to="/admins/manage-receipt" />
+            </MenuItem>
+            
           </SubMenu>
           
         </Menu>

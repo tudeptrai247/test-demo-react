@@ -10,6 +10,8 @@ const TableProductPaginate =(props) =>{
         props.setCurrentPage(+event.selected +1);
     }
 
+    
+
     return(
         <>
         <table className="table table-hover table-bordered">
@@ -48,15 +50,20 @@ const TableProductPaginate =(props) =>{
                             </td>
                             <td>
                             
-                            <button className="btn btn-btn btn-warning mx-3"
+                            <button className="btn btn-btn btn-warning mx-2"
                             onClick={()=>props.handleClickBtnUpdate(item)}
                             >
                                 Update
                             </button>
-                            <button className="btn btn-danger"
+                            <button className="btn btn-danger mx-2"
                             onClick={()=>props.handleClickBtnDelete(item)}
                             >
                                 Delete
+                            </button>
+                            <button className="btn btn-secondary mx-2"
+                            onClick={()=>props.toogleShowHide(item.id,item.status)}
+                            >
+                                {item.status ===1 ? 'Show' :'Hide'}
                             </button>
                         </td>
 
