@@ -80,6 +80,9 @@ const Sidebar =(props) =>{
              <MenuItem> Receipt 
             <Link to="/admins/manage-receipt" />
             </MenuItem>
+             <MenuItem> Receipt Delete Record 
+            <Link to="/admins/manage-restore-receipt" />
+            </MenuItem>
             
           </SubMenu>
           

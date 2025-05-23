@@ -14,12 +14,12 @@ const TableProductPaginate =(props) =>{
 
     return(
         <>
+
         <table className="table table-hover table-bordered">
             <thead>
                 <tr>
                     <th scope="col">No</th>
                     <th scope="col">Name Product</th>
-                    <th scope="col">Size</th>
                     <th scope="col">Brand</th>
                     <th scope="col">Category</th>
                     <th scope="col">Price</th>
@@ -36,11 +36,10 @@ const TableProductPaginate =(props) =>{
                         <tr key={`table-size-${item.id}`}>
                             <th>{item.id}</th>
                             <td>{item.name}</td>
-                            <td>{item.idsize}</td>
                             <td>{item.idbrand}</td>
                             <td>{item.idcategory}</td>
                             <td>{item.price}</td>
-                            <td>{item.description}</td>
+                            <td className="description-product">{item.description}</td>
                             <td>
                                 <img 
                                 src={`http://localhost:8081/uploads/${item.image}`}
@@ -63,7 +62,7 @@ const TableProductPaginate =(props) =>{
                             <button className="btn btn-secondary mx-2"
                             onClick={()=>props.toogleShowHide(item.id,item.status)}
                             >
-                                {item.status ===1 ? 'Show' :'Hide'}
+                                {item.status ===1 ? 'Hide' :'Show'}
                             </button>
                         </td>
 
@@ -71,6 +70,7 @@ const TableProductPaginate =(props) =>{
                     )
                 })
                 }
+                
             </tbody>
         </table>
         <div className="user-paginate">  

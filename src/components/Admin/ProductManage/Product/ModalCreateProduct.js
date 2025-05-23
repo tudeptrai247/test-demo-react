@@ -2,16 +2,14 @@ import Modal from 'react-bootstrap/Modal';
 import { Button } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import { FiPlus } from "react-icons/fi";
-import {getAllCategory,getAllSize,getAllBrand,postCreateNewProduct} from "../../../../service/apiService";
+import {getAllCategory,getAllBrand,postCreateNewProduct} from "../../../../service/apiService";
 import { toast } from 'react-toastify';
 
- 
+ // trong sản phẩm ko cần dùng size 
  const ModalCreateProduct =(props) =>{
 
     useEffect(()=>{
         const fetchData = async()=>{
-            const resSize = await getAllSize();
-            if(resSize.EC ===0) setListSize(resSize.size)
 
             const resBrand =await getAllBrand();
             if(resBrand.EC ===0) setListBrand(resBrand.brand)
@@ -26,14 +24,12 @@ import { toast } from 'react-toastify';
     const {show , setShow} = props
 
     const [name,setName] =useState("")
-    const [size,setSize]=useState("")
     const [brand,setBrand]=useState("")
     const [category,setCategory]=useState("")
     const [price,setPrice]=useState("")
     const [description ,setDescription]=useState("")
     const [image,setImage]=useState("")
 
-    const [listSize ,setListSize]=useState([])
     const [listBrand,setListBrand]=useState([])
     const [listCategory,setListCategory]=useState([])
 
@@ -42,7 +38,6 @@ import { toast } from 'react-toastify';
     const handleClose =() =>{
         setShow(false)
         setName("")
-        setSize("")
         setBrand("")
         setCategory("")
         setPrice("")
@@ -61,14 +56,13 @@ import { toast } from 'react-toastify';
 
     const handleSubmitCreateProduct =async()=>{
            
-        if(name==="" || size==="" || brand==="" || category==="" || price==="" || description==="" || image===""){
+        if(name==="" || brand==="" || category==="" || price==="" || description==="" || image===""){
             toast.error("Please Fill All Information")
             return
         }
 
         const formData=new FormData();
         formData.append("name", name);
-        formData.append("size", size);
         formData.append("brand", brand);
         formData.append("category", category);
         formData.append("price", price);
@@ -102,22 +96,13 @@ import { toast } from 'react-toastify';
         className='modal-add-product'
         >
             <Modal.Header closeButton>
-                <Modal.Title>Add New Product</Modal.Title>
+                
             </Modal.Header>
             <Modal.Body>
         <form className="row g-3">
             <div className="col-md-6">
                 <label  className="form-label">Name Product</label>
                 <input type="text" className="form-control" value={name} onChange={(event) =>setName(event.target.value)} />
-            </div>
-            <div className="col-md-2">
-                <label  className="form-label">Size</label>
-                <select className="form-control" value={size} onChange={(event) =>setSize(event.target.value)}>
-                    <option value="">--Select Size--</option>
-                    {listSize.map((item,index)=>{
-                       return <option key={index} value={item.id}>{item.size}</option>
-                    })}
-                </select>
             </div>
             <div className="col-md-2">
                 <label  className="form-label">Brand</label>

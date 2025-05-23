@@ -1,7 +1,7 @@
 import App from './App.js';
 
 import Admin from './components/Admin/Admin.js';
-import Homepage from './components/Home/Homepage.js';
+import Homepage from './components/User/Home/Homepage.js';
 import ManageUser from './components/Admin/User/ManageUser.js';
 import Dashboard from './components/Admin/User/DashBoard.js';
 import Login from './components/Admin/Auth/Login.js';
@@ -18,6 +18,8 @@ import ManageBrand from './components/Admin/ProductManage/Brand/ManageBrand.js';
 import ManageCategory from './components/Admin/ProductManage/Category/ManageCategory.js';
 import ManageProduct from './components/Admin/ProductManage/Product/ManageProduct.js';
 import ManageReceipt from './components/Admin/SupplierManage/Receipt/ManageReceipt.js'
+import ManageRestoreReceipt from './components/Admin/SupplierManage/DeleteReceiptRecord/ManageRestoreReceipt.js';
+import Product from './components/User/Product/Product.js';
 
 const Layout =(props) =>{
     return(
@@ -25,6 +27,7 @@ const Layout =(props) =>{
               <Routes>
                   <Route path="/" element={<App />}>
                   <Route index element={<Homepage />} />
+                  <Route path='/products' element={<Product />} />
                   
                   </Route>
       
@@ -37,7 +40,8 @@ const Layout =(props) =>{
                       <Route path="manage-category" element={<ManageCategory />} />
                       <Route path='manage-product' element={<ManageProduct />} />
                       <Route path='manage-receipt' element={<ManageReceipt />}/>
-                    
+                      <Route path='manage-restore-receipt' element={<ManageRestoreReceipt />}/>
+                      
                   </Route>
                   
                   <Route path="login" element={<Login />}/>

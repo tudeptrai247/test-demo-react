@@ -1,0 +1,114 @@
+.product-container{
+    .tittle-product{
+        font-size: 50px;
+        display: flex;
+            margin-left: 65px;
+
+    }
+    .main-content{
+        display: flex;
+        gap: 20px;
+        padding: 40px 30px 0 30px;
+
+        .filter-container{
+            width: 250px;
+            padding: 15px;
+            flex-shrink: 0; // nếu không gian nhỏ thì ko được phép co lại
+            
+                .search-product{
+                    margin-bottom: 20px;
+                    display: flex;
+                    flex-direction: column;
+
+                    .title-search p{
+                        font-size: 20px;
+                        justify-content: center;
+                    }
+                    .button-search{
+                        margin-top: 15px;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                    }
+                }
+                .filter-tittle{
+                    display: flex;
+                    flex-direction: column;
+                    font-size: 20px; 
+                    padding-bottom: 20px;
+                    
+                }
+                .filter-content{
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    Button{
+                        width: 100px;
+                    }
+                }
+                
+            }
+            .product-content{
+                    flex :1; // chiếm phần còn lại
+                    display: grid; // chia theo dạng cột
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); // tự động chia thành 4 cột tính theo kích thước container , nếu nhỏ hơn sẽ hiện thị thành 3 cột
+                    gap: 20px;
+                .card img{
+                    width: 100%;
+                    height: 300px;
+                    object-fit: cover; 
+                    border-radius: 5px;
+                    cursor: pointer;
+                }   
+                .content-card{
+                    flex-direction: column;
+                    display: flex;
+                    align-items: center;
+                }
+            }
+        }
+    
+    .user-paginate {
+        display: flex;
+        justify-content: center; // canh giữa theo chiều ngang
+        margin-top: 20px;
+        }
+}
+.modal-detail-product{
+    .modal-body{
+        display: flex;
+        gap: 100px;
+    }
+
+    .product-image{
+
+            img {
+            margin-top: 20px;
+            margin-left: 20px;
+            margin-bottom: 20px;
+            width: 400px;
+            max-height: 400px;
+            border-radius: 5px;
+            
+        }   
+    }
+    .product-infor{
+        flex: 2;
+        display: flex;
+        flex-direction: column;
+        padding: 20px 0;
+
+        h5{
+            font-size: 25px;
+            font-style: italic;
+        }
+        p{
+            padding-top: 10px;
+            font-size: 18px;
+        }
+        button{
+            width: 150px;
+            height: 50px;
+        }
+    }
+}

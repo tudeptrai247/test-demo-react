@@ -8,6 +8,7 @@ import brandRoute from './route/brandRoute.js';
 import categoryRoute from './route/categoryRoute.js';
 import productRoute from './route/productRoute.js';
 import receiptRoute from './route/receiptRoute.js';
+import restoreReceiptRoute from './route/restoreReceiptRoute.js'
 import path from 'path'
 import { fileURLToPath } from 'url';
 
@@ -27,6 +28,8 @@ app.use('/api/v1/brand' , brandRoute)
 app.use('/api/v1/category' , categoryRoute)
 app.use('/api/v1/product' , productRoute)
 app.use('/api/v1/receipt' , receiptRoute)
+app.use('/api/v1/restorereceipt' , restoreReceiptRoute)
+
 
 // đưa thư mục uploads để public trên host
 const __dirname=path.resolve()

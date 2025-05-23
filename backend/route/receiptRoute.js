@@ -61,7 +61,7 @@ router.get('/',async(req,res) =>{
         res.status(200).json({
             EC:0,
             DT:{
-                receipt:rows, //trả về danh sách size hiện tại
+                receipt:rows, //trả về danh sách size hiện tại 
                 totalPages:totalPages // trả về tổng số trang
             }
         });

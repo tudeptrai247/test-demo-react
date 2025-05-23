@@ -1,5 +1,6 @@
 import "./App.scss"
-import Header from './components/Header/Header.js';
+import Header from './components/User/Header/Header.js';
+import Footer from "./components/User/Footer/Footer.js";
 import { Outlet, Link } from "react-router-dom";
 import { FETCH_USER_LOGIN_SUCCESS } from "./redux/action/userAction.js";
 import { useDispatch } from "react-redux";
@@ -27,15 +28,15 @@ const App = () => {
         <Header/>
         </div>
         <div className="main-container">
-        <div className="sidenav-container">
-
-        </div>
+        <div className="sidenav-container"> </div>
         <div className="app-content">
             <Outlet /> 
             {/* Outlet này dùng để hiện thị những trang con của index.js */}
         </div>
       </div>
-      
+      <div className="footer-container">
+          <Footer />
+      </div>
     </div>
   );
 }

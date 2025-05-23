@@ -53,7 +53,7 @@ const ManageProduct =() =>{
     const toogleShowHide = async(id , status) =>{
 
         const changeStatus = status === 1 ? 0 : 1; // toán tử điều kiện , nếu status = 1 thì chuyển 0 , status =0 thì chuyển 1
-        
+        console.log('id :',id ,'status',changeStatus)
         let data = await updateShowProduct(id,changeStatus)
         if(data && data.EC=== 0){
         fetchListProductWithPaginate(currentPage)
@@ -71,7 +71,7 @@ const ManageProduct =() =>{
             </div>
             <div className="content">
                 <div className="btn-add-new">
-                    <button className="btn btn-primary" onClick={() =>setShowModalCreateProduct(true)}><FiPlus />Add New Brand</button>  
+                    <button className="btn btn-primary" onClick={() =>setShowModalCreateProduct(true)}><FiPlus />Add New Product</button>  
                 </div>
                 <div className="table-product-container">
                     <TableProductPaginate

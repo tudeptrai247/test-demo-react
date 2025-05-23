@@ -191,8 +191,37 @@ const getAllProduct =() =>{
     return axios.get('api/v1/product/all');
 
 }
+// lấy 4 item đầu tiên
+const get4product =() =>{
+    return axios.get('api/v1/product/4item');
+}
+// lấy item nike
+const getitemnike =() =>{
+    return axios.get('api/v1/product/nikeitem');
+}
+// lấy item adidas
+const getitemadidas =() =>{
+    return axios.get('api/v1/product/adidasitem');
+}
 
-// Phiếu Nhập
+// lấy sản phẩm cho trang user
+
+const getProductUserWithPaginate =(page,limit) =>{
+    return axios.get(`api/v1/product/productuser?page=${page}&limit=${limit}`);
+}   
+
+// Filter Sản Phẩm
+
+const getProductFilter=(querryString) =>{
+    return axios.get(`api/v1/product/filter?${querryString}`);
+}
+
+//tìm kiếm sản phẩm 
+const getSearchProduct=(querryString) =>{
+    return axios.get(`api/v1/product/search?${querryString}`);
+}
+
+// phiếu nhập
 
 const postCreateNewReceipt =(supplier,product,size,quantity,unitprice,note) =>{
     return axios.post('api/v1/receipt',{
@@ -220,12 +249,25 @@ const deleteSoftReceipt =(receiptId ,status) =>{
     })
 }
 
+//lịch sử xóa phiếu nhập
+
+const getDeleteReceiptWithPaginate =(page,limit) =>{
+    return axios.get(`api/v1/restorereceipt?page=${page}&limit=${limit}`);
+}
+
+const   restoreReceipt =(receiptId ,status) =>{
+    return axios.put(`api/v1/restorereceipt/${receiptId}/`,{
+        status
+    })
+}
+
 export {postCreateNewUser,putUpdateUser ,deleteUser
     ,getUserWithPaginate ,postLogin , postRegister , logout ,
     postCreateNewSupplier , getSupplierWithPaginate , deleteSupplier ,putUpdateSupplier,getAllSupplier,
     postCreateNewSize ,getSizeWithPaginate ,deleteSize ,putUpdateSize,getAllSize,
     postCreateNewBrand ,getBrandWithPaginate ,deleteBrand ,putUpdateBrand,getAllBrand,
     postCreateNewCategory ,getCategoryWithPaginate ,deleteCategory ,putUpdateCategory,getAllCategory,
-    postCreateNewProduct,getProductWithPaginate ,deleteProduct ,putUpdateProduct ,updateShowProduct ,getAllProduct,
-    postCreateNewReceipt ,getReceiptWithPaginate ,getReceiptDetail ,deleteSoftReceipt
+    postCreateNewProduct,getProductWithPaginate ,deleteProduct ,putUpdateProduct ,updateShowProduct ,getAllProduct, get4product,getitemnike,getitemadidas,getProductUserWithPaginate,getProductFilter,getSearchProduct,
+    postCreateNewReceipt ,getReceiptWithPaginate ,getReceiptDetail ,deleteSoftReceipt,
+    getDeleteReceiptWithPaginate ,restoreReceipt
 }

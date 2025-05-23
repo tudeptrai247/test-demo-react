@@ -32,16 +32,16 @@ if(!fs.existsSync(uploadDir)){
 
 //Thêm product
 router.post('/',upload.single('image'),async(req,res) =>{
-    const {name,size,brand,category,price,description} =req.body;
+    const {name,brand,category,price,description} =req.body;
     const image = req.file ?req.file.filename :null;
     try{
         const[result] = await pool.execute(
-            'INSERT INTO product (name,idsize,idbrand,idcategory,price,description,image) VALUES (?,?,?,?,?,?,?)',
-            [name,size,brand,category,price,description,image]
+            'INSERT INTO product (name,idbrand,idcategory,price,description,image) VALUES (?,?,?,?,?,?)',
+            [name,brand,category,price,description,image]
         );
         res.status(200).json({
             EC:0,
-            message:'Brand Created',
+            message:'Product Created',
             name:result.id
         });
     }catch(err){
@@ -107,13 +107,15 @@ router.delete('/:id',async(req,res) =>{
 //update phải có upload.single để parse multi/form data tạo file ảnh vào uploads
 router.put('/:id',upload.single('image'),async(req,res) =>{
     const productId = req.params.id;
-    const {name,idsize,idbrand,idcategory,price,description} = req.body;
-    const image = req.file ?req.file.filename :null;  // sd req.file để multer bắt ảnh
+    const {name,idbrand,idcategory,price,description,oldImage} = req.body;
+
+    const image = req.file ?req.file.filename :oldImage;  // sd req.file để multer bắt ảnh , xét xem có file ko , nếu có thì req.file.filename mới , còn ko thì lấy cái oldImage
+
     console.log("body",req.body)
     console.log("file",req.file)
     try{
         const [result] = await pool.execute(
-            'UPDATE product set name = ? ,idsize=? ,idbrand=?,idcategory=?,price=?,description=?,image=? WHERE id =? ',[name,idsize,idbrand,idcategory,price,description,image,productId]
+            'UPDATE product set name = ? ,idbrand=?,idcategory=?,price=?,description=?,image=? WHERE id =? ',[name,idbrand,idcategory,price,description,image,productId]
         );
         res.status(200).json({
             EC:0, // error code =0 là success , khác 0 là lỗi
@@ -130,7 +132,7 @@ router.put('/:id',upload.single('image'),async(req,res) =>{
 
 // cập nhật show hide
 router.put('/:id/status',async(req,res) =>{
-    const {id} =req.params.id;
+    const id =req.params.id;
     const {status} =req.body;
     try{
         const [result] = await pool.execute(
@@ -168,4 +170,161 @@ router.get('/all',async(req,res) =>{
     }
 })
 
-export default router
+// lấy 4 sản phẩm
+router.get('/4item',async(req,res) =>{
+    try{
+        const [rows] = await pool.query('SELECT * FROM product WHERE status=1 ORDER BY product.id DESC LIMIT 8')
+
+        res.status(200).json({
+                EC:0,
+                product:rows
+        })
+    } catch(err){
+        console.log(err);
+        res.status(500).json({
+            EC:1,
+            message :'Something Wrong'
+        })
+    }
+})
+
+// 4 item nike
+router.get('/nikeitem',async(req,res) =>{
+    try{
+        const [rows] = await pool.query
+        ('SELECT product.name,product.price,product.image FROM product join brand on product.idbrand =brand.id WHERE brand="Nike" AND status=1 ORDER BY product.id DESC LIMIT 4')
+
+        res.status(200).json({
+                EC:0,
+                product:rows
+        })
+    } catch(err){
+        console.log(err);
+        res.status(500).json({
+            EC:1,
+            message :'Something Wrong'
+        })
+    }
+})
+
+//4 item adidas
+router.get('/adidasitem',async(req,res) =>{
+    try{
+        const [rows] = await pool.query
+        ('SELECT product.name,product.price,product.image FROM product join brand on product.idbrand =brand.id WHERE brand="Adidas" AND status=1 ORDER BY product.id DESC LIMIT 4')
+
+        res.status(200).json({
+                EC:0,
+                product:rows
+        })
+    } catch(err){
+        console.log(err);
+        res.status(500).json({
+            EC:1,
+            message :'Something Wrong'
+        })
+    }
+})
+
+//phân trang list product của user
+router.get('/productuser',async(req,res) =>{
+    // lấy giá trị page và limit từ querry trên URL , nếu ko có tham số truyền vào mặc định sẽ là 1 và 3
+    let page =+req.query.page || 1; //ép kiểu string sang number
+    let limit =+req.query.limit || 5;
+    let offset = (page -1) * limit ; // vị trí bắt đầu khi lấy dũ liệu , vd trang 1 -1 =0 *3 =0 lấy vị trị 0
+
+    try {
+        const [countRow] = await pool.execute(`SELECT COUNT(*) as count FROM product`); // đếm tổng số size , countRow là 1 mảng
+        const totalProduct = countRow[0].count; //lấy ra tổng số size , dùng để tính phân trang
+        const totalPages =Math.ceil(totalProduct/limit)
+
+        const [rows] =await pool.query(`SELECT product.id,product.name,brand.brand,category.category ,product.price,product.description,product.image FROM product JOIN brand ON product.idbrand=brand.id JOIN category ON product.idcategory=category.id WHERE product.status=1 LIMIT ? OFFSET ?`,[limit,offset])
+
+        res.status(200).json({
+            EC:0,
+            DT:{
+                product:rows, //trả về danh sách product hiện tại
+                totalPages:totalPages // trả về tổng số trang
+            }
+        });
+    }catch(err){
+        console.log(err);
+        res.status(500).json({
+            EC:1,
+            message :'Something Wrong'
+        })
+    }
+})
+
+// filter lọc sản phẩm
+router.get('/filter',async(req,res) =>{
+    const {brand , category} = req.query  // req.querry là để gửi dữ liệu tù URL 
+    try {
+        let querry =`SELECT product.id,product.name,brand.brand,category.category ,product.price,product.description,product.image
+             FROM product
+              JOIN brand ON product.idbrand=brand.id 
+              JOIN category ON product.idcategory=category.id 
+              WHERE product.status=1`;
+
+        let querryParams =[];
+
+        if(brand){
+            querry +=" AND product.idbrand =?";
+            querryParams.push(brand)
+        }
+
+         if(category){
+            querry +=" AND product.idcategory =?";
+            querryParams.push(category)
+        }
+
+        const [rows] = await pool.query(querry,querryParams)
+         
+
+        res.status(200).json({
+            EC:0,
+            DT:{
+                product:rows, //trả về danh sách product hiện tại
+            }
+        });
+    }catch(err){
+        console.log(err);
+        res.status(500).json({
+            EC:1,
+            message :'Something Wrong'
+        })
+    }
+})
+
+//tìm kiếm sản phẩm
+
+router.get('/search',async(req,res) =>{
+    const {keyword} = req.query  // req.querry là để gửi dữ liệu tù URL 
+    try {
+        let searchQuerry =`SELECT product.id,product.name,brand.brand,category.category ,product.price,product.description,product.image
+             FROM product
+              JOIN brand ON product.idbrand=brand.id 
+              JOIN category ON product.idcategory=category.id 
+              WHERE product.status=1 AND product.name LIKE ?`;
+
+        const [rows] = await pool.query(searchQuerry,[`%${keyword}%`]) // dùng %% trả về tìm kiếm mờ
+         
+
+        res.status(200).json({
+            EC:0,
+            DT:{
+                product:rows, //trả về danh sách product hiện tại
+            }
+        });
+    }catch(err){
+        console.log(err);
+        res.status(500).json({
+            EC:1,
+            message :'Something Wrong'
+        })
+    }
+})
+
+
+
+export default router   

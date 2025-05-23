@@ -4,7 +4,17 @@
         .btn-add-new{
             margin: 15px 0px;
         }
+        .table-product-container{
+            .description-product {
+               max-width: 100px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+
+            }
+        }
     }
+    
     .title{
         font-weight: 600;
         font-size: 20px;

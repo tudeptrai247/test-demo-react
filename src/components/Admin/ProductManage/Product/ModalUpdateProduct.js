@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import { putUpdateCategory, putUpdateProduct } from '../../../../service/apiService';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
-import {getAllCategory,getAllSize,getAllBrand,postCreateNewProduct} from "../../../../service/apiService";
+import {getAllCategory,getAllBrand} from "../../../../service/apiService";
 import { FiPlus } from "react-icons/fi";
 import './ManageProduct.scss'
 
@@ -16,27 +16,28 @@ const ModalUpdateProduct =(props) =>{
     const {show , setShow , dataUpdate}=props
 
     const [name,setName] =useState("")
-    const [size,setSize]=useState("")
     const [brand,setBrand]=useState("")
     const [category,setCategory]=useState("")
     const [price,setPrice]=useState("")
     const [description ,setDescription]=useState("")
-    const [image,setImage]=useState("")
+    const [image,setImage]=useState(null)
+    const [oldImage ,setOldImage]=useState("")
     const [prevImage , setPrevImage] =useState("")
 
-     const [listSize ,setListSize]=useState([])
     const [listBrand,setListBrand]=useState([])
     const [listCategory,setListCategory]=useState([])
 
      useEffect(()=>{
         if(!_.isEmpty(dataUpdate)){
-            setName(dataUpdate.name)
-            setSize(dataUpdate.idsize)
-            setBrand(dataUpdate.idbrand)
-            setCategory(dataUpdate.idcategory)
-            setPrice(dataUpdate.price)
-            setDescription(dataUpdate.description)
-            setPrevImage(`http://localhost:8081/uploads/${dataUpdate.image}`)
+            setName(dataUpdate.name);
+            setBrand(dataUpdate.idbrand);
+            setCategory(dataUpdate.idcategory);
+            setPrice(dataUpdate.price);
+            setDescription(dataUpdate.description);
+            setOldImage(dataUpdate.image);
+            setImage(null);
+            setPrevImage(`http://localhost:8081/uploads/${dataUpdate.image}`
+            );
         }
     },[dataUpdate])    
 
@@ -45,9 +46,6 @@ const ModalUpdateProduct =(props) =>{
     },[]) // [] ko có dependencies sẽ gọi 1 lần
 
 const fetchData = async()=>{
-            const resSize = await getAllSize();
-            if(resSize.EC ===0) setListSize(resSize.size)
-
             const resBrand =await getAllBrand();
             if(resBrand.EC ===0) setListBrand(resBrand.brand)
 
@@ -60,12 +58,11 @@ const fetchData = async()=>{
     const handleClose =()=>{
         setShow(false)
         setName("")
-        setSize("")
         setBrand("")
         setCategory("")
         setPrice("")
         setDescription("")
-        setImage("")
+        setImage(null)
         setPrevImage("")
         props.dataUpdateResert()
     }
@@ -80,20 +77,23 @@ const fetchData = async()=>{
 
     const handleSubmitUpdateProduct =async() =>{
 
-         if(name==="" || size==="" || brand==="" || category==="" || price==="" || description==="" || image===""){
+         if(name==="" || brand==="" || category==="" || price==="" || description==="" ){
             toast.error("Please Fill All Information")
             return
         }
 
         const formData=new FormData();
         formData.append("name", name);
-        formData.append("idsize", size);
         formData.append("idbrand", brand);
         formData.append("idcategory", category);
         formData.append("price", price);
         formData.append("description", description);
-        formData.append("image", image);
         formData.append("id", dataUpdate.id);
+        if(image){
+        formData.append("image", image);
+        }
+        formData.append("oldImage",oldImage)
+        
 
         let data= await putUpdateProduct(formData)
         console.log('check data update',data)
@@ -123,15 +123,6 @@ const fetchData = async()=>{
                     <div className="col-md-6">
                         <label  className="form-label">Name Product</label>
                         <input type="text" className="form-control" value={name} onChange={(event) =>setName(event.target.value)} />
-                    </div>
-                    <div className="col-md-2">
-                        <label  className="form-label">Size</label>
-                        <select className="form-control" value={size} onChange={(event) =>setSize(event.target.value)}>
-                            <option value="">--Select Size--</option>
-                            {listSize.map((item,index)=>{
-                               return <option key={index} value={item.id}>{item.size}</option>
-                            })}
-                        </select>
                     </div>
                     <div className="col-md-2">
                         <label  className="form-label">Brand</label>
