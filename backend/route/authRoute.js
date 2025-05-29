@@ -51,6 +51,7 @@ router.post('/login',async(req,res) =>{
             EC:0, // error code =0 là success , khác 0 là lỗi
             message:'Login Success',
             DT:{
+                id:user.id,
                 access_token:accessToken,
                 refresh_token:refreshToken,
                 username:user.username,

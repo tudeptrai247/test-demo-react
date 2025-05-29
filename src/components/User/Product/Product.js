@@ -37,15 +37,15 @@ const Product =() =>{
 
     const fetchListProductWithPaginate =async(page) =>{
         let res = await getProductUserWithPaginate(page,LIMIT_PRODUCT);
-        console.log('data res',res)
+        console.log('data res product user',res)
         if(res.EC===0){
-            console.log('res.dt',res.DT)
             setListProduct(res.DT.product)
             setPageCount(res.DT.totalPages)
         }
     }
 
     const handleShowDetailProduct =(product) =>{
+        console.log('detail product', product)
         setShowModalProductDetail(true)
         setDetailProduct(product)
     }
@@ -138,6 +138,7 @@ const Product =() =>{
         setShow={setShowModalProductDetail}
         detailProduct={detailProduct}
     />
+    
 </>
     )
 }

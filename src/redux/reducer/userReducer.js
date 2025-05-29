@@ -18,6 +18,7 @@ const userReducer = (state = INITIAL_STATE, action) => {
             console.log('check action',action)
             return {
                 ...state, account:{     // ban đầu state account set ở trên là rỗng , rồi set data vào state account
+                    id:action?.payload?.DT?.id,
                     access_token: action?.payload?.DT?.access_token,
                     refresh_token: action?.payload?.DT?.refresh_token,
                     username: action?.payload?.DT?.username,

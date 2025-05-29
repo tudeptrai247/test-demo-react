@@ -1,52 +1,48 @@
 import ReactPaginate from "react-paginate"
 
 
-const TableProductPaginate =(props) =>{
+const TableCartPaginate =(props) =>{
 
-    const {listProduct ,pageCount} =props
+    const {listItemCart,pageCount}= props
 
     const handlePageClick=(event)=>{
-        props.fetchListProductWithPaginate(+event.selected +1);
+        props.fetchListCartWithPaginate(+event.selected +1);
         props.setCurrentPage(+event.selected +1);
     }
 
-    
-
     return(
         <>
-
-        <table className="table table-hover table-bordered">
+            <table className="table table-hover table-bordered">
             <thead>
                 <tr>
                     <th scope="col">No</th>
-                    <th scope="col">Name Product</th>
-                    <th scope="col">Brand</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Description</th>
                     <th scope="col">Image</th>
+                    <th scope="col">Name Product</th>
+                    <th scope="col">Size</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                {listProduct && listProduct.length>0 &&
+                {listItemCart && listItemCart.length>0 &&
 
-                listProduct.map((item,index)=>{
+                listItemCart.map((item,index)=>{
                     return(
-                        <tr key={`table-size-${item.id}`}>
-                            <th>{item.id}</th>
-                            <td>{item.name}</td>
-                            <td>{item.brand}</td>
-                            <td>{item.category}</td>
-                            <td>{item.price}</td>
-                            <td className="description-product">{item.description}</td>
-                            <td>
-                                <img 
+                        <tr key={`table-cart-${index}`}>
+                            <td>{index+1}</td>
+
+                            <td> <img 
                                 src={`http://localhost:8081/uploads/${item.image}`}
                                 alt="product"
                                 style={{width:'100px',height:'50px'}}
-                                />
-                            </td>
+                                /></td>
+
+                            <td>{item.name}</td>
+                            <td>{item.size}</td>
+                            <td>{item.unit_price}</td>
+                            <td>{item.quantity}</td>
                             <td>
                             
                             <button className="btn btn-btn btn-warning mx-2"
@@ -59,13 +55,7 @@ const TableProductPaginate =(props) =>{
                             >
                                 Delete
                             </button>
-                            <button className="btn btn-secondary mx-2"
-                            onClick={()=>props.toogleShowHide(item.id,item.status)}
-                            >
-                                {item.status ===1 ? 'Hide' :'Show'}
-                            </button>
                         </td>
-
                         </tr>
                     )
                 })
@@ -99,4 +89,4 @@ const TableProductPaginate =(props) =>{
         </>
     )
 }
-export default TableProductPaginate
+export default TableCartPaginate

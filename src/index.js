@@ -19,10 +19,10 @@ root.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
     {/* <React.StrictMode> */}
-    <BrowserRouter> 
-      <Layout />    
-    </BrowserRouter>
-     
+    {/* cart provider ở cartContext */}
+        <BrowserRouter> 
+          <Layout />    
+        </BrowserRouter>
     {/* </React.StrictMode> */}
     </PersistGate>
   </Provider>

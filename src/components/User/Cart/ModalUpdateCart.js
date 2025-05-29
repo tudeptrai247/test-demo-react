@@ -1,0 +1,114 @@
+import _ from 'lodash';
+import { useEffect, useState } from 'react';
+import Modal from 'react-bootstrap/Modal';
+import {getSizeProduct ,putUpdateCartItem} from "../../../service/apiService"
+import Button from 'react-bootstrap/Button';
+import { toast } from 'react-toastify';
+
+const ModalUpdateCart =(props) =>{
+
+    
+
+    const {show , setShow, dataUpdate} =props
+
+    const [name,setName]=useState("")
+    const [size,setSize]=useState("")
+    const [quantity,setQuantity]=useState("") 
+    const [listSize , setListSize]=useState([])
+    const [currentStock , setCurrentStock] =useState("") // currentStock là số lượng tồn kho của size đó
+    const [selectSize , setSelectSize]=useState(null) //khởi tạo object rỗng
+
+    useEffect(()=>{
+        if(!_.isEmpty(dataUpdate)){
+            setName(dataUpdate.name)
+            setSize(dataUpdate.size_id)
+            setQuantity(dataUpdate.quantity)
+
+            // truyền product_id và size_id để xử lý dữ liệu khi render
+            fetchDataSizeAndQuantity(dataUpdate.product_id,dataUpdate.size_id)
+        }
+        
+        
+    },[dataUpdate])
+
+    const fetchDataSizeAndQuantity =async(product_id,selectedSizeId)=>{  //lấy ra size và số lượng của product_id hiện tại
+        const resSize = await getSizeProduct(product_id);
+        if(resSize.EC ===0) {setListSize(resSize.size)}
+        const selectedSizeObj = resSize.size.find(item => item.size_id === selectedSizeId ) // lấy resSize.size , size là lấy trong row của BE
+        setSelectSize(selectedSizeObj)
+        setCurrentStock(selectedSizeObj?.quantity)        
+    }
+
+    const handleClose = () => {
+    setShow(false)
+    
+  };
+
+  const handleSizeChange =(selectedSizeId) =>{
+        const selectedSizeObj = listSize.find(item =>item.size_id === parseInt(selectedSizeId)) // tìm trong listSize sao cho selectedSizeId của người dụng chọn bằng với size_id của object
+        setSize(selectedSizeId)
+        setSelectSize(selectedSizeObj) // lưu object gồm có size và số lượng của product đó vào selectSize để lấy ra hiện thị cho người dùng
+        setCurrentStock(selectedSizeObj?.quantity) //lưu số lượng của sản phẩm đó
+        setQuantity(1)
+  }
+
+  const handleSubmitUpdateCartItem =async() =>{
+        let data = await putUpdateCartItem(parseInt(dataUpdate.cart_detail_id),quantity,parseInt(size))
+        if(data && data.EC === 0){
+            toast.success(data.message)
+            handleClose()
+            await props.fetchListCartWithPaginate(props.currentPage)
+        }
+
+  }
+
+
+
+    return(
+        <>
+        <Modal
+        show={show} 
+        onHide={handleClose} 
+        size="sm"
+        backdrop="static"
+        className='modal-update-cart'
+        >
+            <Modal.Header closeButton>
+          <Modal.Title>Update Cart Item</Modal.Title>
+            </Modal.Header>
+                <Modal.Body>
+                    <div className="col-md-6">
+                        <label  className="form-label">Name Product</label>
+                        <input type="text" className="form-control" value={name} onChange={(event) =>setName(event.target.value)} disabled/>
+                    </div>
+
+                    <div className="col-md-2">
+                        <label  className="form-label">Size</label>
+                        <select className="form-control" value={size} onChange={(event) =>handleSizeChange(event.target.value)}>
+                            <option value="">--Select Size--</option>
+                            {listSize.map((item,index)=>{
+                               return <option key={index} value={item.size_id}>{item.size}</option>
+                            })}
+                        </select>
+                    </div>
+                    <div className="col-md-6">
+                        <label  className="form-label">Quantity</label>
+                         <input type='number' placeholder='Enter Quantity'value={quantity}
+                         onChange={(event)=>setQuantity(event.target.value)} max={currentStock} min={1}/>
+                         {/* nếu selected size tồn tại thì hiện thị */}
+                         {selectSize &&(
+                          <p>
+                            Stock Available : <strong>{currentStock}</strong> For Size : <strong>{selectSize.size}</strong>
+                        </p>)}
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={()=>handleSubmitUpdateCartItem()}>
+                            Save
+                    </Button>
+                </Modal.Footer>
+        </Modal>
+        </>
+    )
+}
+export default ModalUpdateCart

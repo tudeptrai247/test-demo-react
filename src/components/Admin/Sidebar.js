@@ -83,7 +83,7 @@ const Sidebar =(props) =>{
              <MenuItem> Receipt Delete Record 
             <Link to="/admins/manage-restore-receipt" />
             </MenuItem>
-            
+
           </SubMenu>
           
         </Menu>
@@ -104,6 +104,18 @@ const Sidebar =(props) =>{
             </MenuItem>
             <MenuItem> Category 
             <Link to="/admins/manage-category" />
+            </MenuItem>
+          </SubMenu>
+          
+        </Menu>
+        <Menu iconShape="circle">
+          <SubMenu
+          
+            icon={<FaGem />}
+            title="Inventory Management"
+          >
+            <MenuItem> Inventory 
+            <Link to="/admins/manage-inventory" />
             </MenuItem>
           </SubMenu>
           

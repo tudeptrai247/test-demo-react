@@ -15,7 +15,7 @@ router.get('/',async(req,res) =>{
         const totalDeleteReceipt = countRow[0].count; //lấy ra tổng số size , dùng để tính phân trang
         const totalPages =Math.ceil(totalDeleteReceipt/limit)
 
-        const [rows] =await pool.query(`SELECT * FROM receipt WHERE status=0 LIMIT ? OFFSET ?`,[limit,offset])
+        const [rows] =await pool.query(`SELECT receipt.receipt_id ,receipt.receipt_date,note,supplier.name,receipt.status FROM receipt JOIN supplier on receipt.supplier_id = supplier.id WHERE status=0 LIMIT ? OFFSET ?`,[limit,offset])
 
         res.status(200).json({
             EC:0,
@@ -38,15 +38,36 @@ router.get('/',async(req,res) =>{
 router.put('/:id',async(req,res) =>{
     const receiptId = req.params.id;
     const {status} = req.body;
+
+    const connection =await pool.getConnection();
+
     try{
-        const [result] = await pool.execute(
+        await connection.beginTransaction(); // bắt đầu transaction
+
+         if(status === 1){ // khi click vào button khôi phục thì chuyển trạng thái thành 1 chứ ko còn là 0 
+           const [detail]= await connection.execute(`SELECT product_id ,size_id,quantity FROM receipt_detail  WHERE receipt_id=?`, // lấy sản phẩm , size và số lượng  sản phẩm của phiếu nhập muốn xóa hiện lại
+            [receiptId]
+        );
+
+        for(const item of detail){
+           const [updateResult]= await connection.execute(`UPDATE inventory SET quantity = quantity + ? WHERE product_id =? AND size_id =?`,
+                [item.quantity, item.product_id ,item.size_id]
+            );
+        } 
+    }
+
+        const [result] = await connection.execute(
             'UPDATE receipt set status = ? WHERE receipt_id =? ',[status,receiptId]
         );
+
+        await connection.commit(); //commit lại khi thành công
+
         res.status(200).json({
             EC:0, // error code =0 là success , khác 0 là lỗi
             message:'Receipt Restore Success',
             name:result.id});
     }catch(err){
+        await connection.rollback() // rollback nếu lỗi
         console.error(err);
         res.status(500).json({
             EC:1,

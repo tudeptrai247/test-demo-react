@@ -37,6 +37,7 @@ const ManageReceipt =() =>{
         const id =receipt.receipt_id
         
         let res = await getReceiptDetail(id)
+        console.log('data receipt detail' ,res)
         if(res && res.EC===0){
             console.log('res data ',res)
             setShowModalViewReceiptDetail(true)
@@ -47,8 +48,10 @@ const ManageReceipt =() =>{
     const handleClickBtnDeleteSoft = (receipt) =>{
         setShowModalDeleteSoftReceipt(true)
         setDataReceipt(receipt)
-        console.log('res data',receipt)
+        console.log('res data delete',receipt)
     }
+
+    
 
     return(
         <div>

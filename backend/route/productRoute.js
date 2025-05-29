@@ -66,7 +66,10 @@ router.get('/',async(req,res) =>{
         const totalProduct = countRow[0].count; //lấy ra tổng số size , dùng để tính phân trang
         const totalPages =Math.ceil(totalProduct/limit)
 
-        const [rows] =await pool.query(`SELECT * FROM product LIMIT ? OFFSET ?`,[limit,offset])
+        const [rows] =await pool.query(`SELECT product.id,product.name,brand.brand,category.category ,product.price,product.description,product.image
+             FROM product
+              JOIN brand ON product.idbrand=brand.id 
+              JOIN category ON product.idcategory=category.id  LIMIT ? OFFSET ?`,[limit,offset])
 
         res.status(200).json({
             EC:0,
@@ -170,10 +173,15 @@ router.get('/all',async(req,res) =>{
     }
 })
 
-// lấy 4 sản phẩm
+// lấy 8 sản phẩm
 router.get('/4item',async(req,res) =>{
     try{
-        const [rows] = await pool.query('SELECT * FROM product WHERE status=1 ORDER BY product.id DESC LIMIT 8')
+        const [rows] = await pool.query(`SELECT  product.name,product.price,product.image ,JSON_ARRAYAGG(size.size) AS size from product
+            JOIN inventory on product.id = inventory.product_id
+            JOIN size on inventory.size_id =size.id
+            WHERE status=1
+            GROUP BY product.id
+            ORDER BY product.id DESC LIMIT 8`)
 
         res.status(200).json({
                 EC:0,
@@ -192,7 +200,13 @@ router.get('/4item',async(req,res) =>{
 router.get('/nikeitem',async(req,res) =>{
     try{
         const [rows] = await pool.query
-        ('SELECT product.name,product.price,product.image FROM product join brand on product.idbrand =brand.id WHERE brand="Nike" AND status=1 ORDER BY product.id DESC LIMIT 4')
+        (`SELECT product.name,product.price,product.image ,JSON_ARRAYAGG(size.size) AS size FROM product
+             join brand on product.idbrand =brand.id 
+             JOIN inventory on product.id = inventory.product_id
+            JOIN size on inventory.size_id =size.id
+             WHERE brand="Nike" AND status=1
+             GROUP BY product.id
+             ORDER BY product.id DESC LIMIT 4`)
 
         res.status(200).json({
                 EC:0,
@@ -211,7 +225,13 @@ router.get('/nikeitem',async(req,res) =>{
 router.get('/adidasitem',async(req,res) =>{
     try{
         const [rows] = await pool.query
-        ('SELECT product.name,product.price,product.image FROM product join brand on product.idbrand =brand.id WHERE brand="Adidas" AND status=1 ORDER BY product.id DESC LIMIT 4')
+        (`SELECT product.name,product.price,product.image,JSON_ARRAYAGG(size.size) AS size
+            FROM product JOIN brand on product.idbrand =brand.id 
+            JOIN inventory on product.id = inventory.product_id
+            JOIN size on inventory.size_id =size.id
+            WHERE brand="Adidas" AND status=1 
+            GROUP BY product.id  
+            ORDER BY product.id DESC LIMIT 4`)
 
         res.status(200).json({
                 EC:0,
@@ -238,8 +258,16 @@ router.get('/productuser',async(req,res) =>{
         const totalProduct = countRow[0].count; //lấy ra tổng số size , dùng để tính phân trang
         const totalPages =Math.ceil(totalProduct/limit)
 
-        const [rows] =await pool.query(`SELECT product.id,product.name,brand.brand,category.category ,product.price,product.description,product.image FROM product JOIN brand ON product.idbrand=brand.id JOIN category ON product.idcategory=category.id WHERE product.status=1 LIMIT ? OFFSET ?`,[limit,offset])
-
+        const [rows] =await pool.query(`SELECT product.id,product.name,brand.brand,category.category ,product.price,product.description,product.image,JSON_ARRAYAGG(JSON_OBJECT('size_id',size.id,'size',size.size ,'quantity',inventory.quantity)) AS size_quantity 
+            FROM product 
+            JOIN brand ON product.idbrand=brand.id 
+            JOIN category ON product.idcategory=category.id 
+            JOIN inventory on product.id = inventory.product_id
+            JOIN size on inventory.size_id =size.id
+            WHERE product.status=1
+            GROUP BY product.id      
+            LIMIT ? OFFSET ?`,[limit,offset])
+                    // phải có group by product.id để biết được gom size của sản phẩm nào , do dùng inner join nên chỉ lấy các sản phẩm có trong inventory
         res.status(200).json({
             EC:0,
             DT:{
@@ -260,11 +288,15 @@ router.get('/productuser',async(req,res) =>{
 router.get('/filter',async(req,res) =>{
     const {brand , category} = req.query  // req.querry là để gửi dữ liệu tù URL 
     try {
-        let querry =`SELECT product.id,product.name,brand.brand,category.category ,product.price,product.description,product.image
+        // lấy size và số lượng của sản phẩm đó gom thành 1 mảng
+        let querry =`SELECT product.id,product.name,brand.brand,category.category ,product.price,product.description,product.image,JSON_ARRAYAGG(JSON_OBJECT('size_id',size.id,'size',size.size ,'quantity',inventory.quantity)) AS size_quantity 
              FROM product
               JOIN brand ON product.idbrand=brand.id 
               JOIN category ON product.idcategory=category.id 
-              WHERE product.status=1`;
+              JOIN inventory on product.id = inventory.product_id
+              JOIN size on inventory.size_id =size.id
+              WHERE product.status=1
+               `;
 
         let querryParams =[];
 
@@ -277,6 +309,8 @@ router.get('/filter',async(req,res) =>{
             querry +=" AND product.idcategory =?";
             querryParams.push(category)
         }
+        //group by để gom size và số lượng theo id sản phẩm đó 
+        querry+="GROUP BY product.id"
 
         const [rows] = await pool.query(querry,querryParams)
          
@@ -301,11 +335,14 @@ router.get('/filter',async(req,res) =>{
 router.get('/search',async(req,res) =>{
     const {keyword} = req.query  // req.querry là để gửi dữ liệu tù URL 
     try {
-        let searchQuerry =`SELECT product.id,product.name,brand.brand,category.category ,product.price,product.description,product.image
+        let searchQuerry =`SELECT product.id,product.name,brand.brand,category.category ,product.price,product.description,product.image,JSON_ARRAYAGG(size.size) AS size
              FROM product
               JOIN brand ON product.idbrand=brand.id 
               JOIN category ON product.idcategory=category.id 
-              WHERE product.status=1 AND product.name LIKE ?`;
+              JOIN inventory on product.id = inventory.product_id
+              JOIN size on inventory.size_id =size.id
+              WHERE product.status=1 AND product.name LIKE ?
+              GROUP BY product.id`;
 
         const [rows] = await pool.query(searchQuerry,[`%${keyword}%`]) // dùng %% trả về tìm kiếm mờ
          

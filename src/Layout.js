@@ -20,6 +20,9 @@ import ManageProduct from './components/Admin/ProductManage/Product/ManageProduc
 import ManageReceipt from './components/Admin/SupplierManage/Receipt/ManageReceipt.js'
 import ManageRestoreReceipt from './components/Admin/SupplierManage/DeleteReceiptRecord/ManageRestoreReceipt.js';
 import Product from './components/User/Product/Product.js';
+import ManageInventory from './components/Admin/InventoryManage/ManageInventory.js';
+import Cart from './components/User/Cart/Cart.js';
+import ReviewOrder from './components/User/ReviewOrder/ReviewOrder.js'
 
 const Layout =(props) =>{
     return(
@@ -28,7 +31,10 @@ const Layout =(props) =>{
                   <Route path="/" element={<App />}>
                   <Route index element={<Homepage />} />
                   <Route path='/products' element={<Product />} />
-                  
+                  <Route path="login" element={<Login />}/>
+                  <Route path="register" element={<Register />}/>
+                  <Route path="cart" element={<Cart />} />
+                  <Route path="reviewOrder" element={<ReviewOrder />} />
                   </Route>
       
                   <Route path="/admins" element={<Admin />} >
@@ -41,11 +47,11 @@ const Layout =(props) =>{
                       <Route path='manage-product' element={<ManageProduct />} />
                       <Route path='manage-receipt' element={<ManageReceipt />}/>
                       <Route path='manage-restore-receipt' element={<ManageRestoreReceipt />}/>
-                      
+                      <Route path='manage-inventory' element={<ManageInventory />}/>
+
                   </Route>
                   
-                  <Route path="login" element={<Login />}/>
-                  <Route path="register" element={<Register />}/>
+                 
               </Routes>
               <ToastContainer
                 position="bottom-right"

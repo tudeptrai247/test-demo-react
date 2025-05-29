@@ -31,7 +31,7 @@ const TableDeleteReceiptPaginate =(props) =>{
                         <th>{item.receipt_id}</th>
                         <td>{item.receipt_date}</td>
                         <td>{item.note}</td>
-                        <td>{item.supplier_id}</td>
+                        <td>{item.name}</td>
                         <td>
                              <button className="btn btn-danger"
                              onClick={() =>props.handleClickBtnRestore(item)}

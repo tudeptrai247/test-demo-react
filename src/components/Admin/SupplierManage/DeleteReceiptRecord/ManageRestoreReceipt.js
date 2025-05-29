@@ -20,6 +20,7 @@ const ManageRestoreReceipt =() =>{
 
     const fetchListDeleteReceiptWithPaginate =async(page) =>{
         let res = await getDeleteReceiptWithPaginate(page,LIMIT_DELETERECEIPT)
+        console.log('res data fet' ,res)
         setListDeleteReceipt(res.DT.deletereceipt)
         setPageCount(res.DT.totalPages)
     }
@@ -27,6 +28,7 @@ const ManageRestoreReceipt =() =>{
     const handleClickBtnRestore =(deletereceipt)=>{
         setShowModalRestoreReceipt(true)
         setDataUpdate(deletereceipt)
+        
     }
 
     return(

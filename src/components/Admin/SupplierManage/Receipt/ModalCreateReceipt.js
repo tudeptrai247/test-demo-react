@@ -2,11 +2,14 @@ import { useEffect, useState } from "react"
 import { Button, Modal } from "react-bootstrap"
 import {getAllSupplier,getAllSize,getAllProduct,postCreateNewReceipt} from "../../../../service/apiService";
 import { toast } from "react-toastify";
+import { findIndex } from "lodash";
 
 
 const ModalCreateReceipt =(props) =>{
 
     const {show , setShow} = props
+
+    const [item ,setItem]=useState([])
 
     const [supplier ,setSupplier]= useState("")
     const [product ,setProduct]=useState("")
@@ -34,16 +37,73 @@ const ModalCreateReceipt =(props) =>{
 
     const handleClose =() =>{
         setShow(false)
+        setSupplier("")
+        setProduct("")
+        setSize("")
+        setQuantity("")
+        setUnitprice("")
+        setNote("")
+        setItem([])
     }
 
     const handleSubmitCreateReceipt =async() =>{
-        let data= await postCreateNewReceipt(supplier,product,size,quantity,unitprice,note)
+        if(!supplier || item.length ==0){
+            toast.error("Please Fill All Information")
+            return;
+        }
+        let data= await postCreateNewReceipt(supplier,note,item)
         if(data && data.EC ===0){
             toast.success(data.message)
             handleClose();
             props.fetchListReceiptWithPaginate(1)
             props.setCurrentPage(1)
         }
+    }
+
+    const handleAddMoreProduct =() =>{
+        if(!product || !size ||!quantity || !unitprice){
+            toast.error("Please Fill All Information")
+            return;
+        }
+
+        const index =item.findIndex(
+            (i)=> i.product_id === product && i.size_id=== size 
+        )
+        
+        // [0] tìm ra phần tử đầu tiên trùng rồi lấy số lượng của cái cũ cộng cho cái mới
+        if(index === 0){
+            const updateQuantity =[...item];
+            updateQuantity[0].quantity=updateQuantity[0].quantity + parseInt(quantity);
+
+            const updateUnitPrice =[...item];
+            updateUnitPrice[0].unit_price= unitprice
+            
+            setQuantity(updateQuantity)
+            setUnitprice(updateUnitPrice)
+
+            // xét rỗng và return lại ngay
+            setProduct("");setSize("");setQuantity("");setUnitprice("")
+            return
+        }
+
+
+
+        const newItem = {
+            product_id :product,
+            size_id :size,
+            quantity :parseInt(quantity), // ko ép kiểu nó sẽ ra kiểu chuỗi
+            unit_price:unitprice
+
+        };
+        
+        setItem([...item,newItem]);// trải các phần tử đã có trong item , gắn thêm các giá trị mới vào newItem vào cuối , kq là sẽ có các sản phẩm cũ và mới
+        setProduct("");setSize("");setQuantity("");setUnitprice("")
+    }
+
+    const handleRemoveListItem =(index) =>{
+        const newList=[...item]; // ko được thay đổi trực tiếp lên state , phải tạo 1 bảng sao
+            newList[0].splice(index,1)       
+            setItem(newList)
     }
 
     return(
@@ -99,7 +159,46 @@ const ModalCreateReceipt =(props) =>{
                     <label className="form-lable">Note</label>
                     <input type="text" className="form-control" value={note} onChange={(event)=>setNote(event.target.value)}></input>
                 </div>
+                <div className="add-more-product">
+                    <Button variant="success" onClick={() =>handleAddMoreProduct()}>Add More Product</Button>
+                </div>
             </form>
+            <table className="table table-hover table-bordered">
+            <thead>
+            <tr>
+                <th scope="col">Product</th>
+                <th scope="col">Size</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Unit Price</th>
+                <th scope="col">Action</th>
+            </tr>
+            </thead>
+        
+        <tbody>
+        {
+        item.map((item,index)=>{
+            const productName = listProduct.find(p => p.id === parseInt(item.product_id))?.name || 'Unknow'; // so sánh nếu id của mảng item = id của mảng listProduct nếu có thì lấy cái object name ra ?. giúp trảnh lỗi undefinded
+            const productSize = listSize.find(s => s.id === parseInt(item.size_id))?.size || 'Unknow';
+            return(
+                <tr key={`table-receipt-${index}`}>
+                        <th>{productName}</th>
+                        <td>{productSize}</td>
+                        <td>{item.quantity}</td>
+                        <td>{item.unit_price}</td>
+                        <td>
+                            <button className="btn btn-btn btn-warning mx-3"
+                            onClick={()=>handleRemoveListItem(index)}
+                            > 
+                               Delete Item
+                            </button>
+                            
+                        </td>
+                </tr>
+            )
+        })
+        }
+        </tbody>
+        </table>
         </Modal.Body>
         <Modal.Footer>
             <Button variant="secondary">

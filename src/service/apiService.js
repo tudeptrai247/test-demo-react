@@ -223,14 +223,11 @@ const getSearchProduct=(querryString) =>{
 
 // phiếu nhập
 
-const postCreateNewReceipt =(supplier,product,size,quantity,unitprice,note) =>{
+const postCreateNewReceipt =(supplier_id,note,item) =>{
     return axios.post('api/v1/receipt',{
-       supplier,
-       product,
-       size,
-       quantity,
-       unitprice,
-       note
+       supplier_id,
+       note,
+       item
     });
 
 };
@@ -244,7 +241,7 @@ const getReceiptDetail =(receipt_id)=>{
 }
 
 const deleteSoftReceipt =(receiptId ,status) =>{
-    return axios.put(`api/v1/receipt/${receiptId}/`,{
+    return axios.put(`api/v1/receipt/${receiptId}`,{
         status
     })
 }
@@ -261,6 +258,42 @@ const   restoreReceipt =(receiptId ,status) =>{
     })
 }
 
+// lấy danh sách sản phẩm trong inventory
+
+const getInventorytWithPaginate =(page,limit) =>{
+    return axios.get(`api/v1/inventory?page=${page}&limit=${limit}`);
+}
+// lấy size của sản phẩm trong inventory
+const getSizeProduct =(product_id) =>{
+    return axios.get(`api/v1/inventory/allsizeproduct?product_id=${product_id}`);
+}
+
+//giỏ hàng
+const postCreateNewCart =(itemAdd) =>{
+    return axios.post('api/v1/cart',itemAdd);
+};
+
+// lấy danh sách giỏ hàng phân trang
+const getCartItemWithPaginate =(page,limit,user_id) =>{
+    return axios.get(`api/v1/cart?page=${page}&limit=${limit}&user_id=${user_id}`);
+}
+
+//xóa sản phẩm trong giỏ hàng
+const deleteCartItem =(cartItemId,quantity,productId,sizeId) =>{
+    return axios.delete(`api/v1/cart/${cartItemId}?quantity=${quantity}&product_id=${productId}&size_id=${sizeId}`)
+}
+
+// cập nhật số lượng trong giỏ hàng
+const putUpdateCartItem =(cart_detail_id,quantity,new_size_id) =>{  //form data ko phải là dạng json nên sẽ undefined 
+    return axios.put(`api/v1/cart/${cart_detail_id}`,{
+        quantity,
+        new_size_id
+    });
+
+}
+
+
+
 export {postCreateNewUser,putUpdateUser ,deleteUser
     ,getUserWithPaginate ,postLogin , postRegister , logout ,
     postCreateNewSupplier , getSupplierWithPaginate , deleteSupplier ,putUpdateSupplier,getAllSupplier,
@@ -269,5 +302,8 @@ export {postCreateNewUser,putUpdateUser ,deleteUser
     postCreateNewCategory ,getCategoryWithPaginate ,deleteCategory ,putUpdateCategory,getAllCategory,
     postCreateNewProduct,getProductWithPaginate ,deleteProduct ,putUpdateProduct ,updateShowProduct ,getAllProduct, get4product,getitemnike,getitemadidas,getProductUserWithPaginate,getProductFilter,getSearchProduct,
     postCreateNewReceipt ,getReceiptWithPaginate ,getReceiptDetail ,deleteSoftReceipt,
-    getDeleteReceiptWithPaginate ,restoreReceipt
+    getDeleteReceiptWithPaginate ,restoreReceipt,
+    getInventorytWithPaginate,getSizeProduct,
+    postCreateNewCart ,getCartItemWithPaginate,deleteCartItem,putUpdateCartItem
+    
 }

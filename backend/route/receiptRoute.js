@@ -2,11 +2,13 @@ import express from 'express';
 import cors from 'cors';
 const router = express.Router();
 import pool from '../connectDB.js';
+import { connect } from 'react-redux';
 
 //Thêm Receipt
 router.post('/',async(req,res) =>{
-    const {supplier,product,size,quantity,unitprice,note} =req.body;
+    const {supplier_id,note,item} =req.body;
 
+    
     const connection =await pool.getConnection(); // chạy nhiều câu truy vấn cần transaction phải tạo 1 connect chạy 1 lần
 
     try{
@@ -14,16 +16,29 @@ router.post('/',async(req,res) =>{
 
         const[result] = await connection.execute(
             'INSERT INTO receipt (note,supplier_id) VALUES (?,?)',
-            [note,supplier]
+            [note,supplier_id]
         );
 
         const id_receipt_detail =result.insertId;
 
-        await connection.execute(
-            'INSERT INTO receipt_detail (quantity,unit_price,receipt_id,product_id,size_id) VALUES (?,?,?,?,?)',
-            [quantity,unitprice,id_receipt_detail,product,size]
-        );
+        for(const product of item){
+            console.log('insert receipt detail',{
+               quantity: product.quantity, 
+               unit_price: product.unit_price, 
+               id_receipt_detail: id_receipt_detail, 
+               product: product.product_id, 
+               size: product.size_id
+            })
+            await connection.execute(
+                 `INSERT INTO receipt_detail (quantity, unit_price, receipt_id, product_id, size_id) VALUES (?,?,?,?,?)`,
+            [product.quantity, product.unit_price, id_receipt_detail, product.product_id, product.size_id]
+            )
 
+            await connection.execute(
+            `INSERT INTO inventory (product_id,size_id,quantity) VALUES (?,?,?) ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)`,
+            [product.product_id,product.size_id,product.quantity]
+        );
+    }
         await connection.commit(); // nếu ko lỗi thì sẽ lưu lại (commit)
 
         res.status(200).json({
@@ -56,7 +71,7 @@ router.get('/',async(req,res) =>{
         const totalReceipt = countRow[0].count; //lấy ra tổng số size , dùng để tính phân trang
         const totalPages =Math.ceil(totalReceipt/limit)
 
-        const [rows] =await pool.query(`SELECT * FROM receipt WHERE status=1 LIMIT ? OFFSET ?`,[limit,offset])
+        const [rows] =await pool.query(`SELECT receipt.receipt_id ,receipt.receipt_date,note,supplier.name,receipt.status FROM receipt JOIN supplier on receipt.supplier_id = supplier.id WHERE status=1 LIMIT ? OFFSET ?`,[limit,offset])
 
         res.status(200).json({
             EC:0,
@@ -78,12 +93,17 @@ router.get('/',async(req,res) =>{
 router.get('/:id/recieptdetail',async(req,res) =>{
     const receipt_id=req.params.id  //id là 1 chuỗi chứ ko phải object nên ko xài {}
     try{
-        const [rows] = await pool.query('SELECT * FROM receipt_detail where receipt_id=?',
+        const [rows] = await pool.query(`SELECT receipt_detail.receipt_detail_id ,receipt_detail.quantity,receipt_detail.unit_price,receipt_detail.receipt_id ,product.name,size.size
+            FROM receipt_detail JOIN product
+            ON receipt_detail.product_id = product.id
+            JOIN size
+            ON receipt_detail.size_id =size.id
+             where receipt_detail.receipt_id=?`,
             [receipt_id]
         );
         res.status(200).json({
             EC:0,
-            receipt_detail:rows[0]
+            receipt_detail:rows
         })
     } catch(err){
         console.log(err);
@@ -99,15 +119,35 @@ router.get('/:id/recieptdetail',async(req,res) =>{
 router.put('/:id',async(req,res) =>{
     const receiptId = req.params.id;
     const {status} = req.body;
+
+    const connection =await pool.getConnection();
     try{
-        const [result] = await pool.execute(
+        await connection.beginTransaction(); // bắt đầu transaction
+
+        if(status === 0){
+           const [detail]= await connection.execute(`SELECT product_id ,size_id,quantity FROM receipt_detail WHERE receipt_id=?`, // lấy sản phẩm , size và số lượng  sản phẩm của phiếu nhập muốn xóa cần xóa
+            [receiptId]
+        );
+
+        for(const item of detail){
+            await connection.execute(`UPDATE inventory SET quantity = quantity - ? WHERE product_id =? AND size_id =?`,
+                [item.quantity, item.product_id ,item.size_id]
+            )
+        }
+    }
+
+        const [result] = await connection.execute(
             'UPDATE receipt set status = ? WHERE receipt_id =? ',[status,receiptId]
         );
+        
+        await connection.commit(); // commit sau khi thành công
+
         res.status(200).json({
             EC:0, // error code =0 là success , khác 0 là lỗi
             message:'Receipt Delete Success',
             name:result.id});
     }catch(err){
+        await connection.rollback() // rollback nếu lỗi
         console.error(err);
         res.status(500).json({
             EC:1,

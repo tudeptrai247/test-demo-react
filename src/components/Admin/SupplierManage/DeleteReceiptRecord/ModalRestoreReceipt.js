@@ -15,6 +15,7 @@ const ModalRestoreReceipt =(props) =>{
     const handleSubmitRestoreReceipt =async()=>{
         const changeStatus = dataUpdate.status ===1 ?0 : 1;
         let data = await restoreReceipt(dataUpdate.receipt_id,changeStatus)
+        console.log('restore respone' , data)
         if(data && data.EC ===0){
                 toast.success(data.message)
                 handleClose()
