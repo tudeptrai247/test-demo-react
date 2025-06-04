@@ -6,11 +6,13 @@
         }
         .table-product-container{
             .description-product {
-               max-width: 100px;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
 
+            }
+            table td{
+                max-width: 150px;
             }
         }
     }
@@ -18,6 +20,16 @@
     .title{
         font-weight: 600;
         font-size: 20px;
+    }
+    .table-product-container{
+         table{
+            td{
+                  max-width: 120px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            }
+         }
     }
 }
     .modal-add-product{

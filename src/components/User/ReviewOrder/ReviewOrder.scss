@@ -1,4 +1,7 @@
-.manage-container{
+.review-order-manage-container{
+    flex-direction: column; 
+    padding: 2rem;
+    margin-left: 200px;
     .title{
         font-size: 40px;
     }
@@ -8,10 +11,154 @@
         padding: 2rem;
 
         .infor-user{
-
+            background-color: rgb(222, 222, 222);
+            border-radius: 10px ;
+            padding: 1.5rem;
             .title-user{
                 font-size: 20px;
+                font-weight: 600;
+                margin-bottom: 1rem;
+            }
+            .input-information-user{
+                 
+                div{
+                    padding: 10px;
+
+                    label{
+                         font-size: 18px;
+                        margin-bottom: 0.25rem;
+                        color: #333;
+                        padding-right: 5px;
+                    }
+                    // thay đổi cả input và select
+                    input,
+                    select
+                     {
+                       padding: 0.5rem;
+                       border: 1px solid #ccc;
+                       border-radius: 10px;
+                    }
+                }
+                
             }
         }
+        .total-money{
+                margin-left: 20px;
+                margin-right: 20px;
+
+                .text-fill-information {
+                    background-color: #c0dbec;
+                    font-size: 20px;
+                    font-weight: 600;
+                    border-radius: 5px ;
+
+                    p{
+                        padding: 15px;
+                    }
+                }
+                .payment-method{
+                        label {
+                            font-size: 20px;
+                        }
+                        .form-input-payment{
+                            background-color: #ccc;
+                            border-radius: 10px;
+                            padding: 10px;
+                        }
+                    }
+        }
+
+        .infor-product{
+            
+            .cart-list-scrool{
+                max-height: 300px;
+                overflow-y: auto;  //hiện thanh kéo bên phải
+                border: 1px solid #b9b3b3;
+                border-radius: 10px;
+                padding: 20px;
+                }
+                .cart-item{
+                    position: relative;
+                    display: flex;
+                    padding: 10px;
+                    border-bottom: 2px solid #e4dede;
+                    align-items: center;
+                    
+                    img{
+                        width: 80px;
+                        height: 70px;
+                        object-fit: cover;
+                        border-radius: 10px;
+                    }
+                    
+
+                    .badge-quantity{
+                        position: absolute;
+                        font-size: 15px;
+                        font-weight: bold;
+                        color: white;
+                        background-color: rgb(154, 144, 146);
+                        border-radius: 20px;
+                        top: 5px;
+                        left: 10px;
+                    }
+
+                    .cart-item-infor{
+                        display: flex;
+                        gap: 20px;
+                        align-items: center;
+
+                        p{
+                            padding: 20px;
+                            
+                        }
+                    }
+                    
+                }
+                .input-code-discount{
+                    display: flex;
+                    gap: 10px;
+                    align-items: center;
+                    padding-bottom: 10px;
+                    border-bottom: 1px solid #b9b5b5;
+                    margin-bottom: 10px;
+
+                    input{
+                         padding: 0.5rem;
+                       border: 1px solid #ccc;
+                       border-radius: 10px;
+                    }
+                }
+            .sub-total{
+                border-bottom: 1px solid #ccc;
+                font-size: 20px;
+                color: #656161;
+                margin-top: 20px;
+            }
+        }
+
+    }
+}
+.momo-return{
+
+    .title{
+        display: flex;
+        justify-content: center;
+        p{
+            font-weight: bold;
+            color: rgb(78, 128, 3);
+            font-size: 40px;
+        }
+    }
+    h2{
+        font-size: 20px;
+       padding: 20px;
+    }
+    button{
+        margin-left: 30px;
+        background-color: #c6e6c6;
+        color: black;
+        border: none;
+        margin-bottom: 20px;
     }
 }

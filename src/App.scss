@@ -88,6 +88,10 @@ body {
             flex-direction: column;
             display: flex;
             align-items: center;
+            
+            h5{
+              word-break: break-all;
+            }
         }
       }
     }

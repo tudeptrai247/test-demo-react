@@ -36,6 +36,26 @@ const ProductDetail =(props) =>{
         const storedAccount =localStorage.getItem("account");
         const user =JSON.parse(storedAccount) // lấy account từ trong redux ra
 
+        if(!user){
+            toast.error("Plese Login Before Add To Cart")
+            return;
+        }
+        if(!selectSize){
+            toast.error("Please Select Your Size")
+            return
+        }
+        if(!selectQuantity || parseInt(selectQuantity) <= 0 || isNaN(selectQuantity)) {
+            toast.error("Please Choose Your Quantity More 0")
+            return
+        }
+        if(currentStock === 0){
+            toast.error("Out Of Stock Product , Sorry :(")
+            return
+        }
+        if(parseInt(selectQuantity) > currentStock){
+            toast.error("Not Enough Product :( ")
+            return
+        }
 
         const itemAdd ={
             product_id:detailProduct.id,   //id là idproduct
@@ -44,10 +64,7 @@ const ProductDetail =(props) =>{
             quantity:parseInt(selectQuantity),
             user_id:user?.id
         }
-        if(!user){
-                toast.error("Plese Login Before Add To Cart")
-                return;
-            }
+ 
     let res = await postCreateNewCart(itemAdd)
     if(res.EC ===2){
         toast.error(res.message)
@@ -87,7 +104,7 @@ const ProductDetail =(props) =>{
                         </p>
                     )}
                     
-                    <p>Price:{detailProduct.price}</p>
+                    <p>Price:{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(detailProduct.price)}</p>
                      <p>Description:{detailProduct.description}</p>
                      <div className='content-size-quantity'>
                       <Dropdown >
@@ -105,7 +122,7 @@ const ProductDetail =(props) =>{
                          selectSize ?
                         <input type='number' placeholder='Enter Quantity'value={selectQuantity}
                          onChange={(event)=>setSelectQuantity(event.target.value)} 
-                         min="1" max={currentStock}
+                         min="0" max={currentStock}
                          /> :""
                          }
                         </div>

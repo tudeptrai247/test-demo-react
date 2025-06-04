@@ -1,20 +1,75 @@
-.manage-container{
+.cart-manage-container{
+    padding: 3rem;
+    
+    display: flex;
+    gap: 2rem;
+   
+    
     .title{
-        padding: 40px;
         font-size: 40px;
-    }
-    .table-cart-container{
-            align-items: center;
-            display: flex;
-            flex-direction: column;
-    }
-    .btn-checkout{
-        display: flex;
-        justify-content: flex-end; // ở cuối div
-        margin-right: 80px;
         padding-bottom: 20px;
-        button{
-            height: 50px;
+    }
+    .cart-left{
+        flex: 6;
+            .user-paginate{
+                display: flex;
+                justify-content: center;
+            }
+            table {
+                .title-product-cart{
+                    background-color: #ccc;
+                }
+            }
+    }
+    .cart-right{
+        display: flex;
+        flex-direction: column;
+        flex: 4;
+        border-left: 1px solid #ccc;
+        padding-left: 10px;
+        .title{
+            font-size: 25px;
+            font-style: italic;
+            display: flex;
+            justify-content: center;
+        }
+        p{
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .btn-rule{
+            width: 150px;
+            height: 40px;
+            font-weight: bold;
+            background-color: white;
+            color: red;
+            border: none;
+            font-style: italic
+        }
+        .button-cart-right{
+             display: flex;
+             flex-direction: column;
+             gap :8px;
+             align-items: center;
+                
+            button{
+               
+                height: 50px;
+                width: 200px;
+            }
+        }
+        .discount-code{
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+
+            button{
+                font-weight: bold;
+                color: white;
+                background-color: red;
+                
+            }
         }
 
     }

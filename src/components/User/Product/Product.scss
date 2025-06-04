@@ -65,6 +65,15 @@
                     display: flex;
                     align-items: center;
                     
+                    max-width: 100%;
+                    
+
+                    h5{
+                        word-break: break-all;
+                        overflow-wrap: break-word;
+                        text-align: center;
+                    }
+                    
                 }
             }
         }
@@ -103,6 +112,7 @@
         h5{
             font-size: 25px;
             font-style: italic;
+            word-wrap: break-word;
         }
         p{
             padding-top: 10px;

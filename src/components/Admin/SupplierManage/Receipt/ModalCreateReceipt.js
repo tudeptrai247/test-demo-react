@@ -102,7 +102,7 @@ const ModalCreateReceipt =(props) =>{
 
     const handleRemoveListItem =(index) =>{
         const newList=[...item]; // ko được thay đổi trực tiếp lên state , phải tạo 1 bảng sao
-            newList[0].splice(index,1)       
+            newList.splice(index,1)       
             setItem(newList)
     }
 

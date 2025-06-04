@@ -9,9 +9,7 @@ const TableProductPaginate =(props) =>{
         props.fetchListProductWithPaginate(+event.selected +1);
         props.setCurrentPage(+event.selected +1);
     }
-
     
-
     return(
         <>
 
@@ -38,7 +36,7 @@ const TableProductPaginate =(props) =>{
                             <td>{item.name}</td>
                             <td>{item.brand}</td>
                             <td>{item.category}</td>
-                            <td>{item.price}</td>
+                            <td>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}</td>
                             <td className="description-product">{item.description}</td>
                             <td>
                                 <img 

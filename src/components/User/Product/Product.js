@@ -100,7 +100,7 @@ const Product =() =>{
                                 </div>
                                 <div className='content-card'>
                                     <h5>{item.name}</h5>
-                                    <p>{item.price} đ</p>
+                                    <p>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}</p>
                                 </div>
                             </Col>
                             )

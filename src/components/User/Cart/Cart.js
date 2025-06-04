@@ -4,8 +4,15 @@ import './Cart.scss'
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import ModalUpdateCart from "./ModalUpdateCart"
-import { Button } from "react-bootstrap"
+import { Button, Modal } from "react-bootstrap"
 import { useNavigate } from "react-router-dom"
+import { map, sumBy } from "lodash"
+import { BiPurchaseTag  } from "react-icons/bi";
+import { AiOutlineEye } from "react-icons/ai";
+import ModalShowRuleDiscount from "./ModalShowRuleDiscount"
+
+
+
 
 const Cart =() =>{
 
@@ -16,9 +23,12 @@ const Cart =() =>{
     const [pageCount,setPageCount]=useState(0)
     const [currentPage,setCurrentPage]=useState(1)
     const [showModalUpdateCartItem ,setShowModalUpdateCartItem]=useState(false)
+    const [showModalRule ,setShowModalRule]=useState(false)
+    
 
     useEffect(()=>{
         fetchListCartWithPaginate(1)
+        
     },[])
 
      const storedAccount =localStorage.getItem("account");
@@ -54,17 +64,40 @@ const Cart =() =>{
         console.log('item update cart item',cartItem)
     }
 
-    const handleChangToOrderReviewPage =() =>{
-        navigate("/reviewOrder")
-        
+    const handleGoToProduct =() =>{
+        navigate("/products")
     }
 
+    const handleChangToOrderReviewPage =() =>{
+        if(listItemCart.length === 0){ //listCartItem là mảng nên cần kiểm tra số lượng
+            toast.error("Please Add The Product To The Cart ")
+            return
+        }
+        navigate("/reviewOrder")
+    }
+
+    const handleCoppyDiscountCode =(code) =>{
+        navigator.clipboard.writeText(code)
+        .then(()=>{
+            toast.success("Coppy Code Success")
+        })   
+    }
+
+    const handleShowRule =()=>{
+        setShowModalRule(true)
+    }
+    
+    //sd sumby để trả về tổng tất cả sp trong giỏ hàng
+    const total = sumBy(listItemCart,item =>Number(item.unit_price) * Number(item.quantity))
+    console.log('cart item',listItemCart)
+
     return(
-        <div className="manage-container">
-            <div className="title">
+        <div className="cart-manage-container">
+            
+            <div className="cart-left">
+                <div className="title">
                 Cart
             </div>
-            <div className="table-cart-container">
                 <TableCartPaginate
                     fetchListCartWithPaginate={fetchListCartWithPaginate}
                     listItemCart={listItemCart}
@@ -83,10 +116,29 @@ const Cart =() =>{
                     currentPage={currentPage}
                 />
             </div>
-            <div className="btn-checkout">
+            
+            <div className="cart-right">
+                <p className="title">Order Information</p>
+                <p>Total Amount :<span style={{color:'red'}}>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(total)}</span> đ</p>
+                <div className="discount-code">
+                    <h6>Get Your Discout Code</h6>
+                    <Button variant="info" onClick={()=>handleCoppyDiscountCode('DIS10k')}><BiPurchaseTag />10.000 đ</Button>
+                    <Button variant="info" onClick={()=>handleCoppyDiscountCode('DIS20k')}><BiPurchaseTag />20.000 đ</Button>
+                    <Button variant="info" onClick={()=>handleCoppyDiscountCode('DIS30k')}><BiPurchaseTag />30.000 đ</Button>
+                </div>
+                 <Button variant="secondary" className="btn-rule" onClick={()=>handleShowRule()}><AiOutlineEye />Discount Rule</Button>
+                
+                <div className="button-cart-right">
                 <Button onClick={() =>handleChangToOrderReviewPage()}> Continue To CheckOut </Button>
+                <Button variant="secondary" onClick={()=>handleGoToProduct()}>Continue Shopping</Button>
+                </div>
             </div>
+            <ModalShowRuleDiscount
+                show ={showModalRule}
+                setShow ={setShowModalRule}
+            />
         </div>
+       
     )
 }
 export default Cart

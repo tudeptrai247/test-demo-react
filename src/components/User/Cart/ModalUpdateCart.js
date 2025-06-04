@@ -52,7 +52,34 @@ const ModalUpdateCart =(props) =>{
         setQuantity(1)
   }
 
+  const handleQuantityChange =(value)=>{
+    const inPutQty = parseInt(value)
+    if(inPutQty <0 || isNaN(inPutQty)){
+        setQuantity("")
+        return
+    }
+
+    // oldQUantity là số lượng SP người dùng đã đặt trong giỏ 
+    const oldQuantity = parseInt(dataUpdate.quantity)
+
+        // nếu số lượng update nhiều hơn tồn kho thì chặn lại , cập nhật lại setQuantity là số lượng trong giỏ cũ
+    if(inPutQty>oldQuantity && inPutQty - oldQuantity > currentStock)
+    {
+        toast.warning(`Only ${oldQuantity + currentStock} is available`)
+        setQuantity(oldQuantity)
+
+        // còn nếu số lượng không vượt mức thì setQUantity thành số lượng mới 
+    }else{
+        setQuantity(inPutQty)
+    }
+  }
+
   const handleSubmitUpdateCartItem =async() =>{
+        if(!quantity || parseInt(quantity) <= 0 || isNaN(quantity)) {
+            toast.error("Please Choose Your Quantity More 0")
+            return
+        }
+
         let data = await putUpdateCartItem(parseInt(dataUpdate.cart_detail_id),quantity,parseInt(size))
         if(data && data.EC === 0){
             toast.success(data.message)
@@ -74,7 +101,7 @@ const ModalUpdateCart =(props) =>{
         className='modal-update-cart'
         >
             <Modal.Header closeButton>
-          <Modal.Title>Update Cart Item</Modal.Title>
+          <Modal.Title className='title'>Update Cart Item</Modal.Title>
             </Modal.Header>
                 <Modal.Body>
                     <div className="col-md-6">
@@ -94,7 +121,7 @@ const ModalUpdateCart =(props) =>{
                     <div className="col-md-6">
                         <label  className="form-label">Quantity</label>
                          <input type='number' placeholder='Enter Quantity'value={quantity}
-                         onChange={(event)=>setQuantity(event.target.value)} max={currentStock} min={1}/>
+                         onChange={(event)=>handleQuantityChange(event.target.value)}  min={1}/>
                          {/* nếu selected size tồn tại thì hiện thị */}
                          {selectSize &&(
                           <p>

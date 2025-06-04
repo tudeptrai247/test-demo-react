@@ -52,7 +52,8 @@ const  Header = () => {
             </>
             :
           <NavDropdown title="Settings" id="basic-nav-dropdown">   
-                <NavDropdown.Item href="#action/3.1">Profile</NavDropdown.Item>
+                <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
+                <NavDropdown.Item href="order">My Order</NavDropdown.Item>
                 <NavDropdown.Item onClick={() =>handleLogOut()} >Log out 
                 </NavDropdown.Item>
             </NavDropdown>

@@ -292,7 +292,32 @@ const putUpdateCartItem =(cart_detail_id,quantity,new_size_id) =>{  //form data 
 
 }
 
+// Tạo Order
+const postCreateNewOrder =(address,number,payment_method,total,note,user_id,item) =>{
+    return axios.post('api/v1/order',{
+       address,
+       number,
+       payment_method,
+       total,
+       note,
+       user_id,
+       item
+    });
+};
 
+// tạo thanh toán vs momo
+const postCreateBankingPayment =(total,user_id,order_id) =>{
+    return axios.post('api/v1/momo/payment',{
+      total,
+      user_id,
+      order_id
+    });
+};
+
+//Lấy Order đã thanh toán và cod
+const getOrderWithPaginate =(page,limit,user_id) =>{
+    return axios.get(`api/v1/order?page=${page}&limit=${limit}&user_id=${user_id}`);
+}
 
 export {postCreateNewUser,putUpdateUser ,deleteUser
     ,getUserWithPaginate ,postLogin , postRegister , logout ,
@@ -304,6 +329,7 @@ export {postCreateNewUser,putUpdateUser ,deleteUser
     postCreateNewReceipt ,getReceiptWithPaginate ,getReceiptDetail ,deleteSoftReceipt,
     getDeleteReceiptWithPaginate ,restoreReceipt,
     getInventorytWithPaginate,getSizeProduct,
-    postCreateNewCart ,getCartItemWithPaginate,deleteCartItem,putUpdateCartItem
+    postCreateNewCart ,getCartItemWithPaginate,deleteCartItem,putUpdateCartItem,
+    postCreateNewOrder ,postCreateBankingPayment ,getOrderWithPaginate
     
 }

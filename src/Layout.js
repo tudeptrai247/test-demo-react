@@ -23,6 +23,9 @@ import Product from './components/User/Product/Product.js';
 import ManageInventory from './components/Admin/InventoryManage/ManageInventory.js';
 import Cart from './components/User/Cart/Cart.js';
 import ReviewOrder from './components/User/ReviewOrder/ReviewOrder.js'
+import MomoReturn from './components/User/ReviewOrder/MomoReturn.js';
+import ProfileManage from './components/User/Profile/ProfileManage.js';
+import Order from './components/User/OrderCustomer/Order.js'
 
 const Layout =(props) =>{
     return(
@@ -30,11 +33,16 @@ const Layout =(props) =>{
               <Routes>
                   <Route path="/" element={<App />}>
                   <Route index element={<Homepage />} />
-                  <Route path='/products' element={<Product />} />
+                  <Route path='products' element={<Product />} />
                   <Route path="login" element={<Login />}/>
                   <Route path="register" element={<Register />}/>
                   <Route path="cart" element={<Cart />} />
                   <Route path="reviewOrder" element={<ReviewOrder />} />
+                  <Route path="momo-return" element={<MomoReturn />} />
+                  <Route path="profile" element={<ProfileManage />} />
+                  <Route path='order' element={<Order />}/>
+
+
                   </Route>
       
                   <Route path="/admins" element={<Admin />} >

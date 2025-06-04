@@ -8,5 +8,14 @@
     .title{
         font-weight: 600;
         font-size: 20px;
-    }
+    }  
 }
+.modal-add-receipt{
+        
+        th{
+            max-width: 120px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }

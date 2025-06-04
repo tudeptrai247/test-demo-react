@@ -34,6 +34,7 @@ if(!fs.existsSync(uploadDir)){
 router.post('/',upload.single('image'),async(req,res) =>{
     const {name,brand,category,price,description} =req.body;
     const image = req.file ?req.file.filename :null;
+    
     try{
         const[result] = await pool.execute(
             'INSERT INTO product (name,idbrand,idcategory,price,description,image) VALUES (?,?,?,?,?,?)',
