@@ -1,16 +1,13 @@
-import _ from 'lodash';
-import { useEffect, useState } from 'react';
-import Modal from 'react-bootstrap/Modal';
+import { Modal } from "react-bootstrap"
 
-const ModalOrderDetail =(props) =>{
-
+const ModalOrderDetail =(props)=>{
      const {show ,setShow,dataUpdate} =props
 
     const handleClose =() =>{
         setShow(false)
     }
     return(
-        <>
+       <>
             <Modal
               show={show} 
               onHide={handleClose} 

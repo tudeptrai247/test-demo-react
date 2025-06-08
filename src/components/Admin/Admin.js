@@ -19,6 +19,8 @@ const [collapsed ,setCollapsed] =useState(false);
                     <div className="admin-main">
                         <Outlet />
                     </div> 
+
+                    
                 </div>
                
         </div>

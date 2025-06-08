@@ -184,7 +184,7 @@ const ModalCreateReceipt =(props) =>{
                         <th>{productName}</th>
                         <td>{productSize}</td>
                         <td>{item.quantity}</td>
-                        <td>{item.unit_price}</td>
+                        <td>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.unit_price)}</td>
                         <td>
                             <button className="btn btn-btn btn-warning mx-3"
                             onClick={()=>handleRemoveListItem(index)}

@@ -32,6 +32,7 @@ const ManageInventory =() =>{
                         listInventory={listInventory}
                         pageCount={pageCount}
                         currentPage={currentPage}
+                        setCurrentPage={setCurrentPage}
                     />
                 </div>
             </div>

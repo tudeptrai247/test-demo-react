@@ -319,6 +319,29 @@ const getOrderWithPaginate =(page,limit,user_id) =>{
     return axios.get(`api/v1/order?page=${page}&limit=${limit}&user_id=${user_id}`);
 }
 
+const deleteOrder=(orderId) =>{
+    return axios.delete(`api/v1/order/${orderId}`)
+}
+
+const getOrderListAdminWithPaginate =(page,limit) =>{
+    return axios.get(`api/v1/order/adminOrderList?page=${page}&limit=${limit}`);
+}
+
+const putUpdateStatusOrder =(orderId,status) =>{  //form data ko phải là dạng json nên sẽ undefined 
+    return axios.put(`api/v1/order/${orderId}`,{
+        status
+    });
+}
+
+const getOrderListAdminCanceledWithPaginate =(page,limit) =>{
+    return axios.get(`api/v1/order/adminOrderListCanceled?page=${page}&limit=${limit}`);
+}
+
+const getOrderStatus =()=>{
+    return axios.get(`api/v1/dashboard/orderStatus`)
+}
+
+
 export {postCreateNewUser,putUpdateUser ,deleteUser
     ,getUserWithPaginate ,postLogin , postRegister , logout ,
     postCreateNewSupplier , getSupplierWithPaginate , deleteSupplier ,putUpdateSupplier,getAllSupplier,
@@ -330,6 +353,7 @@ export {postCreateNewUser,putUpdateUser ,deleteUser
     getDeleteReceiptWithPaginate ,restoreReceipt,
     getInventorytWithPaginate,getSizeProduct,
     postCreateNewCart ,getCartItemWithPaginate,deleteCartItem,putUpdateCartItem,
-    postCreateNewOrder ,postCreateBankingPayment ,getOrderWithPaginate
+    postCreateNewOrder ,postCreateBankingPayment ,getOrderWithPaginate ,deleteOrder ,getOrderListAdminWithPaginate ,putUpdateStatusOrder ,getOrderListAdminCanceledWithPaginate,
+    getOrderStatus
     
 }

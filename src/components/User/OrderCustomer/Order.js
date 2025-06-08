@@ -3,6 +3,8 @@ import {getOrderWithPaginate} from "../../../service/apiService"
 import { useEffect, useState } from "react";
 import './Order.scss'
 import ModalOrderDetail from "./ModalOrderDetail";
+import { toast } from "react-toastify";
+import ModalDeleteOrder from "./ModalDeleteOrder";
 
 const Order =() =>{
 
@@ -13,6 +15,7 @@ const Order =() =>{
     const [dataUpdate ,setDataUpdate]=useState("")
 
     const [showModalOrderDetail ,setShowModalOrderDetail]=useState(false)
+    const [showModalDeleteOrder ,setShowModalDeleteOrder]=useState(false)
 
     const storedAccount =localStorage.getItem("account");
      const user =JSON.parse(storedAccount)
@@ -32,6 +35,17 @@ const Order =() =>{
     const handleClickOrderDetail =(item)=>{
        setShowModalOrderDetail(true)
        setDataUpdate(item)
+       console.log('data 1 order',item)
+    }
+
+    const handleDeleteOrder =(item) =>{
+        if(item.status != "processing"){
+            toast.warning("Only Processing can delete order")
+            return
+        }
+        setShowModalDeleteOrder(true)
+        setDataUpdate(item)
+        console.log('data 1 order',item)
     }
     return(
         <>
@@ -44,13 +58,22 @@ const Order =() =>{
                         fetchOrderWithPaginate={fetchOrderWithPaginate}
                         listOrder={listOrder}
                         pageCount={pageCount}
+                        setCurrentPage={setCurrentPage}
                         currentPage={currentPage}
                         handleClickOrderDetail={handleClickOrderDetail}
+                        handleDeleteOrder={handleDeleteOrder}
                     />
                     <ModalOrderDetail 
                         show={showModalOrderDetail}
                         setShow={setShowModalOrderDetail}
                         dataUpdate={dataUpdate}
+                    />
+                    <ModalDeleteOrder
+                        show ={showModalDeleteOrder}
+                        setShow ={setShowModalDeleteOrder}
+                        dataUpdate={dataUpdate}
+                        currentPage={currentPage}
+                        fetchOrderWithPaginate={fetchOrderWithPaginate}
                     />
                 </div>
 

@@ -127,6 +127,10 @@ const ReviewOrder =() =>{
             toast.error("Please Choose Your Payment Method")
             return
         }
+        if(number ==="" || isNaN(Number(number))){
+            toast.error("Invalid Phone Number")
+            return
+        }
         
         const address =`${roadName} ${getNameFromList(listWard,ward)}, ${getNameFromList(listDistrict,district)}, ${getNameFromList(listProvince,province)}`
             if(checkedPayment ==="banking"){
@@ -149,8 +153,8 @@ const ReviewOrder =() =>{
                 //COD
                 let res = await postCreateNewOrder(address,number,checkedPayment,totalAfterDiscount,note,user_id,listItemCart)      
                     if(res && res.EC === 0){
-                        alert("Your Order Create Success")
-                        navigate('/')
+                        alert("Your Order Create Success , Check Your Order Status At My Order")
+                        navigate('/order')
         }
             }
         

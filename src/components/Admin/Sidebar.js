@@ -118,6 +118,16 @@ const Sidebar =(props) =>{
             <Link to="/admins/manage-inventory" />
             </MenuItem>
           </SubMenu>
+
+          <SubMenu
+          
+            icon={<FaGem />}
+            title="Manage Order"
+          >
+            <MenuItem> Manage Order 
+            <Link to="/admins/manage-order" />
+            </MenuItem>
+          </SubMenu>
           
         </Menu>
       </SidebarContent>

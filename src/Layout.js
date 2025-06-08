@@ -3,7 +3,6 @@ import App from './App.js';
 import Admin from './components/Admin/Admin.js';
 import Homepage from './components/User/Home/Homepage.js';
 import ManageUser from './components/Admin/User/ManageUser.js';
-import Dashboard from './components/Admin/User/DashBoard.js';
 import Login from './components/Admin/Auth/Login.js';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast , Bounce } from 'react-toastify';
@@ -26,6 +25,9 @@ import ReviewOrder from './components/User/ReviewOrder/ReviewOrder.js'
 import MomoReturn from './components/User/ReviewOrder/MomoReturn.js';
 import ProfileManage from './components/User/Profile/ProfileManage.js';
 import Order from './components/User/OrderCustomer/Order.js'
+import OrderManage from './components/Admin/OrderManage/OrderManage.js';
+import TableCanceledOrder from './components/Admin/OrderManage/TableCanceledOrder.js';
+import Dashboard from './components/Admin/DashBoard/DashBoard.js';
 
 const Layout =(props) =>{
     return(
@@ -41,6 +43,7 @@ const Layout =(props) =>{
                   <Route path="momo-return" element={<MomoReturn />} />
                   <Route path="profile" element={<ProfileManage />} />
                   <Route path='order' element={<Order />}/>
+                  <Route path='dashboard' element={<Dashboard />}/>
 
 
                   </Route>
@@ -56,7 +59,8 @@ const Layout =(props) =>{
                       <Route path='manage-receipt' element={<ManageReceipt />}/>
                       <Route path='manage-restore-receipt' element={<ManageRestoreReceipt />}/>
                       <Route path='manage-inventory' element={<ManageInventory />}/>
-
+                      <Route path='manage-order' element={<OrderManage />}/>
+                      <Route path='order-canceled' element={<TableCanceledOrder />}/>
                   </Route>
                   
                  

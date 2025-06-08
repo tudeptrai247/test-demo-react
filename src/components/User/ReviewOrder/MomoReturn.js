@@ -42,7 +42,7 @@ const MomoReturn = () => {
       <div className='title'>
          <p><MdCheck />Your Order Payment Success</p>
       </div>
-      <h2>Thank you for your payment. Your order is now being prepared and will be shipped within 1–2 days. You can track the status of your order in the 'Purchase History' section . Your order id is {orderId}</h2>
+      <h2>Thank you for your payment. Your order is now being prepared and will be shipped within 1–2 days. You can track the status of your order in the 'My Order' section . Your order id is {orderId}</h2>
           <Button onClick={()=>handleClickToHomePage()}>Back to homepage</Button>
     </div>
   );

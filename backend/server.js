@@ -13,6 +13,7 @@ import inventoryRoute from './route/inventoryRoute.js'
 import cartRoute from './route/cartRoute.js'
 import orderRoute from './route/orderRoute.js'
 import momoRoute from './route/momoRoute.js'
+import dashboardRoute from './route/dashboardRoute.js'
 
 import path from 'path'
 import { fileURLToPath } from 'url';
@@ -38,6 +39,8 @@ app.use('/api/v1/inventory' , inventoryRoute)
 app.use('/api/v1/cart' , cartRoute)
 app.use('/api/v1/order',orderRoute)
 app.use('/api/v1/momo',momoRoute)
+app.use('/api/v1/dashboard',dashboardRoute)
+
 
 
 // đưa thư mục uploads để public trên host

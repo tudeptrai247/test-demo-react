@@ -27,6 +27,12 @@ const ModalUpdateProduct =(props) =>{
     const [listBrand,setListBrand]=useState([])
     const [listCategory,setListCategory]=useState([])
 
+      useEffect(()=>{
+        if(show){
+            fetchData(); 
+        } 
+    },[show]) 
+
      useEffect(()=>{
         if(!_.isEmpty(dataUpdate)){
             setName(dataUpdate.name);
@@ -41,9 +47,7 @@ const ModalUpdateProduct =(props) =>{
         }
     },[dataUpdate])    
 
-     useEffect(()=>{
-        fetchData(); 
-    },[]) // [] ko có dependencies sẽ gọi 1 lần
+   
 
 const fetchData = async()=>{
             const resBrand =await getAllBrand();

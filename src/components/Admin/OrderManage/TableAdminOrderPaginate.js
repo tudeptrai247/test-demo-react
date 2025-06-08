@@ -1,27 +1,30 @@
-import { Button } from "bootstrap"
 import ReactPaginate from "react-paginate"
 
-const OrderTablePaginate =(props) =>{
 
-    const {listOrder,pageCount,currentPage} =props
+const TableAdminOrderPaginate =(props) =>{
 
-    const handlePageClick=(event)=>{
+        const {listOrder,pageCount,currentPage} =props
+
+         const handlePageClick=(event)=>{
         props.fetchListProductWithPaginate(+event.selected +1);
         props.setCurrentPage(+event.selected +1);
     }
 
     return(
         <>
-            <table className="table table-hover table-bordered">
+         <table className="table table-hover table-bordered">
                 <thead>
                     <tr>
                         <th scope="col">Order Id</th>
+                        <th scope="col">User Name</th>
                         <th scope="col">Address</th>
                         <th scope="col">Phone Number</th>
                         <th scope="col">Order Date</th>
                         <th scope="col">Payment Method</th>
                         <th scope="col">Total</th>
                         <th scope="col">Status</th>
+                        <th scope="col">Status Payment</th>
+
                         <th scope="col">Action</th>
 
                     </tr>
@@ -34,19 +37,21 @@ const OrderTablePaginate =(props) =>{
                 return(
                     <tr key={`table-order-${index}`}>
                         <th>{item.order_id}</th>
+                        <td>{item.username}</td>
                         <td>{item.address}</td>
                         <td>{item.number}</td>
                         <td>{item.order_date}</td>
                         <td>{item.payment_method}</td>
+                        <td>{item.payment_status}</td>
                         <td>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.total)}</td>
                         <td>{item.status}</td>
                         <td>
-                            <button className="btn btn-btn btn-warning mx-2" onClick={()=>props.handleClickOrderDetail(item)}>
-                                Order Detail
-                            </button>
-                            <button className="btn btn-danger mx-2" onClick={() =>props.handleDeleteOrder(item)}>
-                                Delete
-                            </button>
+                            <button className="btn btn-btn btn-warning mx-2" onClick={()=>props.handleUpdateStatus(item)}>
+                                Change Status 
+                            </button> 
+                             <button className="btn btn-btn btn-danger mx-2" style={{marginTop:"10px"}} onClick={()=>props.handleOrderDetail(item)}>
+                                Order Detail 
+                            </button> 
                         </td>
                     </tr>
                 )
@@ -86,4 +91,4 @@ const OrderTablePaginate =(props) =>{
         </>
     )
 }
-export default OrderTablePaginate
+export default TableAdminOrderPaginate
