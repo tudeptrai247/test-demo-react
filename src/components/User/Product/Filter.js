@@ -13,11 +13,14 @@ const Category =(props) =>{
     const [brand,setBrand]=useState("")
     const [category,setCategory]=useState("")
 
+    const {keyword} = props
+
    const handleFilter = async() =>{
         const params = new URLSearchParams();
 
         if(brand) params.append("brand",brand);
         if(category) params.append("category",category)
+        if(keyword) params.append("keyword",keyword)
 
         let res = await getProductFilter(params.toString())
         if(res && res.EC===0){

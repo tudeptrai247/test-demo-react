@@ -287,7 +287,7 @@ router.get('/productuser',async(req,res) =>{
 
 // filter lọc sản phẩm
 router.get('/filter',async(req,res) =>{
-    const {brand , category} = req.query  // req.querry là để gửi dữ liệu tù URL 
+    const {brand,category,keyword} = req.query  // req.querry là để gửi dữ liệu tù URL 
     try {
         // lấy size và số lượng của sản phẩm đó gom thành 1 mảng
         let querry =`SELECT product.id,product.name,brand.brand,category.category ,product.price,product.description,product.image,JSON_ARRAYAGG(JSON_OBJECT('size_id',size.id,'size',size.size ,'quantity',inventory.quantity)) AS size_quantity 
@@ -310,6 +310,11 @@ router.get('/filter',async(req,res) =>{
             querry +=" AND product.idcategory =?";
             querryParams.push(category)
         }
+        if(keyword){
+           querry += ` AND product.name LIKE ?`;
+            querryParams.push(`%${keyword}%`);
+        }
+            
         //group by để gom size và số lượng theo id sản phẩm đó 
         querry+="GROUP BY product.id"
 

@@ -87,6 +87,7 @@ const Product =() =>{
                         <Filter
                         setListProduct={setListProduct}
                         setCurrentPage={setCurrentPage}
+                        keyword={keyword}
                         />
                     </div>
                     <div className="product-content">

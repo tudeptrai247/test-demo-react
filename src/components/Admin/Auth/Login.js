@@ -73,6 +73,10 @@ const Login =(props) =>{
         }
     }
 
+    const handleClickForgotPassword =()=>{
+        navigate("/send-code-password")
+    }
+
     return(
         <div className="login-container">
             <div className="header">
@@ -105,7 +109,7 @@ const Login =(props) =>{
                         onKeyDown={(event) =>{handleKeyDown(event)}}
                         />
                 </div>
-                <span className='forgot-password'>Forgot Password ?</span>
+                <span className='forgot-password' onClick={()=>handleClickForgotPassword()}>Forgot Password ?</span>
                 <div>
                     <button 
                     className='btn-submit'

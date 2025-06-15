@@ -337,13 +337,50 @@ const getOrderListAdminCanceledWithPaginate =(page,limit) =>{
     return axios.get(`api/v1/order/adminOrderListCanceled?page=${page}&limit=${limit}`);
 }
 
+// dash board
 const getOrderStatus =()=>{
     return axios.get(`api/v1/dashboard/orderStatus`)
 }
 
+const getProductBestSelling =() =>{
+    return axios.get(`api/v1/dashboard/bestSelling`)
+}
+
+const getRevenueMonthly =() =>{
+    return axios.get(`api/v1/dashboard/revenue/month`)
+}
+
+const getOrderRate =()=>{
+    return axios.get(`api/v1/dashboard/orderRate`)
+}
+
+//thay đổi mật khẩu
+const postCodeResetPassword =(email) =>{
+    return axios.post(`api/v1/auth/send-reset-password-code`,{
+        email
+    })
+}
+
+const postCodeConfirm =(code,email) =>{
+    return axios.post(`api/v1/auth/confirm-code-reset`,{
+        code,
+        email
+    })
+}
+const putUpdateNewPassword =(password,email) =>{  
+    return axios.put(`api/v1/auth/new-password`,{
+        password,
+        email
+    });
+}
+
+
+
+
+
 
 export {postCreateNewUser,putUpdateUser ,deleteUser
-    ,getUserWithPaginate ,postLogin , postRegister , logout ,
+    ,getUserWithPaginate ,postLogin , postRegister , logout , postCodeResetPassword,postCodeConfirm,putUpdateNewPassword,
     postCreateNewSupplier , getSupplierWithPaginate , deleteSupplier ,putUpdateSupplier,getAllSupplier,
     postCreateNewSize ,getSizeWithPaginate ,deleteSize ,putUpdateSize,getAllSize,
     postCreateNewBrand ,getBrandWithPaginate ,deleteBrand ,putUpdateBrand,getAllBrand,
@@ -354,6 +391,6 @@ export {postCreateNewUser,putUpdateUser ,deleteUser
     getInventorytWithPaginate,getSizeProduct,
     postCreateNewCart ,getCartItemWithPaginate,deleteCartItem,putUpdateCartItem,
     postCreateNewOrder ,postCreateBankingPayment ,getOrderWithPaginate ,deleteOrder ,getOrderListAdminWithPaginate ,putUpdateStatusOrder ,getOrderListAdminCanceledWithPaginate,
-    getOrderStatus
+    getOrderStatus ,getProductBestSelling ,getRevenueMonthly ,getOrderRate
     
 }

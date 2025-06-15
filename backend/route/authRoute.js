@@ -3,6 +3,7 @@ import cors from 'cors';
 const router = express.Router();
 import pool from '../connectDB.js';
 import jwt from 'jsonwebtoken';
+import { sendMail } from '../emailService.js';
 
 
 // Đăng ký người dùng
@@ -66,5 +67,77 @@ router.post('/login',async(req,res) =>{
             error:'Something Wrong '})
     }
 }) 
+
+router.post('/send-reset-password-code' ,async(req,res) =>{
+    const {email} = req.body;
+    // kiểm tra gmail đó có tồn tại trong gmail của database user ko
+    const [rows] = await pool.execute(`SELECT * FROM user WHERE email =?`,[email])
+
+    if(rows.length ===0){
+        return res.status(400).json({EC:1 , message:"Email Not Found"})
+    }
+    // tạo mã ngẫu nhiên có 6 chữ số
+    const code = Math.floor(100000 +Math.random()*900000)
+    //thời hạn sử dụng code 5 phút , chuyển sang kiểu bigint 
+    const expired_at = Date.now()+5*60*1000;
+
+    const [existing] = await pool.execute(`SELECT * FROM password_reset WHERE email =?`,[email])
+
+    if(existing.length >0){
+        await pool.execute(`UPDATE password_reset SET code =? ,expired_at =? ,updated_at =CURRENT_TIMESTAMP WHERE email =?`,
+            [code,expired_at,email]
+        )
+    }else{
+        await pool.execute(`INSERT INTO password_reset (email,code,expired_at) VALUES (?,?,?)`,
+                [email,code,expired_at]
+            )
+    }
+
+    await sendMail(email ,"Your resert code",`Your resert code is :${code}`);
+
+    return res.status(200).json({EC:0 ,message:"code sent to email"})
+})
+
+router.post('/confirm-code-reset' ,async(req,res) =>{
+    const {code ,email} = req.body
+    
+    const [row] = await pool.execute(`SELECT * FROM password_reset WHERE code =? AND email=?`,[code,email])
+
+    //existing là mảng nên là phải sử dụng .length để ktra
+    if(row.length ===0){
+         return res.status(200).json({EC:1,message:"Code Invalid"})
+        
+    }
+
+    const record =row[0];
+
+    if(record.expired_at < Date.now()){
+        return res.status(200).json({EC:1,message:"Code has expired"})
+    }
+
+    return res.status(200).json({EC:0,message:"Verification Code successful"})
+})
+
+router.put('/new-password' ,async(req,res) =>{
+    const {password,email} = req.body
+    console.log("password",password ,"email",email )
+    
+    try{
+    const [result] = await pool.execute(`UPDATE user set password =? WHERE email=?`,
+        [password,email])
+         res.status(200).json({
+            EC:0,
+            message:'Update Your Password Success ',
+            name:result.id
+        });
+        }catch(err){
+            console.log(err);
+            res.status(500).json({
+            EC:1,
+            error:'Something Wrong'
+        })
+        }
+    
+})
 
 export default router

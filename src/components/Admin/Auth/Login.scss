@@ -69,9 +69,17 @@
                 cursor: no-drop;
             }
         }
+        .forgot-password{
+            cursor: pointer;
+
+            &:hover{
+                color: rgb(214, 27, 27);
+            }
+        }
         .back{
             cursor: pointer;
         }
+        
         .form-group{
             position: relative;
             .eye-icon{

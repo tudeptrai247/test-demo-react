@@ -125,14 +125,32 @@ router.put('/:id',async(req,res) =>{
         await connection.beginTransaction(); // bắt đầu transaction
 
         if(status === 0){
+
+
            const [detail]= await connection.execute(`SELECT product_id ,size_id,quantity FROM receipt_detail WHERE receipt_id=?`, // lấy sản phẩm , size và số lượng  sản phẩm của phiếu nhập muốn xóa cần xóa
             [receiptId]
         );
 
         for(const item of detail){
-            await connection.execute(`UPDATE inventory SET quantity = quantity - ? WHERE product_id =? AND size_id =?`,
-                [item.quantity, item.product_id ,item.size_id]
+            // kiểm tra trong order có sản phẩm bán chưa
+            const [soldCheck] = await connection.execute(`SELECT SUM(quantity) as sumQty FROM order_detail WHERE product_id =? AND size_id=?`,
+                [item.product_id,item.size_id]
             )
+
+            // truy cập vào symQty của soldCheck ở hàm trên
+            const soldQuantity =soldCheck[0]?.sumQty || 0;
+
+            if(soldQuantity >0){
+                await connection.rollback();
+                return res.status(400).json({
+                    EC:2,
+                    message:"Cannot Delete This Receipt , Some Product from receipt have been sold"
+                })
+            }
+
+            // nếu chưa có sản phẩm bán thì update tồn kho
+            await connection.execute(`UPDATE inventory SET quantity = quantity - ? WHERE product_id =? AND size_id =?`,
+                [item.quantity, item.product_id ,item.size_id])
         }
     }
 

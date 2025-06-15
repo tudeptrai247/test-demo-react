@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import './DashBoard.scss'
 import OverViewBox from './OverViewBox';
 import {getOrderStatus} from "../../../service/apiService"
-
+import BestSellingRechart from './BestSellingRechart';
+import RevenueRechart from './RevenueRechart';
+import PieChartOrderRate from './PiechartOrderRate'
 
 const Dashboard =() =>{
 
@@ -25,6 +27,11 @@ const Dashboard =() =>{
                 <OverViewBox 
                 dataOrderNumber ={dataOrderNumber}
                 />
+                <div className='chart-dashboard'>
+                    <BestSellingRechart/>
+                    <RevenueRechart />
+                    <PieChartOrderRate/>
+                </div>
         </div>
     )
 }

@@ -28,6 +28,9 @@ import Order from './components/User/OrderCustomer/Order.js'
 import OrderManage from './components/Admin/OrderManage/OrderManage.js';
 import TableCanceledOrder from './components/Admin/OrderManage/TableCanceledOrder.js';
 import Dashboard from './components/Admin/DashBoard/DashBoard.js';
+import ForgotPassword from './components/Admin/Auth/ForgotPassword/SendCodePassword.js';
+import ConfirmCode from './components/Admin/Auth/ForgotPassword/ConfirmCode.js';
+import NewPassword from './components/Admin/Auth/ForgotPassword/NewPassword.js';
 
 const Layout =(props) =>{
     return(
@@ -38,6 +41,11 @@ const Layout =(props) =>{
                   <Route path='products' element={<Product />} />
                   <Route path="login" element={<Login />}/>
                   <Route path="register" element={<Register />}/>
+                  {/* reset mật khẩu */}
+                  <Route path="send-code-password" element={<ForgotPassword />}/>
+                  <Route path="confirm-code" element={<ConfirmCode />}/>
+                  <Route path="new-password" element={<NewPassword />}/>
+
                   <Route path="cart" element={<Cart />} />
                   <Route path="reviewOrder" element={<ReviewOrder />} />
                   <Route path="momo-return" element={<MomoReturn />} />

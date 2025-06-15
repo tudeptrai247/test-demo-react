@@ -16,12 +16,18 @@ const ModalDeleteSoftReceipt =(props) =>{
     const handleSubmitDeleteReceipt =async() =>{
         const changeStatus = dataReceipt.status ===1 ?0 : 1;
         let data =await deleteSoftReceipt(dataReceipt.receipt_id,changeStatus)
+        if(data.EC===2){
+            toast.error(data.message)
+            return
+
+        }
         if(data && data.EC===0){
             toast.success(data.message)
             handleClose()
             props.fetchListReceiptWithPaginate(1)
             props.setCurrentPage(1)
         }
+
     }
 
     return(

@@ -1,11 +1,85 @@
 .dashboard-container{
+ 
     .title p{
         font-size: 25px;
         margin-left: 20px;
         font-weight: bold;
         font-style: italic;
     }
+    
+    .title-status-list{
+        p{
+            font-size: 30px;
+            margin-left: 30px;
+            margin-top: 50px;
+        }
+    }
     .over-view-box-container{
-        
+        display: flex;
+        gap: 150px;
+        justify-content: center;
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+
+
+        .status-box{
+           
+            width: 180px;
+            height: 100px;
+            border-radius: 10px ;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-top: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;  //giữa ngang
+            align-items: center;        // giữa dọc
+            cursor: pointer;
+
+            transition: background-color 0.3 ease;
+
+            &:hover{
+                background-color: #e2d6d6;
+            }
+
+        .icon-status{
+            font-size: 20px;
+            margin-left: 10px;
+            margin-right: 150px;
+        }
+            
+        .number-order{
+          
+            font-size: 35px;
+            font-weight: bold;
+            color: rgb(11, 132, 177);
+            }
+        .label-order{
+            font-size: 15px;
+            font-weight: 400;
+           
+            
+        }   
+
+        }   
+    }
+    .chart-dashboard{
+        display: flex;
+        margin-top: 30px;
+        margin-left: 50px;
+        gap: 10px;
+
+        .revenue-chart-container 
+        {
+            margin-left: 30px;
+            h3{
+            font-size: 30;
+            margin-bottom: 20px;
+            
+        }
+    }
+        .piechart-container{
+            margin-left: 60px;
+        }
     }
 }
