@@ -23,7 +23,8 @@ const userReducer = (state = INITIAL_STATE, action) => {
                     refresh_token: action?.payload?.DT?.refresh_token,
                     username: action?.payload?.DT?.username,
                     role: action?.payload?.DT?.role,
-                    email: action?.payload?.DT?.email
+                    email: action?.payload?.DT?.email,
+                    login_type :action?.payload?.DT?.login_type
                 },
                 isAuthenticated: true   //khi có được data rồi sẽ set authenticated là true để phần header ko hiện 2 button login register
                 
@@ -36,7 +37,8 @@ const userReducer = (state = INITIAL_STATE, action) => {
                         refresh_token:' ',
                         username:' ',
                         role:'',
-                        email:''
+                        email:'',
+                        login_type:''
                     },
                     isAuthenticated: false
             };

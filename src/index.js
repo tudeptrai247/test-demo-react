@@ -12,6 +12,7 @@ import { BrowserRouter,
 import Layout from './Layout.js';
 import 'nprogress/nprogress.css';
 import { PersistGate } from 'redux-persist/integration/react'
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -19,10 +20,11 @@ root.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
     {/* <React.StrictMode> */}
-    {/* cart provider ở cartContext */}
+      <GoogleOAuthProvider clientId='994651792767-9om5b17fmt1u25avhm5u14uokpvnrmeo.apps.googleusercontent.com'>          
         <BrowserRouter> 
           <Layout />    
         </BrowserRouter>
+      </GoogleOAuthProvider>
     {/* </React.StrictMode> */}
     </PersistGate>
   </Provider>

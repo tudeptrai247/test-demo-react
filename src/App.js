@@ -5,6 +5,7 @@ import { Outlet, Link } from "react-router-dom";
 import { FETCH_USER_LOGIN_SUCCESS } from "./redux/action/userAction.js";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
+import ChatBotUser from "./components/User/ChatBoxUser/ChatBoxUser.js"
 
 const App = () => {
  
@@ -34,9 +35,11 @@ const App = () => {
             {/* Outlet này dùng để hiện thị những trang con của index.js */}
         </div>
       </div>
+          <ChatBotUser />
       <div className="footer-container">
           <Footer />
       </div>
+  
     </div>
   );
 }

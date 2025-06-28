@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import './Login.scss'
 import { useNavigate } from 'react-router-dom';
-import { postLogin } from '../../../service/apiService';
+import { postLogin ,postLoginGoogle} from '../../../service/apiService';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { doLogin } from '../../../redux/action/userAction';
 import { FaSpinner } from "react-icons/fa";
+import { jwtDecode } from 'jwt-decode';
+
+import { GoogleLogin } from '@react-oauth/google';
 
 const Login =(props) =>{
 
@@ -39,8 +42,8 @@ const Login =(props) =>{
         setIsLoading(true);
         //goi api , dùng api cần phải tốn tgian , nên phải xài await và async cho đồng bộ
         let data = await postLogin(email,password)
-            console.log(">>check data" ,data , +data.EC != 0 ,data.EC)
-        if(data && data.EC === 0 && data.DT.role === "USER"){ // EC là error code , nếu ko có lỗi thì success  
+            if(data && data.EC === 0 && data.DT.role === "USER"){ // EC là error code , nếu ko có lỗi thì success  
+                console.log("res data" ,data)
             // sử dụng dispatch để đưa yêu cầu cho redux
             dispatch(doLogin(data))  // lưu localstorage setup ở file userAction
             toast.success(data.message);
@@ -75,6 +78,15 @@ const Login =(props) =>{
 
     const handleClickForgotPassword =()=>{
         navigate("/send-code-password")
+    }
+
+    const handleClickLoginGoogle =async(decodeData) =>{
+        let res = await postLoginGoogle(decodeData)
+            if(res && res.EC === 0){
+                dispatch(doLogin(res))
+                toast.success(res.message)
+                navigate('/')
+            }
     }
 
     return(
@@ -119,6 +131,18 @@ const Login =(props) =>{
                     {isLoading === true && <FaSpinner className="loader-icon"/> }  
                     <span> Login to AnhTU</span></button>
                 </div>
+
+                {/* đăng nhập google ,khi đăng nhập thành công sẽ lưu thông tin vào object credentialRespontse */}
+                <GoogleLogin
+                    onSuccess={credentialRespontse =>{
+                        // sử dụng jwtDecode để giải mã credential , nơi chứa email , tên v.v
+                        const decode = jwtDecode(credentialRespontse.credential);
+                        handleClickLoginGoogle(decode)
+                    }}
+                    onError={()=>{
+                        toast.error("Login Goole Failed")
+                    }}
+                />
                 <div className='text-center'>
                     <span className='back' onClick={() =>{navigate('/')}}> 	&#60;&#60; Go to Homepage</span>
                 </div>

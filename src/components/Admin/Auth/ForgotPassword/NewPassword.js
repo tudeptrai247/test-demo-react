@@ -13,7 +13,7 @@ const NewPassword =() =>{
     const email = localStorage.getItem("emailGetCode")
     
     const location = useLocation();
-     const verifiCode = location.state?.verifyCode || localStorage.getItem("reset-verify") =="true"
+     const verifiCode = location.state?.verifyCode || localStorage.getItem("reset-verify") ==="true"
 
     useEffect(()=>{
             if(!email || !verifiCode){

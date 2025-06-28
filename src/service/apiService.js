@@ -37,6 +37,14 @@ const postLogin = (email,password)  =>{
     return axios.post(`api/v1/auth/login`,{email,password});
 }
 
+const postLoginGoogle = (googleUser)  =>{
+    return axios.post(`api/v1/auth/login-google`,{
+        email:googleUser.email,
+        username:googleUser.name
+    });
+}
+
+
 const postRegister = (username,email,password)  =>{
     return axios.post(`api/v1/auth/register`,{username,email,password});
 }
@@ -354,7 +362,7 @@ const getOrderRate =()=>{
     return axios.get(`api/v1/dashboard/orderRate`)
 }
 
-//thay đổi mật khẩu
+//Quên mật khẩu
 const postCodeResetPassword =(email) =>{
     return axios.post(`api/v1/auth/send-reset-password-code`,{
         email
@@ -374,13 +382,24 @@ const putUpdateNewPassword =(password,email) =>{
     });
 }
 
+// đổi mật khẩu trong user profile
+const postCodeChangePassword =(email,password) =>{
+    return axios.post(`api/v1/user/send-code-change-password-profile`,{
+        email,password
+    })
+}
 
-
+//Chat bot kéo api chatgpt
+const postGeminiChatBot =(message) =>{
+    return axios.post(`api/v1/chatbot/`,{
+        message
+    })
+}
 
 
 
 export {postCreateNewUser,putUpdateUser ,deleteUser
-    ,getUserWithPaginate ,postLogin , postRegister , logout , postCodeResetPassword,postCodeConfirm,putUpdateNewPassword,
+    ,getUserWithPaginate ,postLogin , postRegister , logout , postCodeResetPassword,postCodeConfirm,putUpdateNewPassword, postLoginGoogle,
     postCreateNewSupplier , getSupplierWithPaginate , deleteSupplier ,putUpdateSupplier,getAllSupplier,
     postCreateNewSize ,getSizeWithPaginate ,deleteSize ,putUpdateSize,getAllSize,
     postCreateNewBrand ,getBrandWithPaginate ,deleteBrand ,putUpdateBrand,getAllBrand,
@@ -391,6 +410,8 @@ export {postCreateNewUser,putUpdateUser ,deleteUser
     getInventorytWithPaginate,getSizeProduct,
     postCreateNewCart ,getCartItemWithPaginate,deleteCartItem,putUpdateCartItem,
     postCreateNewOrder ,postCreateBankingPayment ,getOrderWithPaginate ,deleteOrder ,getOrderListAdminWithPaginate ,putUpdateStatusOrder ,getOrderListAdminCanceledWithPaginate,
-    getOrderStatus ,getProductBestSelling ,getRevenueMonthly ,getOrderRate
+    getOrderStatus ,getProductBestSelling ,getRevenueMonthly ,getOrderRate,
+    postCodeChangePassword,
+    postGeminiChatBot
     
 }

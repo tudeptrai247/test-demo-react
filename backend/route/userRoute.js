@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 const router = express.Router();
 import pool from '../connectDB.js';
+import { sendMail } from '../emailService.js';
 
 // thêm người dùng
 router.post('/',async(req,res) =>{
@@ -90,5 +91,23 @@ router.put('/:id',async(req,res) =>{
             error:'Something Wrong '})
     }
 }) 
+
+//kiểm tra mật khẩu hiện tại có đúng với email đang xài ko và gửi mã code
+router.post('/send-code-change-password-profile' ,async(req,res) =>{
+    const {email,password} = req.body;
+    // kiểm tra mật khẩu có đúng ko
+    const [rows] = await pool.execute(`SELECT * FROM user WHERE email =? AND password=?`,[email,password])
+
+    if(rows.length ===0){
+        return res.status(400).json({EC:1 , message:"Wrong Password"})
+    }
+
+    return res.status(200).json({EC:0 ,message:"Confirm Success"})
+})
+
+
+
+
+
 
 export default router

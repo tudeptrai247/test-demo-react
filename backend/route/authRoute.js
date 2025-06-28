@@ -38,11 +38,64 @@ router.post('/login',async(req,res) =>{
            return res.status(404).json
            ({
                 EC:2,
-                message: 'User Not Found'
+                message: 'Invailid Email or Password'
            }) 
         }
 
         const user =result[0];  // gán user là kết quả đầu tiên
+        // tạo access và refreshToken để lưu trữ lại thông tin người dùng 
+        const accessToken =jwt.sign({id:user.id ,email:user.email ,role:user.role,login_type:user.login_type},'yourAccessSecret',{expiresIn:'15m'});
+        const refreshToken =jwt.sign({id:user.id},'yourRefreshSecret',{expiresIn:'7d'});
+
+
+        res.status(200).json({
+            EC:0, // error code =0 là success , khác 0 là lỗi
+            message:'Login Success',
+            DT:{
+                id:user.id,
+                access_token:accessToken,
+                refresh_token:refreshToken,
+                username:user.username,
+                email:user.email,
+                role:user.role,
+                login_type:user.login_type
+
+            }
+        });
+    }catch(err){
+        console.error(err);
+        res.status(500).json({
+            EC:1,
+            error:'Something Wrong '})
+    }
+}) 
+
+//đăng nhập google account
+router.post('/login-google',async(req,res) =>{
+    const {email,username} = req.body;
+        if(!email){
+            return res.status(404).json({
+                EC:1,
+                message:"Invailid Login Google"
+            })
+        }
+    try{
+        const [existing] = await pool.execute(
+            'SELECT * FROM user WHERE email = ?',[email]
+        );
+
+       // gán user là kết quả đầu tiên
+        let user =existing[0];
+        if(!user){
+            await pool.execute(`INSERT INTO user (email,password,username,login_type) VALUES (?,?,?,?)`,[email,null,username,'google']);
+
+            // trả lại thông tin user đã được thêm , gán giá trị đầu cho user
+            const [newUser] = await pool.execute(`SELECT * from user WHERE email =?`,[email])
+            user= newUser[0]
+        }
+
+        
+
         // tạo access và refreshToken để lưu trữ lại thông tin người dùng 
         const accessToken =jwt.sign({id:user.id ,email:user.email ,role:user.role},'yourAccessSecret',{expiresIn:'15m'});
         const refreshToken =jwt.sign({id:user.id},'yourRefreshSecret',{expiresIn:'7d'});
@@ -57,7 +110,8 @@ router.post('/login',async(req,res) =>{
                 refresh_token:refreshToken,
                 username:user.username,
                 email:user.email,
-                role:user.role
+                role:user.role,
+                login_type:user.login_type
             }
         });
     }catch(err){

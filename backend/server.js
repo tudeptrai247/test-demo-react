@@ -14,9 +14,16 @@ import cartRoute from './route/cartRoute.js'
 import orderRoute from './route/orderRoute.js'
 import momoRoute from './route/momoRoute.js'
 import dashboardRoute from './route/dashboardRoute.js'
+import chatbotRouter from './route/chatbotRoute.js'
+
+import dotenv from 'dotenv'
+dotenv.config();
+
 
 import path from 'path'
 import { fileURLToPath } from 'url';
+
+//đọc file trong .env sau đó gắn vào process.env vd như process.env.API_KEY === "123"
 
 const app = express();
 const PORT =8081;
@@ -40,7 +47,7 @@ app.use('/api/v1/cart' , cartRoute)
 app.use('/api/v1/order',orderRoute)
 app.use('/api/v1/momo',momoRoute)
 app.use('/api/v1/dashboard',dashboardRoute)
-
+app.use('/api/v1/chatbot',chatbotRouter)
 
 
 // đưa thư mục uploads để public trên host

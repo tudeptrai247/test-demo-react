@@ -31,6 +31,7 @@ import Dashboard from './components/Admin/DashBoard/DashBoard.js';
 import ForgotPassword from './components/Admin/Auth/ForgotPassword/SendCodePassword.js';
 import ConfirmCode from './components/Admin/Auth/ForgotPassword/ConfirmCode.js';
 import NewPassword from './components/Admin/Auth/ForgotPassword/NewPassword.js';
+import NewPasswordProfile from './components/User/Profile/NewPasswordProfile.js';
 
 const Layout =(props) =>{
     return(
@@ -50,6 +51,9 @@ const Layout =(props) =>{
                   <Route path="reviewOrder" element={<ReviewOrder />} />
                   <Route path="momo-return" element={<MomoReturn />} />
                   <Route path="profile" element={<ProfileManage />} />
+                  {/* đổi mật khẩu trong profile */}
+                  <Route path="new-password-profile" element={<NewPasswordProfile />}/>
+
                   <Route path='order' element={<Order />}/>
                   <Route path='dashboard' element={<Dashboard />}/>
 
