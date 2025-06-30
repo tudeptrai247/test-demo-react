@@ -54,6 +54,9 @@ app.use('/api/v1/chatbot',chatbotRouter)
 const __dirname=path.resolve()
 app.use('/uploads',express.static(path.join(__dirname,'uploads')));
 
+//import để refresh lại giỏ hàng sau thời gian cố định
+import './CronRefreshCart/cartRefresh.js'
+
 //chạy server
 app.listen(PORT ,()=>{
     console.log(`Server Running On http://localhost:${PORT}`);

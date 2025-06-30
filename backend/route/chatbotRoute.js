@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { response } from 'express';
 const router = express.Router();
 import genAI from '../ConfigGemini/gemini.js';
 import pool from '../connectDB.js';
@@ -17,7 +17,7 @@ router.post('/',async (req ,res) =>{
                 contents:[{
                     role:"user" ,
                     parts:[{
-                       text: `Phân loại intent của câu : "${message}". Chỉ trả về 1 từ trong:check_stock_size,ask_price,check_stock_shoes,orther,greeting`
+                       text: `Phân loại intent của câu : "${message}". Chỉ trả về 1 từ trong:check_stock_size,ask_price,check_stock_shoes,check_status_order,orther,greeting`
                     }]
                 }]
             })
@@ -37,7 +37,9 @@ router.post('/',async (req ,res) =>{
                 case "check_stock_shoes":
                     reply = await handleCheckStockShoes(message)
                     break
-
+                case "check_status_order":
+                    reply = await handleCheckStatusOrder(message)
+                    break
                 default:
                     const result =await model.generateContent({
                        contents:[{
@@ -140,32 +142,80 @@ const handleCheckStockShoes =async(message)=>{
                 contents:[{
                     role:"user" ,
                     parts:[{
-                       text: `Từ câu: "${message}", Hãy trích xuất tất cả các tên sản phẩm rõ ràng trong câu đó , chỉ trả về tên sản phẩm và chuỗi cách nhau bằng dấu phẩy , không giải thích`
+                       text:    `Từ câu: "${message}", trích xuất tất cả các **tên sản phẩm cụ thể** nếu có, ví dụ: Nike, Adidas Ultra Boost, Jordan,...  
+                                Chỉ trả về danh sách tên sản phẩm, cách nhau bằng dấu phẩy.  
+                                Nếu trong câu **không có tên cụ thể**, chỉ trả về chuỗi rỗng.
+                                Không coi từ chung chung như "giày", "shoes", "đôi", "sneaker" là tên sản phẩm.
+                                Không giải thích.`
                     }]
                 }]
             })
     const productListText = (await shoesBrandFind.response.text()).trim();
             //tách mảng thành tên sản phẩm
     const productName =productListText.split(',').map(p=>p.trim())
+    console.log("product name",productName)
 
-    if(!productName.length === 0){
+    if(productName.length === 0 || productName[0]===""){
         return "What shoes are you looking for ?"
     }
 
-    let result =[]
+   
+    let response =[];
+
         for(const product of productName){
             const [row]= await pool.execute(
         `SELECT * FROM product WHERE name =?`,[product]
         )
     
-    if(row.length >0){
-        result.push(`Yes , We have ${product}`)
+    if(row.length>0){
+        response.push(`We still have ${product}`)
     }else{
-         return ` ${product} out of stock , we will update soon ^^`
+        response.push(`We out of stock ${product} ,we will update soon`)
+    }
+     
+}
+    // thay thế dấu , thành end
+    return response.join(', and ')
+}
+
+const handleCheckStatusOrder =async(message) =>{
+    const model =  genAI.getGenerativeModel({
+                model:'gemini-1.5-flash'
+            });
+    const orderIDFind = await model.generateContent({
+                contents:[{
+                    role:"user" ,
+                    parts:[{
+                       text: `Từ câu: "${message}", Hãy trích xuất tất cả id đơn hàng của khách hàng , chỉ trả về số của id đó và chuỗi cách nhau bằng dấu phẩy , không giải thích`
+                    }]
+                }]
+            })
+    const orderList = (await orderIDFind.response.text()).trim();
+            //tách mảng thành tên sản phẩm
+    const orderId =orderList.split(',').map(p=>p.trim())
+    console.log('order ID' ,orderId)
+
+    if(!orderId.length === 0){
+        return "Can you send your order id to let we check it ?"
+    }
+
+    let response =[]
+        for(const orderNumber of orderId){
+            const [row]= await pool.execute(
+        `SELECT status FROM order_customer WHERE order_id =?`,[orderNumber]
+        )
+     
+    
+    if(row.length >0){
+        const status =row[0].status
+        response.push(`Your order id ${orderNumber} is ${status} `)
+    }else{
+         response.push(`Sorry i not seen your order id ${orderNumber} in my data , check your order ID again please ^^`)
     }
 }
 
-    return result.join(', and ')
+    return response.join(', and ')
+
 }
 
 export default router

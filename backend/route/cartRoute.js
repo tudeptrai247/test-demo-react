@@ -3,6 +3,7 @@ import cors from 'cors';
 const router = express.Router();
 import pool from '../connectDB.js'
 
+
 //thêm sản phẩm vào giỏ hàng
 router.post('/',async(req,res) =>{
     const {product_id,unit_price,size_id,quantity,user_id} =req.body;
@@ -15,7 +16,7 @@ router.post('/',async(req,res) =>{
 
         //Kiểm tra cart có tồn tại chưa , nếu chưa có thì tạo
 
-        const [existCartRows] = await connection.execute(`SELECT cart_id FROM cart WHERE user_id =? AND status="unpaid"`,
+        const [existCartRows] = await connection.execute(`SELECT cart_id FROM cart WHERE user_id =? AND status="pending"`,
             [user_id]
         );
 
@@ -93,7 +94,7 @@ router.get('/',async(req,res) =>{
 
     try {
         //tìm cart chưa thanh toán mới nhất của user
-        const [cartRow] = await pool.execute(`SELECT cart_id FROM cart WHERE user_id =? AND status='unpaid' ORDER BY user_id DESC LIMIT 1 `,
+        const [cartRow] = await pool.execute(`SELECT cart_id FROM cart WHERE user_id =? AND status='pending' ORDER BY user_id DESC LIMIT 1 `,
             [user_id]
         );
         // nếu ko có giỏ hàng nào thì trả về mảng là rỗng ,vd như khi khách hàng chưa thêm sản phẩm nào vào giỏ hàng
