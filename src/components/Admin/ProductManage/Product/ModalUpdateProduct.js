@@ -28,35 +28,69 @@ const ModalUpdateProduct =(props) =>{
     const [listCategory,setListCategory]=useState([])
 
       useEffect(()=>{
-        if(show){
-            fetchData(); 
-        } 
-    },[show]) 
+        if(show){ 
+           const fetchData = async()=>{
+            const resBrand =await getAllBrand();
+            const resCategory = await getAllCategory();
 
-     useEffect(()=>{
-        if(!_.isEmpty(dataUpdate)){
+            if(resBrand.EC ===0 && resCategory.EC ===0) {
+                const brandList =resBrand.brand
+                const categoryList =resCategory.category
+
+            setListBrand(brandList)
+            setListCategory(categoryList)
+           
+
+             if(!_.isEmpty(dataUpdate)){
             setName(dataUpdate.name);
-            setBrand(dataUpdate.idbrand);
-            setCategory(dataUpdate.idcategory);
+                //phải sd brandList và categoryList khai báo ở trên thì mới cho cái trên fetch được hết r ms xài
+            const setBrandMatch =brandList.find(item=>item.brand === dataUpdate.brand)
+            setBrand(setBrandMatch ? setBrandMatch.id :"")
+
+            const setCategoryMatch = categoryList.find(item=>item.category === dataUpdate.category)
+            setCategory(setCategoryMatch ? setCategoryMatch.id :"");
+            console.log("list Category",listCategory)
+
             setPrice(dataUpdate.price);
             setDescription(dataUpdate.description);
             setOldImage(dataUpdate.image);
             setImage(null);
-            setPrevImage(`http://localhost:8081/uploads/${dataUpdate.image}`
-            );
+            setPrevImage(`http://localhost:8081/uploads/${dataUpdate.image}`);
+            }
         }
-    },[dataUpdate])    
-
-   
-
-const fetchData = async()=>{
-            const resBrand =await getAllBrand();
-            if(resBrand.EC ===0) setListBrand(resBrand.brand)
-
-            const resCategory = await getAllCategory();
-            if(resCategory.EC ===0) setListCategory(resCategory.category)
-
         };
+            fetchData();
+        } 
+    },[show]) 
+
+//      useEffect(()=>{
+//         if(!_.isEmpty(dataUpdate)){
+//             setName(dataUpdate.name);
+
+//             const setBrandMatch =listBrand.find(item=>item.brand === dataUpdate.brand)
+//             setBrand(setBrandMatch ? setBrandMatch.id :"")
+
+//             const setCategoryMatch = listCategory.find(item=>item.category === dataUpdate.category)
+//             setCategory(setCategoryMatch ? setCategoryMatch.id :"");
+//             console.log("list Category",listCategory)
+
+//             setPrice(dataUpdate.price);
+//             setDescription(dataUpdate.description);
+//             setOldImage(dataUpdate.image);
+//             setImage(null);
+//             setPrevImage(`http://localhost:8081/uploads/${dataUpdate.image}`
+//             );
+//         }
+//     },[dataUpdate])    
+
+// const fetchData = async()=>{
+//             const resBrand =await getAllBrand();
+//             if(resBrand.EC ===0) setListBrand(resBrand.brand)
+
+//             const resCategory = await getAllCategory();
+//             if(resCategory.EC ===0) setListCategory(resCategory.category)
+
+//         };
 
     
     const handleClose =()=>{
@@ -72,17 +106,26 @@ const fetchData = async()=>{
     }
 
     const handleUpLoadImage =(event) =>{
-    if(event.target && event.target.files && event.target.files[0]){    
-        setPrevImage(URL.createObjectURL(event.target.files[0]))
-        setImage(event.target.files[0])
-        
-     }
+    const file = event.target?.files?.[0];
+        if(file){   
+        const allowType =['image/jpeg','image/png','image/webp','image/jpg'];
+        if(!allowType.includes(file.type)){
+            toast.error("Invalid File Type , Please Choosen jpeg , png , webp , jpg")
+            return
+        }
+        //tạo url tạm thời cho ảnh 
+        setPrevImage(URL.createObjectURL(file))
+        setImage(file)
+        }
     }
-
     const handleSubmitUpdateProduct =async() =>{
 
          if(name==="" || brand==="" || category==="" || price==="" || description==="" ){
             toast.error("Please Fill All Information")
+            return
+        }
+        if(isNaN(Number(price))){
+            toast.error("Invalid Price");
             return
         }
 

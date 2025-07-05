@@ -11,20 +11,20 @@ router.use(express.urlencoded({extended:true}))
 
 router.post("/payment",async(req,res) =>{
     
-    const {total,user_id, order_id} = req.body;
-    console.log("total :",total ,"user_id :" ,user_id,"order_id ",order_id)
+    const {total,user_id, order_id,cart_id} = req.body;
+    console.log("total :",total ,"user_id :" ,user_id,"order_id ",order_id,"cart_id",cart_id)
     
     var accessKey = 'F8BBA842ECF85';
     var secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
     var orderInfo = 'pay with MoMo';
     var partnerCode = 'MOMO';
-    var redirectUrl = 'https://97ce-14-161-48-112.ngrok-free.app/momo-return';
-    var ipnUrl = 'https://d222-14-161-48-112.ngrok-free.app/api/v1/momo/callback';
+    var redirectUrl = 'https://f7c2-2402-800-63a6-f40d-f049-4166-16de-ed65.ngrok-free.app/momo-return';
+    var ipnUrl = 'https://0284-2402-800-63a6-f40d-f049-4166-16de-ed65.ngrok-free.app/api/v1/momo/callback';
     var requestType = "payWithMethod";
     var amount = total;
     var orderId = partnerCode + new Date().getTime();
     var requestId = orderId;
-    var extraData =Buffer.from(JSON.stringify({user_id ,order_id})).toString('base64');
+    var extraData =Buffer.from(JSON.stringify({user_id ,order_id,cart_id})).toString('base64');
     var orderGroupId ='';
     var autoCapture =true;
     var lang = 'vi';
@@ -92,17 +92,31 @@ router.post("/callback",async(req,res) =>{
      if(resultCode ===0){
         // giải mã về chuỗi bth
         const decode =Buffer.from(extraData,'base64').toString('utf-8')
-        const {order_id}=JSON.parse(decode);
-        console.log("order id" ,order_id)
-
+        const {order_id ,cart_id}=JSON.parse(decode);
+        const connection = await pool.getConnection()
+       
+        console.log("cart_id",cart_id,"order id" ,order_id)
         try{
-             await pool.query(`UPDATE order_customer SET payment_status="paid" WHERE order_id= ? `,
+            await connection.beginTransaction()
+
+             await connection.query(`UPDATE order_customer SET payment_status="paid" WHERE order_id= ? `,
             [order_id])
+
+            // xóa cart_detail khi đã trả về callback thanh toán thành công
+            await connection.query(`DELETE FROM cart_detail WHERE cart_id =?`,[cart_id])
+
+            await connection.commit()
+            return res.status(200).json({message:"Callback Recived"});
         }catch(err){    
             console.log("Update Failed")
-            return res.status(500),json({message:'server error'})
+            await connection.rollback()
+            return res.status(500).json({message:'server error'})
+        } finally{
+            connection.release();
         }
+     }else{
+        return res.status(400).json({message:"Payment failed or canceled"})
      }
-    return res.status(200).json({message:"Callback Recived"});
+    
 })
 export default router

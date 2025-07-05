@@ -314,11 +314,12 @@ const postCreateNewOrder =(address,number,payment_method,total,note,user_id,item
 };
 
 // tạo thanh toán vs momo
-const postCreateBankingPayment =(total,user_id,order_id) =>{
+const postCreateBankingPayment =(total,user_id,order_id,cart_id) =>{
     return axios.post('api/v1/momo/payment',{
       total,
       user_id,
-      order_id
+      order_id,
+      cart_id
     });
 };
 

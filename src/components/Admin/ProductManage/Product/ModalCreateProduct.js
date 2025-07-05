@@ -47,10 +47,16 @@ import { toast } from 'react-toastify';
     }
 
     const handleUpLoadImage =(event) =>{
-    if(event.target && event.target.files && event.target.files[0]){    
-        setPrevImage(URL.createObjectURL(event.target.files[0]))
-        setImage(event.target.files[0])
-        
+        const file = event.target?.files?.[0];
+        if(file){   
+        const allowType =['image/jpeg','image/png','image/webp','image/jpg'];
+        if(!allowType.includes(file.type)){
+            toast.error("Invalid File Type , Please Choosen jpeg , png , webp , jpg")
+            return
+        }
+        //tạo url tạm thời cho ảnh 
+        setPrevImage(URL.createObjectURL(file))
+        setImage(file)
      }
     }
 
@@ -60,6 +66,12 @@ import { toast } from 'react-toastify';
             toast.error("Please Fill All Information")
             return
         }
+        if(isNaN(Number(price))){
+            toast.error("Invalid Price")
+            return
+        }
+
+
 
         const formData=new FormData();
         formData.append("name", name);

@@ -1,10 +1,23 @@
 import Sidebar from "./Sidebar.js"
 import './Admin.scss'
 import { FaBars } from 'react-icons/fa';
-import { useState } from "react";
-import { Outlet} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Outlet, useNavigate} from "react-router-dom";
+import { toast } from "react-toastify";
+
 
 const Admin = (props) =>{
+
+    const navigate =useNavigate()
+    useEffect(()=>{
+        const accountAdmin =JSON.parse(localStorage.getItem("account"))
+        const role = accountAdmin?.role
+        console.log("account",accountAdmin, "role",role)
+        if(!accountAdmin || role === "USER"){
+            toast.warning("Access Denied")
+            navigate('/')
+        }
+    },[])
     
 const [collapsed ,setCollapsed] =useState(false);
     return(

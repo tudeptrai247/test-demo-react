@@ -6,17 +6,18 @@ import { useSelector } from 'react-redux'
 import shoes1 from '../../../assets/shoes1.jpg'
 import { useEffect, useState } from 'react';
 import {get4product, getitemnike ,getitemadidas} from'../../../service/apiService'
+import HomePageProductDetail from './HomePageProductDetail';
 
 const Homepage = () =>{
     const isAuthenticated = useSelector(state =>state.user.isAuthenticated);
     const account = useSelector(state => state.user.account)
 
-    console.log('accout :' , account ,'isAuthenticated' , isAuthenticated)
 
     const [list4item ,setList4item] =useState([])
     const [nikeList ,setNikeList] =useState([])
     const [adidasList , setAdidasList] = useState([])
-
+    const [showModalProductDetailHomePage , setShowModalProductDetailHomePage] = useState(false)
+    const [detailProductHomePage ,setDetailProductHomePage]=useState("")
     useEffect(() =>{
        const getItemData = async() =>{
             const resitem = await get4product();
@@ -32,7 +33,11 @@ const Homepage = () =>{
     },[])
 
     
-
+ const handleShowDetailProductHomePage =(product) =>{
+        console.log('detail product', product)
+        setShowModalProductDetailHomePage(true)
+        setDetailProductHomePage(product)
+    }
 
 
     return(
@@ -51,11 +56,11 @@ const Homepage = () =>{
                                 return(
                             <Col md={3} key={index}>
                                 <div className='card'>
-                                    <img src={`http://localhost:8081/uploads/${item.image}`}/>
+                                    <img src={`http://localhost:8081/uploads/${item.image}`} onClick={()=>handleShowDetailProductHomePage(item)}/>
                                 </div>
                                 <div className='content-card'>
                                     <h5>{item.name}</h5>
-                                    <p>{item.price} đ</p>
+                                    <p>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}</p>
                                 </div>
                             </Col>
                             )
@@ -73,11 +78,11 @@ const Homepage = () =>{
                                 return(
                             <Col md={3} key={index}>
                                 <div className='card'>
-                                    <img src={`http://localhost:8081/uploads/${item.image}`}/>
+                                    <img src={`http://localhost:8081/uploads/${item.image}`} onClick={()=>handleShowDetailProductHomePage(item)}/>
                                 </div>
                                 <div className='content-card'>
                                     <h5>{item.name}</h5>
-                                    <p>{item.price} đ</p>
+                                    <p>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}</p>
                                 </div>
                             </Col>
                             )
@@ -95,11 +100,11 @@ const Homepage = () =>{
                                 return(
                             <Col md={3} key={index}>
                                 <div className='card'>
-                                    <img src={`http://localhost:8081/uploads/${item.image}`}/>
+                                    <img src={`http://localhost:8081/uploads/${item.image}`} onClick={() =>handleShowDetailProductHomePage(item)}/>
                                 </div>
                                 <div className='content-card'>
                                     <h5>{item.name}</h5>
-                                    <p>{item.price} đ</p>
+                                    <p>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}</p>
                                 </div>
                             </Col>
                             )
@@ -108,6 +113,11 @@ const Homepage = () =>{
                     </Container>
                 </div>
             </div>
+            <HomePageProductDetail
+                show ={showModalProductDetailHomePage}
+                setShow={setShowModalProductDetailHomePage}
+                detailProduct={detailProductHomePage}
+            />
         </div>
     )
 }

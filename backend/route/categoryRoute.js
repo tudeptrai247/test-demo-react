@@ -58,7 +58,22 @@ router.get('/',async(req,res) =>{
 router.delete('/:id',async(req,res) =>{
     const categoryId = req.params.id;
     console.log(req.params.id)
+        const connection = await pool.getConnection();
+
     try{
+            await connection.beginTransaction();
+            
+            const [checkCategoryInProduct] = await connection.execute(`
+                SELECT * FROM product WHERE idcategory =?
+            `,[categoryId])
+
+             if(checkCategoryInProduct.length>0){
+                await connection.rollback();
+                 return res.status(400).json({
+                EC:2,
+                message:"Cant not delete this Category , This Category has been in Product"
+            })
+        } 
         const [result] = await pool.execute(
             'DELETE FROM category WHERE id= ?',[categoryId]
         );

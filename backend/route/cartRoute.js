@@ -99,7 +99,7 @@ router.get('/',async(req,res) =>{
         );
         // nếu ko có giỏ hàng nào thì trả về mảng là rỗng ,vd như khi khách hàng chưa thêm sản phẩm nào vào giỏ hàng
         if(cartRow.length ===0){
-            res.status(200).json({
+           return res.status(200).json({
                 EC:0,
                 DT:{
                     cart:[],

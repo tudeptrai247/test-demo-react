@@ -92,15 +92,31 @@ router.get('/',async(req,res) =>{
 router.delete('/:id',async(req,res) =>{
     const productId = req.params.id;
     console.log(req.params.id)
+
+    const connection = await pool.getConnection();
     try{
+        await connection.beginTransaction();
+        const [checkProductInInventory] = await connection.execute(`
+                SELECT * FROM inventory WHERE product_id=?
+            `,[productId])
+            if(checkProductInInventory.length >0){
+            await connection.rollback();
+            return res.status(400).json({
+                EC:2,
+                message:"Cant not delete this Product , This Product has been in inventory"
+            })
+        }
+
         const [result] = await pool.execute(
             'DELETE FROM product WHERE id= ?',[productId]
         );
+        await connection.commit()
         res.status(200).json({
             EC:0, // error code =0 là success , khác 0 là lỗi
             message:'Delete Product Success',
             name:result.id});
     }catch(err){
+        await connection.rollback()
         console.error(err);
         res.status(500).json({
             EC:1,
@@ -177,9 +193,11 @@ router.get('/all',async(req,res) =>{
 // lấy 8 sản phẩm
 router.get('/4item',async(req,res) =>{
     try{
-        const [rows] = await pool.query(`SELECT  product.name,product.price,product.image ,JSON_ARRAYAGG(size.size) AS size from product
+        const [rows] = await pool.query(`SELECT  product.id,product.name,product.price,product.image ,brand.brand,category.category ,product.price,product.description ,JSON_ARRAYAGG(JSON_OBJECT('size_id',size.id,'size',size.size ,'quantity',inventory.quantity)) AS size_quantity from product
             JOIN inventory on product.id = inventory.product_id
             JOIN size on inventory.size_id =size.id
+            JOIN brand ON product.idbrand=brand.id 
+            JOIN category ON product.idcategory=category.id
             WHERE status=1
             GROUP BY product.id
             ORDER BY product.id DESC LIMIT 8`)
@@ -201,10 +219,11 @@ router.get('/4item',async(req,res) =>{
 router.get('/nikeitem',async(req,res) =>{
     try{
         const [rows] = await pool.query
-        (`SELECT product.name,product.price,product.image ,JSON_ARRAYAGG(size.size) AS size FROM product
-             join brand on product.idbrand =brand.id 
-             JOIN inventory on product.id = inventory.product_id
+        (`SELECT  product.id,product.name,product.price,product.image ,brand.brand,category.category ,product.price,product.description ,JSON_ARRAYAGG(JSON_OBJECT('size_id',size.id,'size',size.size ,'quantity',inventory.quantity)) AS size_quantity from product
+            JOIN inventory on product.id = inventory.product_id
             JOIN size on inventory.size_id =size.id
+            JOIN brand ON product.idbrand=brand.id 
+            JOIN category ON product.idcategory=category.id
              WHERE brand="Nike" AND status=1
              GROUP BY product.id
              ORDER BY product.id DESC LIMIT 4`)
@@ -226,10 +245,11 @@ router.get('/nikeitem',async(req,res) =>{
 router.get('/adidasitem',async(req,res) =>{
     try{
         const [rows] = await pool.query
-        (`SELECT product.name,product.price,product.image,JSON_ARRAYAGG(size.size) AS size
-            FROM product JOIN brand on product.idbrand =brand.id 
+        (`SELECT  product.id,product.name,product.price,product.image ,brand.brand,category.category ,product.price,product.description ,JSON_ARRAYAGG(JSON_OBJECT('size_id',size.id,'size',size.size ,'quantity',inventory.quantity)) AS size_quantity from product
             JOIN inventory on product.id = inventory.product_id
             JOIN size on inventory.size_id =size.id
+            JOIN brand ON product.idbrand=brand.id 
+            JOIN category ON product.idcategory=category.id
             WHERE brand="Adidas" AND status=1 
             GROUP BY product.id  
             ORDER BY product.id DESC LIMIT 4`)

@@ -57,15 +57,30 @@ router.get('/',async(req,res) =>{
 router.delete('/:id',async(req,res) =>{
     const userId = req.params.id;
     console.log(req.params.id)
+
+    const connection = await pool.getConnection();
     try{
+        await connection.beginTransaction();
+
+        const [checkUserInOrder] = await connection.execute(`SELECT * FROM order_customer WHERE user_id=?`,[userId])
+        if(checkUserInOrder.length >0){
+            await connection.rollback();
+            return res.status(400).json({
+                EC:2,
+                message:"Cant not delete this user , This user has been buy some items in order"
+            })
+        }
         const [result] = await pool.execute(
             'DELETE FROM user WHERE id= ?',[userId]
         );
+
+        await connection.commit()
         res.status(200).json({
             EC:0, // error code =0 là success , khác 0 là lỗi
             message:'Delete User Success',
             name:result.id});
     }catch(err){
+        await connection.rollback()
         console.error(err);
         res.status(500).json({
             EC:1,

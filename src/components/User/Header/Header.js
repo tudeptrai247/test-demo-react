@@ -39,7 +39,6 @@ const  Header = () => {
           <Nav className="me-auto">
             <NavLink to ='/' className='nav-link'>Home</NavLink>
             <NavLink to ='products' className='nav-link'>Product</NavLink>
-            <NavLink to='admins' className='nav-link'>Admin</NavLink>
             <NavLink to='cart' className='nav-link'>Cart</NavLink>
 
             

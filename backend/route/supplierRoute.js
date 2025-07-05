@@ -56,16 +56,32 @@ router.get('/',async(req,res) =>{
 // xóa nhà cung
 router.delete('/:id',async(req,res) =>{
     const supplierId = req.params.id;
-    console.log(req.params.id)
+
+    const connection = await pool.getConnection();
     try{
+        await connection.beginTransaction();
+
+        const [checkSupplierInReceipt] = await connection.execute(`
+                SELECT * from receipt WHERE supplier_id =?
+            `,[supplierId])
+            if(checkSupplierInReceipt.length>0){
+                await connection.rollback();
+                 return res.status(400).json({
+                EC:2,
+                message:"Cant not delete this Supplier , This Supplier has been in Receipt"
+            })
+            } 
+
         const [result] = await pool.execute(
             'DELETE FROM supplier WHERE id= ?',[supplierId]
         );
+        await connection.commit()
         res.status(200).json({
             EC:0, // error code =0 là success , khác 0 là lỗi
             message:'Delete Supplier Success',
             name:result.id});
     }catch(err){
+        await connection.rollback()
         console.error(err);
         res.status(500).json({
             EC:1,

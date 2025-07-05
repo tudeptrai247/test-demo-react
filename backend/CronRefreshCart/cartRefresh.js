@@ -1,6 +1,7 @@
 import pool from '../connectDB.js';
 import cron from 'node-cron'
 
+// xóa trong 60 phút
 cron.schedule('*/60 * * * *',async()=>{
     console.log("Refresh Cart")
 

@@ -52,6 +52,7 @@ const Login =(props) =>{
            }
 
         if(data && data.EC === 0 && data.DT.role === "ADMIN"){
+            dispatch(doLogin(data))  // lưu localstorage setup ở file userAction
             toast.success(data.message)
             setIsLoading(false);
 
@@ -134,6 +135,7 @@ const Login =(props) =>{
 
                 {/* đăng nhập google ,khi đăng nhập thành công sẽ lưu thông tin vào object credentialRespontse */}
                 <GoogleLogin
+                    className="login-google"
                     onSuccess={credentialRespontse =>{
                         // sử dụng jwtDecode để giải mã credential , nơi chứa email , tên v.v
                         const decode = jwtDecode(credentialRespontse.credential);

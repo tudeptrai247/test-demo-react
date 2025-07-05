@@ -65,18 +65,25 @@ const ModalCreateReceipt =(props) =>{
             toast.error("Please Fill All Information")
             return;
         }
+        if(isNaN(Number(quantity)) || isNaN(Number(unitprice))){
+            toast.error("Invailid Quantity or Unit Price")
+            return;
+        }
 
+        // hàm tìm vị trí xem đã có sản phẩm đó trong mảng chưa
         const index =item.findIndex(
             (i)=> i.product_id === product && i.size_id=== size 
         )
         
-        // [0] tìm ra phần tử đầu tiên trùng rồi lấy số lượng của cái cũ cộng cho cái mới
-        if(index === 0){
+        // index khác trừ 1 là phần tử có trùng
+        if(index !== -1 ){
+            //clone mảng item thành updateQuantity
             const updateQuantity =[...item];
-            updateQuantity[0].quantity=updateQuantity[0].quantity + parseInt(quantity);
+            console.log("update quantity",updateQuantity)
+            updateQuantity[index].quantity=updateQuantity[index].quantity + parseInt(quantity);
 
             const updateUnitPrice =[...item];
-            updateUnitPrice[0].unit_price= unitprice
+            updateUnitPrice[index].unit_price= unitprice
             
             setQuantity(updateQuantity)
             setUnitprice(updateUnitPrice)

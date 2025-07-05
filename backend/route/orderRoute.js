@@ -30,10 +30,11 @@ router.post('/',async(req,res) =>{
             await connection.execute(`INSERT INTO order_detail(quantity, order_id, product_id, size_id) VALUES (?,?,?,?)`,
                 [product.quantity,order_id,product.product_id,product.size_id]
             );
-
-            await connection.execute("DELETE FROM cart_detail WHERE product_id =?",
-            [product.product_id]
+            if(payment_method ==='cod'){
+            await connection.execute("DELETE FROM cart_detail WHERE product_id =? AND size_id =?",
+            [product.product_id,product.size_id]
         );
+        }
 
         }   
 

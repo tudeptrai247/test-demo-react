@@ -125,8 +125,6 @@ router.put('/:id',async(req,res) =>{
         await connection.beginTransaction(); // bắt đầu transaction
 
         if(status === 0){
-
-
            const [detail]= await connection.execute(`SELECT product_id ,size_id,quantity FROM receipt_detail WHERE receipt_id=?`, // lấy sản phẩm , size và số lượng  sản phẩm của phiếu nhập muốn xóa cần xóa
             [receiptId]
         );

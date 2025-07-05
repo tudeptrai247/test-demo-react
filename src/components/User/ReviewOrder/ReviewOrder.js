@@ -60,7 +60,7 @@ const ReviewOrder =() =>{
 
     //useEffect hiện tổng tiền
   
-
+        console.log("list item cart",listItemCart)
     const handleChangeStatePayment =(event)=>{
         setCheckedPayment(event.target.value)
     }
@@ -112,8 +112,6 @@ const ReviewOrder =() =>{
         }
     }
 
-   
-
     const discountAmout =getDiscountAmout(discountCode)
     const totalAfterDiscount =total -(discountAmout ? discountAmout :0)
 
@@ -139,8 +137,9 @@ const ReviewOrder =() =>{
                 if(resOrder && resOrder.EC === 0){
                     
                 const order_id = resOrder.orderId
+                const cart_id = listItemCart[0].cart_id
 
-                let res = await postCreateBankingPayment(totalAfterDiscount,user_id,order_id)
+                let res = await postCreateBankingPayment(totalAfterDiscount,user_id,order_id,cart_id)
                 console.log('res data', res)
                 if(res && res.resultCode ===0 && res.payUrl){
                     window.location.href = res.payUrl; // chuyển sang trang MOMO

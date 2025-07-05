@@ -80,9 +80,9 @@ const Product =() =>{
                                 <p>Searching Product</p>
                             </div>
                             <input type='text' placeholder='searching product' value={keyword} onChange={(event)=>setKeyWord(event.target.value)} />
-                            <div className='button-search' >
+                            {/* <div className='button-search' >
                                 <Button variant="secondary" onClick={() =>handleSearchSubmit()}>Search</Button>
-                            </div>
+                            </div> */}
                         </div>
                         <Filter
                         setListProduct={setListProduct}

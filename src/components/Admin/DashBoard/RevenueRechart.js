@@ -18,11 +18,18 @@ const RevenueRechart =() =>{
     return(
         <div className="revenue-chart-container">
             <h3>Monthly Revenue Report</h3>
-                <LineChart width={400} height={250} data={data}margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <LineChart width={440} height={250} data={data}margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
+                <YAxis
+                width={80}
+                tickFormatter={(value) =>{
+                    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' ,maximumFractionDigits: 0}).format(value)
+                }}/>
+                {/* tool tips là phần khi di chuột vào sẽ hiện thị */}
+                <Tooltip formatter={(value)=>{
+                   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' ,maximumFractionDigits: 0}).format(value)
+                }}/>
                 <Legend />
                 <Line type="monotone" dataKey="revenue" stroke="#8884d8" />
         

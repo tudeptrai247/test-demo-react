@@ -29,9 +29,10 @@ const PieChartOrderRate =(props) =>{
         <div className="piechart-container">
             <h3>Order Rate</h3>
                 <PieChart width={300} height={250}>
+                        {/* name key để lấy tên theo value đó */}
                 <Pie data={data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={50}> 
                     {data.map((item,index) =>(
-                        <Cell key={`cell -${index}`} fill={colorPie[index % colorPie.length]} />
+                        <Cell key={item.name} fill={colorPie[index % colorPie.length]} />
                     ))}
                 </Pie>
                 <Tooltip />

@@ -13,6 +13,11 @@ const ModalDeleteProduct =(props) =>{
 
     const handleSubmitDeleteProduct =async()=>{
         let data = await deleteProduct(dataUpdate.id);
+        if(data && data.EC ===2){
+            toast.warning(data.message)
+            handleClose()
+            return
+        }
         if(data && data.EC ===0){
             toast.success(data.message)
             handleClose()

@@ -63,7 +63,7 @@ router.post('/',async (req ,res) =>{
     }
 })
 
-//hàm truy vấn tìm sản phẩm trong message
+//hàm truy vấn 
 
 const handleCheckStockSize =async(message) =>{
                 // tìm cụm size số  (\d+) để bắt số phía sau chữ size còn i thì ko phân biệt chữ hoa hay thường regex sẽ bắt chữ size 43 (\d+) sẽ bắt mỗi số 43
@@ -127,7 +127,7 @@ const handleAskPrice =async(message) =>{
         })
         result.push(`The ${product} is ${formatPrice}`)
     }else{
-         return ` ${product} out of stock , we will update soon ^^`
+         result.push (` ${product} out of stock , we will update soon ^^`)
     }
 }
 

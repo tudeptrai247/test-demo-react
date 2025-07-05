@@ -1,4 +1,16 @@
+import { useNavigate } from "react-router-dom"
+
 const Footer =() =>{
+    const navigate =useNavigate()
+
+    const handleClickToProductPage =()=>{
+        navigate("/products")
+    }
+     const handleClickToHomePage =()=>{
+        navigate("/")
+    }
+     
+
     return(
         <>
             <div className="footer-column">
@@ -7,8 +19,8 @@ const Footer =() =>{
             </div>
             <div className="footer-column">
                 <b>Quick Links</b>
-                <p>Home Page</p>
-                <p>Product</p>
+                <p onClick={handleClickToHomePage}>Home Page</p>
+                <p onClick={handleClickToProductPage}>Product</p>
             </div>
             <div className="footer-column">
                 <b >Follow Us</b>

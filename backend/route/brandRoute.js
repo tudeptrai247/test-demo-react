@@ -54,19 +54,35 @@ router.get('/',async(req,res) =>{
     }
 })
 
-// xóa size
+// xóa brand
 router.delete('/:id',async(req,res) =>{
     const brandId = req.params.id;
     console.log(req.params.id)
+    const connection = await pool.getConnection();
     try{
+        await connection.beginTransaction();
+        const [checkBrandInProduct] = await connection.execute(`
+                SELECT * FROM product WHERE idbrand =?
+            `,[brandId])
+
+             if(checkBrandInProduct.length>0){
+                await connection.rollback();
+                 return res.status(400).json({
+                EC:2,
+                message:"Cant not delete this Brand , This Brand has been in Product"
+            })
+            } 
+
         const [result] = await pool.execute(
             'DELETE FROM brand WHERE id= ?',[brandId]
         );
+        await connection.commit()
         res.status(200).json({
             EC:0, // error code =0 là success , khác 0 là lỗi
             message:'Delete Brand Success',
             name:result.id});
     }catch(err){
+        await connection.rollback()
         console.error(err);
         res.status(500).json({
             EC:1,

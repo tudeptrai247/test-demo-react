@@ -112,7 +112,6 @@ const ModalUpdateCart =(props) =>{
                     <div className="col-md-2">
                         <label  className="form-label">Size</label>
                         <select className="form-control" value={size} onChange={(event) =>handleSizeChange(event.target.value)}>
-                            <option value="">--Select Size--</option>
                             {listSize.map((item,index)=>{
                                return <option key={index} value={item.size_id}>{item.size}</option>
                             })}

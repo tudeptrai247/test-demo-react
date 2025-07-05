@@ -12,8 +12,13 @@ const ModalDeleteBrand =(props) =>{
         setShow(false)
     }
 
-    const handleSubmitDeleteSize=async() =>{
+    const handleSubmitDeleteBrand=async() =>{
         let data = await deleteBrand(dataUpdate.id);
+        if(data && data.EC ===2){
+            toast.warning(data.message)
+            handleClose()
+            return
+        }
         if(data && data.EC ===0){
             toast.success(data.message)
             handleClose()
@@ -43,7 +48,7 @@ const ModalDeleteBrand =(props) =>{
           <Button variant="secondary" onClick={handleClose}>
             Cancel
           </Button>
-          <Button variant="primary" onClick={() =>handleSubmitDeleteSize()}>
+          <Button variant="primary" onClick={() =>handleSubmitDeleteBrand()}>
             Confirm
           </Button>
         </Modal.Footer>
