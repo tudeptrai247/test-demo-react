@@ -132,11 +132,12 @@ router.post('/send-reset-password-code' ,async(req,res) =>{
     }
     // tạo mã ngẫu nhiên có 6 chữ số
     const code = Math.floor(100000 +Math.random()*900000)
-    //thời hạn sử dụng code 5 phút , chuyển sang kiểu bigint 
+    //thời hạn sử dụng code 5 phút , chuyển sang kiểu bigint để có thể dễ so sánh
     const expired_at = Date.now()+5*60*1000;
 
     const [existing] = await pool.execute(`SELECT * FROM password_reset WHERE email =?`,[email])
 
+    //nếu tài khoản đó đã có sẳn thì update code mới
     if(existing.length >0){
         await pool.execute(`UPDATE password_reset SET code =? ,expired_at =? ,updated_at =CURRENT_TIMESTAMP WHERE email =?`,
             [code,expired_at,email]

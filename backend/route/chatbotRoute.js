@@ -100,15 +100,22 @@ const handleAskPrice =async(message) =>{
                 contents:[{
                     role:"user" ,
                     parts:[{
-                       text: `Từ câu: "${message}", Hãy trích xuất tất cả các tên sản phẩm rõ ràng trong câu đó , chỉ trả về tên sản phẩm và chuỗi cách nhau bằng dấu phẩy , không giải thích`
+                       text: `Từ câu: "${message}", trích xuất tất cả các **tên sản phẩm cụ thể** nếu có, ví dụ: Nike, Adidas Ultra Boost, Jordan,...  
+                                Chỉ trả về danh sách tên sản phẩm, cách nhau bằng dấu phẩy.  
+                                Nếu trong câu **không có tên cụ thể**, chỉ trả về chuỗi rỗng.
+                                Không coi từ chung chung như "giày", "shoes", "đôi", "sneaker" là tên sản phẩm.
+                                Không giải thích.`
                     }]
                 }]
             })
     const productListText = (await shoesBrandFind.response.text()).trim();
             //tách mảng thành tên sản phẩm
-    const productName =productListText.split(',').map(p=>p.trim())
+    const productName =productListText.split(',').
+                                      map(p=>p.trim()).
+                                      filter(product => product !== "" && !isNaN(product))
+    console.log("product name AI response", productName)
 
-    if(!productName.length === 0){
+    if(productName.length === 0){
         return "What shoes are you looking for ?"
     }
 
@@ -155,7 +162,7 @@ const handleCheckStockShoes =async(message)=>{
     const productName =productListText.split(',').map(p=>p.trim())
     console.log("product name",productName)
 
-    if(productName.length === 0 || productName[0]===""){
+    if(productName.length === 0 || productName[0]===""  ){
         return "What shoes are you looking for ?"
     }
 
@@ -186,16 +193,19 @@ const handleCheckStatusOrder =async(message) =>{
                 contents:[{
                     role:"user" ,
                     parts:[{
-                       text: `Từ câu: "${message}", Hãy trích xuất tất cả id đơn hàng của khách hàng , chỉ trả về số của id đó và chuỗi cách nhau bằng dấu phẩy , không giải thích`
+                       text: `Từ câu: "${message}", , hãy trích xuất tất cả các số id đơn hàng, chỉ trả về các số, ngăn cách bằng dấu phẩy, không thêm từ ngữ nào khác, nếu không có thì trả về chuỗi rỗng , không giải thích thêm hay gì cả `
                     }]
                 }]
             })
     const orderList = (await orderIDFind.response.text()).trim();
             //tách mảng thành tên sản phẩm
-    const orderId =orderList.split(',').map(p=>p.trim())
+    const orderId =orderList.
+            split(',').
+            map(p=>p.trim()).
+            filter(id => id !== "" && !isNaN(id))
     console.log('order ID' ,orderId)
 
-    if(!orderId.length === 0){
+    if(orderId.length === 0){
         return "Can you send your order id to let we check it ?"
     }
 
