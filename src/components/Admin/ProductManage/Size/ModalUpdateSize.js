@@ -24,6 +24,10 @@ const ModalUpdateSize =(props) =>{
     }, [dataUpdate]) //phải có [dataUpdate] để useEffect theo dõi thay đổi
 
     const handleSubmitUpdateSize =async() =>{
+         if(!size){
+            toast.warning("Size empty , Please Input a value")
+            return
+        }
         let data = await putUpdateSize(dataUpdate.id,size);
         if(data && data.EC === 0){
             toast.success(data.message)

@@ -36,6 +36,10 @@ const ModalUpdateUser =(props) => {
   const [role , setRole] =useState("USER");
 
   const handleSubmitUpdateUser = async() =>{
+     if(!username ||!role){
+      toast.error('Please Fill All Information')
+      return;
+     }
   
    let data = await putUpdateUser(dataUpdate.id,username,role);
   //  console.log('<< component res :' , data)

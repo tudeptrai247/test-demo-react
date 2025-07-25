@@ -5,6 +5,7 @@ import {getAllCategory,getAllBrand,getProductFilter} from "../../../service/apiS
 
 
 const Category =(props) =>{
+    const LIMIT_PRODUCT=20;
 
     const {setListProduct} =useState
 
@@ -27,6 +28,8 @@ const Category =(props) =>{
             console.log(res.DT.product)
             props.setListProduct(res.DT.product)
             props.setCurrentPage(1)
+            // pagecount lấy tổng số sản phẩm chưa cho limit_product
+            props.setPageCount(Math.ceil(getProductFilter.length/LIMIT_PRODUCT))
         }
     }
 

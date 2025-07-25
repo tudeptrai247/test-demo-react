@@ -6,7 +6,7 @@ const TableAdminOrderPaginate =(props) =>{
         const {listOrder,pageCount,currentPage} =props
 
          const handlePageClick=(event)=>{
-        props.fetchListProductWithPaginate(+event.selected +1);
+        props.fetchOrderWithPaginate(+event.selected +1);
         props.setCurrentPage(+event.selected +1);
     }
 
@@ -34,13 +34,15 @@ const TableAdminOrderPaginate =(props) =>{
                 {listOrder && listOrder.length >0 &&
             
             listOrder.map((item,index)=>{
+                  const date = new Date(item.order_date)    
+                const vietnamTime = date.toLocaleDateString("vi-VN",{timeZone:"Asia/Ho_Chi_Minh"})  
                 return(
                     <tr key={`table-order-${index}`}>
                         <th>{item.order_id}</th>
                         <td>{item.username}</td>
                         <td>{item.address}</td>
                         <td>{item.number}</td>
-                        <td>{item.order_date}</td>
+                        <td>{vietnamTime}</td>
                         <td>{item.payment_method}</td>
                         <td>{item.payment_status}</td>
                         <td>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.total)}</td>

@@ -22,6 +22,10 @@ const ModalUpdateBrand =(props) =>{
     }
 
     const handleSubmitUpdateBrand =async() =>{
+         if(!brand){
+            toast.warning("Brand name empty , Please Input a value")
+            return
+        }
         let data = await putUpdateBrand(dataUpdate.id,brand);
         if(data && data.EC === 0){
             toast.success(data.message)

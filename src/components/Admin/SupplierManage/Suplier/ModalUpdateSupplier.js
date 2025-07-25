@@ -32,6 +32,10 @@ const ModalUpdateSupplier =(props) =>{
 
 
     const handleSubmitUpdateSupplier = async() =>{
+       if(!name || !address || !number){
+            toast.warning("Please Fill All Information")
+            return
+        }
         let data = await putUpdateSupplier(dataUpdate.id,name,address,number);
        if(data && data.EC === 0){
         toast.success(data.message);

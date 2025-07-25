@@ -28,13 +28,6 @@ const Cart =() =>{
 
     useEffect(()=>{
         fetchListCartWithPaginate(1)
-        
-        // gọi setInterval để kiểm tra mỗi 10s 1 lần trong giỏ hàng
-        const interval = setInterval(() => {
-            fetchListCartWithPaginate(1)
-        }, 10000);
-
-        return() =>clearInterval(interval)
     },[])
 
      const storedAccount =localStorage.getItem("account");
@@ -53,12 +46,7 @@ const Cart =() =>{
             setPageCount(res.DT.totalPages)
         }
         // nếu node cron chạy thì sẽ thông báo xóa giỏ hàng và trở lại product
-        if((res.DT.cart).length === 0){
-            toast.warning("Add items in your cart please ^^")
-            setTimeout(()=>{
-                navigate('/products')
-            },2500)
-        }
+       
     }
 
     const handleClickBtnDelete =async(cartItem)=>{
@@ -132,7 +120,7 @@ const Cart =() =>{
             
             <div className="cart-right">
                 <p className="title">Order Information</p>
-                <p style={{color:'red'}}>Note : We just keep your items in the cart for 60 minutes , so hurry up to purchase it ^^</p>
+                <p style={{color:'red'}}>Note : We will send you an email to remind you not to forget these items in the cart</p>
                 <p>Total Amount :<span style={{color:'red'}}>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(total)}</span> đ</p>
                 <div className="discount-code">
                     <h6>Get Your Discout Code</h6>

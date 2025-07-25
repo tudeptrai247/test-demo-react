@@ -9,6 +9,7 @@ const TableProductPaginate =(props) =>{
         props.fetchListProductWithPaginate(+event.selected +1);
         props.setCurrentPage(+event.selected +1);
     }
+    console.log("list product",listProduct)
     
     return(
         <>
@@ -28,7 +29,7 @@ const TableProductPaginate =(props) =>{
             </thead>
             <tbody>
                 {listProduct && listProduct.length>0 &&
-
+                    
                 listProduct.map((item,index)=>{
                     return(
                         <tr key={`table-size-${item.id}`}>

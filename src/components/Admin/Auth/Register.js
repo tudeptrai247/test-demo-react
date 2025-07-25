@@ -36,9 +36,14 @@ const Register = (props) =>{
 
         let data = await postRegister(username,email,password)
         console.log("check data " , data)
+        if(data && data.EC===1){
+            toast.warning(data.message)
+            return
+        }
         if (data && data.EC === 0 ){
             toast.success(data.message)
-            navigate('/login')
+            localStorage.setItem("emailGetCode" ,email)
+            navigate('/confirm-register')
         }
 
         if(data && +data.EC !=0){

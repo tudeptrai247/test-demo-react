@@ -29,6 +29,13 @@
             overflow: hidden;
             text-overflow: ellipsis;
             }
+            //last child là sử dụng cho td cuối cùng 
+            td:last-child{
+                min-width: 200px;
+            }
+            button{
+               width: auto;
+            }
          }
     }
 }

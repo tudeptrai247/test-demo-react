@@ -134,6 +134,10 @@ const ReviewOrder =() =>{
             if(checkedPayment ==="banking"){
 
                 let resOrder = await postCreateNewOrder(address,number,checkedPayment,totalAfterDiscount,note,user_id,listItemCart) 
+                if(resOrder && resOrder.EC === 3){
+                    toast.warning(resOrder.message)
+                    return
+                }
                 if(resOrder && resOrder.EC === 0){
                     
                 const order_id = resOrder.orderId
@@ -150,7 +154,11 @@ const ReviewOrder =() =>{
                 }
             }else{
                 //COD
-                let res = await postCreateNewOrder(address,number,checkedPayment,totalAfterDiscount,note,user_id,listItemCart)      
+                let res = await postCreateNewOrder(address,number,checkedPayment,totalAfterDiscount,note,user_id,listItemCart)  
+                 if(res && res.EC === 3){
+                    toast.warning(res.message)
+                    return
+                }    
                     if(res && res.EC === 0){
                         alert("Your Order Create Success , Check Your Order Status At My Order")
                         navigate('/order')

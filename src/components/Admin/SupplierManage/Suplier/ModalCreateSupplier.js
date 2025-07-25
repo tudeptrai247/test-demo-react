@@ -21,6 +21,10 @@ const ModalCreateSupplier =(props) =>{
     const [number , setNumber] = useState("");
 
     const handleSubmitCreateSupplier = async() =>{
+        if(!name || !address || !number){
+            toast.warning("Please Fill All Information")
+            return
+        }
       let data = await postCreateNewSupplier(name,address,number);
       console.log('<<res supplier', data)
       if(data?.EC === 0){

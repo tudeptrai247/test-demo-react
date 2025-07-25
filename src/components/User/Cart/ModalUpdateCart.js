@@ -63,9 +63,9 @@ const ModalUpdateCart =(props) =>{
     const oldQuantity = parseInt(dataUpdate.quantity)
 
         // nếu số lượng update nhiều hơn tồn kho thì chặn lại , cập nhật lại setQuantity là số lượng trong giỏ cũ
-    if(inPutQty>oldQuantity && inPutQty - oldQuantity > currentStock)
+    if(inPutQty > currentStock)
     {
-        toast.warning(`Only ${oldQuantity + currentStock} is available`)
+        toast.warning(`Only ${currentStock} is available`)
         setQuantity(oldQuantity)
 
         // còn nếu số lượng không vượt mức thì setQUantity thành số lượng mới 
@@ -81,6 +81,10 @@ const ModalUpdateCart =(props) =>{
         }
 
         let data = await putUpdateCartItem(parseInt(dataUpdate.cart_detail_id),quantity,parseInt(size))
+        if(data && data.EC ===3){
+            toast.warning(data.message)
+            return
+        }
         if(data && data.EC === 0){
             toast.success(data.message)
             handleClose()

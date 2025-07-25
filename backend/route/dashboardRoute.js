@@ -10,7 +10,7 @@ router.get('/orderStatus', async (req ,res) =>{
     res.json(rows)
 })
 
-// lấy sản phẩm bán chạy nhất
+// lấy 5 sản phẩm bán chạy nhất
 router.get('/bestSelling', async (req ,res) =>{
     const [rows] =await pool.execute(`SELECT order_detail.product_id , product.name  ,SUM(order_detail.quantity) AS total_sold
          FROM order_detail

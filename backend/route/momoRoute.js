@@ -18,8 +18,8 @@ router.post("/payment",async(req,res) =>{
     var secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
     var orderInfo = 'pay with MoMo';
     var partnerCode = 'MOMO';
-    var redirectUrl = 'https://f7c2-2402-800-63a6-f40d-f049-4166-16de-ed65.ngrok-free.app/momo-return';
-    var ipnUrl = 'https://0284-2402-800-63a6-f40d-f049-4166-16de-ed65.ngrok-free.app/api/v1/momo/callback';
+    var redirectUrl = 'http://localhost:3000/momo-return';
+    var ipnUrl = 'https://6e5959736a36.ngrok-free.app/api/v1/momo/callback';
     var requestType = "payWithMethod";
     var amount = total;
     var orderId = partnerCode + new Date().getTime();
@@ -101,14 +101,14 @@ router.post("/callback",async(req,res) =>{
 
              await connection.query(`UPDATE order_customer SET payment_status="paid" WHERE order_id= ? `,
             [order_id])
-
+            
             // xóa cart_detail khi đã trả về callback thanh toán thành công
             await connection.query(`DELETE FROM cart_detail WHERE cart_id =?`,[cart_id])
 
             await connection.commit()
-            return res.status(200).json({message:"Callback Recived"});
+            return res.status(200).json({message:"Payment success and inventory updated"});
         }catch(err){    
-            console.log("Update Failed")
+            console.log("Transaction Failed",err)
             await connection.rollback()
             return res.status(500).json({message:'server error'})
         } finally{

@@ -16,6 +16,10 @@ const ModalCreateBrand =(props) =>{
     }
 
     const handleSubmitCreateBrand =async() =>{
+         if(!brand){
+            toast.warning("Brand name empty , Please Input a value")
+            return
+        }
         let data = await postCreateNewBrand(brand)
         if(data && data.EC === 0) {
             toast.success(data.message)

@@ -23,6 +23,10 @@ const ModalUpdateCategory =(props) =>{
     },[dataUpdate])
 
     const handleSubmitUpdateCategory =async() =>{
+         if(!category){
+            toast.warning("Category empty , Please Input a value")
+            return
+        }
         let data = await putUpdateCategory(dataUpdate.id,category);
         if(data && data.EC === 0){
             toast.success(data.message)

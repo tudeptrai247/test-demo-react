@@ -92,3 +92,25 @@
         }
     }
 }
+
+.forgot-password-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.confirm-code-container{
+      display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+        .input-container{
+            display: flex;
+            gap: 10px;
+                input{
+                    border-radius: 10px;
+                }
+        }
+}

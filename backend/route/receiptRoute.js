@@ -130,19 +130,22 @@ router.put('/:id',async(req,res) =>{
         );
 
         for(const item of detail){
-            // kiểm tra trong order có sản phẩm bán chưa
-            const [soldCheck] = await connection.execute(`SELECT SUM(quantity) as sumQty FROM order_detail WHERE product_id =? AND size_id=?`,
+            // lấy sl kho so với sl của phiếu , sl kho ít hơn phiếu ko cho xóa
+            const [quantityAtReceipt] = await connection.execute(`SELECT quantity  FROM receipt_detail WHERE product_id =? AND size_id=?`,
                 [item.product_id,item.size_id]
             )
 
-            // truy cập vào symQty của soldCheck ở hàm trên
-            const soldQuantity =soldCheck[0]?.sumQty || 0;
+            const [quantityAtInventory]= await connection.execute(`SELECT quantity  FROM inventory WHERE product_id =? AND size_id=?`,
+                [item.product_id,item.size_id]
+            )
+            const QtyProductRecepit =quantityAtReceipt[0]?.quantity ??0;
+            const QtyProductInventory =quantityAtInventory[0]?.quantity ?? 0;
 
-            if(soldQuantity >0){
+            if(QtyProductInventory <QtyProductRecepit){
                 await connection.rollback();
                 return res.status(400).json({
                     EC:2,
-                    message:"Cannot Delete This Receipt , Some Product from receipt have been sold"
+                    message:"Cannot Delete This Receipt ,Quantity product of receipt more than inventory"
                 })
             }
 

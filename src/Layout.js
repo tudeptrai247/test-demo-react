@@ -32,6 +32,7 @@ import ForgotPassword from './components/Admin/Auth/ForgotPassword/SendCodePassw
 import ConfirmCode from './components/Admin/Auth/ForgotPassword/ConfirmCode.js';
 import NewPassword from './components/Admin/Auth/ForgotPassword/NewPassword.js';
 import NewPasswordProfile from './components/User/Profile/NewPasswordProfile.js';
+import ConfirmCodeRegister from './components/Admin/Auth/ConfirmCodeRegister.js'
 
 const Layout =(props) =>{
     return(
@@ -42,6 +43,8 @@ const Layout =(props) =>{
                   <Route path='products' element={<Product />} />
                   <Route path="login" element={<Login />}/>
                   <Route path="register" element={<Register />}/>
+                  {/* confirm đăng ký */}
+                   <Route path="confirm-register" element={<ConfirmCodeRegister />}/>
                   {/* reset mật khẩu */}
                   <Route path="send-code-password" element={<ForgotPassword />}/>
                   <Route path="confirm-code" element={<ConfirmCode />}/>

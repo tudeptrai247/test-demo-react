@@ -54,9 +54,10 @@ app.use('/api/v1/chatbot',chatbotRouter)
 const __dirname=path.resolve()
 app.use('/uploads',express.static(path.join(__dirname,'uploads')));
 
-//import để refresh lại giỏ hàng sau thời gian cố định
-import './CronRefreshCart/cartRefresh.js'
-
+//import để hoàn kho khi người dùng ko thanh toán
+import './CronCanceledOrder/canceledOrder.js'
+//node cron gửi email cho người dùng khi còn sản phẩm trong giỏ hàng
+import './CronSendEmailRemind/emailRemind.js'
 //chạy server
 app.listen(PORT ,()=>{
     console.log(`Server Running On http://localhost:${PORT}`);

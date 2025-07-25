@@ -12,6 +12,34 @@ router.post('/',async(req,res) =>{
     try{
         await connection.beginTransaction(); // bắt đầu transaction
 
+        // biến này chứa những sản phẩm bị hết hàng khi khách hàng nhấn thanh toán
+        const outOfStockProductCheck =[];
+
+        for(const product of item){
+
+        // phải có for update để khóa lại tránh xung đột giữa 2 người cùng đặt mua
+        const [checkQuantity]= await connection.execute(`SELECT product.name, inventory.quantity FROM inventory
+            JOIN product ON inventory.product_id = product.id
+             WHERE product_id =? AND size_id =?
+             FOR UPDATE
+             `,[product.product_id, product.size_id])
+
+             if(checkQuantity.length ===0 || product.quantity > checkQuantity[0].quantity)
+             {
+                const productName = checkQuantity.length >0 ? checkQuantity[0].name : "Unknow";
+                outOfStockProductCheck.push(productName)
+             }
+        }
+
+        if(outOfStockProductCheck.length >0){
+            await connection.rollback();
+            connection.release()
+            return res.status(400).json({
+            EC:3,
+            message:`These products are out of stock : ${outOfStockProductCheck}`
+            })
+        }
+
         const [result] = await connection.execute(`INSERT INTO order_customer (address,number,payment_method,total,note,user_id	) VALUES (?,?,?,?,?,?)`,
         [address,number,payment_method,total,note,user_id]
         ); 
@@ -30,7 +58,17 @@ router.post('/',async(req,res) =>{
             await connection.execute(`INSERT INTO order_detail(quantity, order_id, product_id, size_id) VALUES (?,?,?,?)`,
                 [product.quantity,order_id,product.product_id,product.size_id]
             );
+
+            // update trừ sp ở kho luôn để tránh người dùng sau mua
+             const [updateInventory] = await connection.execute(`
+                UPDATE inventory SET quantity = quantity -? WHERE product_id =? AND size_id=?`,
+                [product.quantity,product.product_id,product.size_id])
+
             if(payment_method ==='cod'){
+               
+                if(updateInventory.affectedRows === 0){
+                    throw new Error(`Out of stock for product ${product.product_id} size ${product.size_id}`)
+                }
             await connection.execute("DELETE FROM cart_detail WHERE product_id =? AND size_id =?",
             [product.product_id,product.size_id]
         );
@@ -59,6 +97,7 @@ router.post('/',async(req,res) =>{
 // lấy đơn hàng ở user ko có nhưng đơn hàng đã cancel
 router.get('/',async(req,res) =>{
     const {user_id} =req.query
+    
     // lấy giá trị page và limit từ querry trên URL , nếu ko có tham số truyền vào mặc định sẽ là 1 và 3
     let page =+req.query.page || 1; //ép kiểu string sang number
     let limit =+req.query.limit || 3;
@@ -261,7 +300,7 @@ router.get('/adminOrderList',async(req,res) =>{
             })
         }
 
-            // lấy chi tiết đơn hàng và sản phẩm và size
+            // lấy sản phẩm và size của đơn hàng đdat
         const [rows] =await pool.query(`
             SELECT order_customer.order_id ,order_customer.address ,order_customer.number,order_customer.status,order_customer.order_date,order_customer.total,order_customer.note,order_customer.payment_method,order_customer.payment_status,
             order_detail.quantity ,order_detail.order_id ,order_detail.product_id,product.name as name_product , product.price as price_product ,order_detail.size_id ,size.size as size,

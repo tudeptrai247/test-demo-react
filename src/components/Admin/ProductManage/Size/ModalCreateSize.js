@@ -18,6 +18,11 @@ const ModalCreateSize =(props) =>{
     const [size , setSize] = useState("");
 
     const handleSubmitCreateSize =async() =>{
+        if(!size){
+            toast.warning("Size empty , Please Input a value")
+            return
+        }
+
         let data = await postCreateNewSize(size);
         console.log("data của size" , data)
         if(data && data.EC ==0){

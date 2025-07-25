@@ -77,9 +77,8 @@ const ModalCreateReceipt =(props) =>{
         
         // index khác trừ 1 là phần tử có trùng
         if(index !== -1 ){
-            //clone mảng item thành updateQuantity
+            //clone mảng item thành updateQuantity , + số lượng của sản phẩm trùng đó lên
             const updateQuantity =[...item];
-            console.log("update quantity",updateQuantity)
             updateQuantity[index].quantity=updateQuantity[index].quantity + parseInt(quantity);
 
             const updateUnitPrice =[...item];
@@ -184,7 +183,8 @@ const ModalCreateReceipt =(props) =>{
         <tbody>
         {
         item.map((item,index)=>{
-            const productName = listProduct.find(p => p.id === parseInt(item.product_id))?.name || 'Unknow'; // so sánh nếu id của mảng item = id của mảng listProduct nếu có thì lấy cái object name ra ?. giúp trảnh lỗi undefinded
+            // so sánh nếu id của mảng item = id của mảng listProduct nếu có thì lấy cái object name ra ?. giúp trảnh lỗi undefinded
+            const productName = listProduct.find(p => p.id === parseInt(item.product_id))?.name || 'Unknow'; 
             const productSize = listSize.find(s => s.id === parseInt(item.size_id))?.size || 'Unknow';
             return(
                 <tr key={`table-receipt-${index}`}>

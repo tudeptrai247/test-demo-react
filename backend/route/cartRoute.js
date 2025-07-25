@@ -24,6 +24,7 @@ router.post('/',async(req,res) =>{
 
         if(existCartRows.length>0){  //nếu trả về kết quả lớn hơn 1 thì xài cái id của giỏ hàng đó
             cart_id = existCartRows[0].cart_id
+
         }else{ 
             const [cart]= await connection.execute('INSERT INTO cart (user_id) VALUES (?)',
                 [user_id]
@@ -48,7 +49,8 @@ router.post('/',async(req,res) =>{
         }
 
         if(existItemRows.length >0){
-            await connection.execute(`UPDATE cart_detail SET quantity = quantity + ? WHERE cart_id=? AND product_id=? AND size_id=?`,
+            await connection.execute(`UPDATE cart_detail SET quantity = quantity + ?
+                 WHERE cart_id=? AND product_id=? AND size_id=?`,
                 [quantity,cart_id,product_id,size_id]
             )
         }else{
@@ -57,9 +59,7 @@ router.post('/',async(req,res) =>{
         );
     }
 
-    await connection.execute('UPDATE inventory SET quantity = quantity - ? WHERE product_id=? AND size_id=?',
-        [quantity,product_id,size_id]
-    )
+    await connection.execute(`UPDATE cart SET updated_at = CURRENT_TIMESTAMP WHERE cart_id =?`,[cart_id])
 
     await connection.commit()
 
@@ -154,13 +154,24 @@ router.delete('/:id',async(req,res) =>{
 
         await connection.beginTransaction(); // bắt đầu transaction 
 
+        const [cartDetailRow]= await connection.execute(`
+                SELECT cart_id FROM cart_detail WHERE cart_detail_id =?
+            `,[cart_detail_id])
+
+        if(cartDetailRow.length===0){
+            await connection.rollback();
+            return res.status(404).json({EC:1,message:"cart items not found"})
+        }
+
+        const cart_id = cartDetailRow[0].cart_id
+
         const [result] = await connection.execute(
             'DELETE FROM cart_detail WHERE cart_detail_id= ?',[cart_detail_id]
         );
-
-       await connection.execute('UPDATE inventory SET quantity = quantity + ? WHERE product_id=? AND size_id=?',
-        [quantity,product_id,size_id]
-    )
+        await connection.execute(
+            `UPDATE cart SET updated_at = CURRENT_TIMESTAMP
+             WHERE cart_id =?
+             `,[cart_id])
 
         await connection.commit()
 
@@ -174,6 +185,8 @@ router.delete('/:id',async(req,res) =>{
         res.status(500).json({
             EC:1,
             error:'Something Wrong '})
+    } finally{
+        connection.release();
     }
 }) 
 
@@ -190,7 +203,7 @@ router.put('/:id',async(req,res) =>{
 
         // lấy thông tin số lượng , size , sản phẩm của giỏ hàng cũ
         const [row] = await connection.execute(
-            `SELECT quantity ,size_id,product_id FROM cart_detail WHERE cart_detail_id =?`,
+            `SELECT cart_id,quantity ,size_id,product_id FROM cart_detail WHERE cart_detail_id =?`,
             [cart_detail_id]
         )
 
@@ -204,29 +217,21 @@ router.put('/:id',async(req,res) =>{
             })
         }
 
-        const oldQuantity =detailRowCart.quantity;
+   
         const size_id =detailRowCart.size_id;
         const product_id=detailRowCart.product_id
-
-        // kiểm tra chênh lệch , nếu quantityChange mà lớn hơn 0 là người dùng mua thêm thì trừ kho , bé hơn 0 thì cộng thêm vào kho
-        const quantityChange =quantity - oldQuantity;
+        const cart_id=detailRowCart.cart_id
 
         //ĐỔI SIZE
-
-        // nếu đổi size thì hoàn số lượng size cũ vào trong kho lại ,vd đang size 38 5c đổi lại size 39 thì size 38 quantity +5
         if(new_size_id != size_id)
         {
-            await connection.execute(`UPDATE inventory SET quantity = quantity + ? WHERE product_id=? AND size_id=?`,
-                [oldQuantity,product_id,size_id]
-            )
-        
         // kiểm tra tồn kho của size mới đó
         const [inventoryRow] = await connection.execute(
              `SELECT quantity FROM inventory WHERE size_id=? AND product_id=?`,
             [new_size_id,product_id]
         )
 
-        const inventoryQuantity = inventoryRow[0]
+        const inventoryQuantity = inventoryRow[0].quantity
 
         if(!inventoryQuantity || inventoryQuantity<0){
             return res.status(404).json({
@@ -234,11 +239,6 @@ router.put('/:id',async(req,res) =>{
                 message:'Out Of Stock For New Size , Sorry '
             })
         }
-            // trừ số lượng hàng đi khi lấy size mới
-        await connection.execute(
-            `UPDATE inventory SET quantity = quantity -? WHERE product_id=? AND size_id=?`,
-            [quantity,product_id,new_size_id]
-        )
 
         // Kiểm tra cart đã có size và sản phẩm đó trong cart chưa , nếu có rồi thì gộp vào khi đổi size  , phải có cả where cart_detail_id !=? để nó tìm những dòng khác để gộp vào mà ko tìm chính id của mình để gộp
 
@@ -253,11 +253,6 @@ router.put('/:id',async(req,res) =>{
         if(existing.length >0){
             const existingRow = existing[0];
             const newTotalQuantity =parseInt(existingRow.quantity)+ parseInt(quantity)  //số lượng của dòng được gộp chung vào có cùng size và product
-
-            console.log("Old quantity:", oldQuantity);
-            console.log("New quantity:", quantity);
-            console.log("Existing quantity:", existingRow.quantity);
-            console.log("Total quantity after merge:", newTotalQuantity);
 
             //cập nhật số lượng mới đã đc gộp vào cart_item_id khác mà có cùng size ,product
             await connection.execute(`UPDATE cart_detail SET quantity = ? WHERE cart_detail_id=?`,
@@ -276,52 +271,15 @@ router.put('/:id',async(req,res) =>{
                 ,[quantity,new_size_id,cart_detail_id]
             );
         }
-
-
     }
+        //KO ĐỔI SIZE , cập nhật số lượng
 
-        //KO ĐỔI SIZE
-
-        // Nếu ko đổi size thì chỉ kiểm tra và thay đổi số lượng,tăng số lượng thì kiểm tra quantity xem có còn đủ ko , lấy số lượng quantity trong kho so sánh
-        else{
-            const [inventoryRow] = await connection.execute(
-                `SELECT quantity FROM inventory WHERE size_id =? AND product_id=?`,
-                [size_id,product_id]
-            )
-
-            const inventoryQuantity = inventoryRow[0]
-
-            //Nếu Người dùng tăng số lượng thì giảm số lượng kho
-            if(quantityChange >0){
-
-                if(inventoryQuantity <quantityChange){
-                    await connection.rollback();
-                    return res.status(404).json({
-                        EC:2,
-                        message:"Not Enough Item :( Sorry "
-                    })
-            }
-            
-            await connection.execute(`UPDATE inventory SET quantity = quantity - ? WHERE product_id=? AND size_id=?`,
-                [quantityChange,product_id,size_id]
-            )
-        }
-            // nếu trừ bớt sản phẩm trong giỏ hàng thì hoàn lại vào kho
-        else if(quantityChange <0){
-             await connection.execute(`UPDATE inventory SET quantity = quantity + ? WHERE product_id=? AND size_id=?`,
-                [-quantityChange,product_id,size_id]
-            )
-        }
-    }
-
-    
-        // cập nhật lại số lượng trong giỏ hàng với size cũ
         const [result] = await connection.execute(
             'UPDATE cart_detail set quantity = ? WHERE cart_detail_id =? ',[quantity,cart_detail_id]
         );
-    
-    
-        
+
+        await connection.execute(`UPDATE cart SET updated_at = CURRENT_TIMESTAMP WHERE cart_id =?`,[cart_id])
+
         await connection.commit()
 
         res.status(200).json({

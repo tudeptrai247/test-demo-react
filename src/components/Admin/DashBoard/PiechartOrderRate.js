@@ -23,7 +23,10 @@ const PieChartOrderRate =(props) =>{
         }
 
 
-    const colorPie=['#82ca9d', '#ff6b6b']
+    const status_color={delivered:'#82ca9d',
+                        canceled: '#ff6b6b',
+    }
+    const default_color=['#5c5c5cff']
 
     return(
         <div className="piechart-container">
@@ -32,7 +35,7 @@ const PieChartOrderRate =(props) =>{
                         {/* name key để lấy tên theo value đó */}
                 <Pie data={data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={50}> 
                     {data.map((item,index) =>(
-                        <Cell key={item.name} fill={colorPie[index % colorPie.length]} />
+                        <Cell key={item.name} fill={status_color[item.name] ?? default_color} />
                     ))}
                 </Pie>
                 <Tooltip />

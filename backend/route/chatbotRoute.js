@@ -100,23 +100,28 @@ const handleAskPrice =async(message) =>{
                 contents:[{
                     role:"user" ,
                     parts:[{
-                       text: `Từ câu: "${message}", trích xuất tất cả các **tên sản phẩm cụ thể** nếu có, ví dụ: Nike, Adidas Ultra Boost, Jordan,...  
+                       text:   `Từ câu: "${message}", trích xuất tất cả các **tên sản phẩm cụ thể** nếu có ,bao gồm cả tên hãng , dòng sản phẩm , mô tả màu sắc , phiên bản đặc biệt của đôi giày đó
+                                 ví dụ: Nike, Adidas Ultra Boost, Jordan,Nike SB Dunk Green Swoosh,Adidas Ultra Boost 2023 White,Jordan 1 Retro High OG Bred,...  
                                 Chỉ trả về danh sách tên sản phẩm, cách nhau bằng dấu phẩy.  
-                                Nếu trong câu **không có tên cụ thể**, chỉ trả về chuỗi rỗng.
+                                Nếu trong câu **không có tên cụ thể**, chỉ trả về chuỗi rỗng chứ không phải là chữ chuỗi rỗng.
                                 Không coi từ chung chung như "giày", "shoes", "đôi", "sneaker" là tên sản phẩm.
+                                KHÔNG được dùng HTML hoặc bất kỳ ký hiệu định dạng như <br>, <b>, \n, v.v.
                                 Không giải thích.`
                     }]
                 }]
             })
     const productListText = (await shoesBrandFind.response.text()).trim();
+    if (productListText[0]=== "" ||productListText === '""' || productListText === '' || productListText === "''") {
+    return "What shoes do you want to know the price ?";
+    }
             //tách mảng thành tên sản phẩm
-    const productName =productListText.split(',').
-                                      map(p=>p.trim()).
-                                      filter(product => product !== "" && !isNaN(product))
+    const productName =productListText.split(','). //tách chuỗi bằng dấu phẩy
+                                      map(p=>p.trim()). // xóa khoảng trắng
+                                      filter(product => product !== "") // loại bỏ chuỗi trỗng
     console.log("product name AI response", productName)
 
     if(productName.length === 0){
-        return "What shoes are you looking for ?"
+        return "What shoes do you want to know the price ?"
     }
 
     let result =[]
@@ -149,22 +154,25 @@ const handleCheckStockShoes =async(message)=>{
                 contents:[{
                     role:"user" ,
                     parts:[{
-                       text:    `Từ câu: "${message}", trích xuất tất cả các **tên sản phẩm cụ thể** nếu có, ví dụ: Nike, Adidas Ultra Boost, Jordan,...  
+                       text:    `Từ câu: "${message}", trích xuất tất cả các **tên sản phẩm cụ thể** nếu có ,bao gồm cả tên hãng , dòng sản phẩm , mô tả màu sắc , phiên bản đặc biệt của đôi giày đó
+                                 ví dụ: Nike, Adidas Ultra Boost, Jordan,Nike SB Dunk Green Swoosh,Adidas Ultra Boost 2023 White,Jordan 1 Retro High OG Bred,...  
                                 Chỉ trả về danh sách tên sản phẩm, cách nhau bằng dấu phẩy.  
-                                Nếu trong câu **không có tên cụ thể**, chỉ trả về chuỗi rỗng.
+                                Nếu trong câu **không có tên cụ thể**, chỉ trả về chuỗi rỗng chứ không phải là chữ chuỗi rỗng.
                                 Không coi từ chung chung như "giày", "shoes", "đôi", "sneaker" là tên sản phẩm.
+                                KHÔNG được dùng HTML hoặc bất kỳ ký hiệu định dạng như <br>, <b>, \n, v.v.
                                 Không giải thích.`
                     }]
                 }]
             })
     const productListText = (await shoesBrandFind.response.text()).trim();
+    if(productListText.length === 0 || productListText[0]==="" || productListText === ''|| productListText === "" || productListText==='"'){
+        return "What shoes are you looking for ?"
+    }
             //tách mảng thành tên sản phẩm
     const productName =productListText.split(',').map(p=>p.trim())
     console.log("product name",productName)
 
-    if(productName.length === 0 || productName[0]===""  ){
-        return "What shoes are you looking for ?"
-    }
+    
 
    
     let response =[];

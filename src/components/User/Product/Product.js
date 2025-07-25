@@ -50,22 +50,22 @@ const Product =() =>{
         setDetailProduct(product)
     }
 
-    const handleSearchSubmit =async() =>{
-        const params = new URLSearchParams();
+    // const handleSearchSubmit =async() =>{
+    //     const params = new URLSearchParams();
 
-        if(keyword){
-            params.append("keyword" , keyword)
-        }
-        else{
-            fetchListProductWithPaginate(1)
-        }
+    //     if(keyword){
+    //         params.append("keyword" , keyword)
+    //     }
+    //     else{
+    //         fetchListProductWithPaginate(1)
+    //     }
 
-        let res = await getSearchProduct(params.toString())
-        if(res &&res.EC === 0){
-            setListProduct(res.DT.product)
-            setCurrentPage(1)
-        }
-    }
+    //     let res = await getSearchProduct(params.toString())
+    //     if(res &&res.EC === 0){
+    //         setListProduct(res.DT.product)
+    //         setCurrentPage(1)
+    //     }
+    // }
 
     
 
@@ -87,6 +87,7 @@ const Product =() =>{
                         <Filter
                         setListProduct={setListProduct}
                         setCurrentPage={setCurrentPage}
+                        setPageCount={setPageCount}
                         keyword={keyword}
                         />
                     </div>

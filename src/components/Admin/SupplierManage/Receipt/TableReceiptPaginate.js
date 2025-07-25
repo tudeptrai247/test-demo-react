@@ -26,10 +26,12 @@ const TableReceiptPaginate =(props) =>{
         <tbody>
         {listReceipt && listReceipt.length >0 &&
         listReceipt.map((item,index)=>{
+            const date = new Date(item.receipt_date)    
+            const vietnamTime = date.toLocaleDateString("vi-VN",{timeZone:"Asia/Ho_Chi_Minh"}) 
             return(
                 <tr key={`table-receipt-${index}`}>
                         <th>{item.receipt_id}</th>
-                        <td>{item.receipt_date}</td>
+                        <td>{vietnamTime}</td>
                         <td>{item.note}</td>
                         <td>{item.name}</td>
                         <td>

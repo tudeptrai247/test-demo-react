@@ -17,6 +17,10 @@ const ModalCreateCategory =(props) =>{
     }
 
     const handleSubmitCreateCategory =async() =>{
+         if(!category){
+            toast.warning("Category empty , Please Input a value")
+            return
+        }
         let data = await postCreateNewCategory(category)
         if(data && data.EC === 0) {
             toast.success(data.message)

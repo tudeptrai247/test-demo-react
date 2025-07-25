@@ -67,10 +67,12 @@ router.get('/',async(req,res) =>{
         const totalProduct = countRow[0].count; //lấy ra tổng số size , dùng để tính phân trang
         const totalPages =Math.ceil(totalProduct/limit)
 
-        const [rows] =await pool.query(`SELECT product.id,product.name,brand.brand,category.category ,product.price,product.description,product.image
+        const [rows] =await pool.query(`SELECT product.id,product.name,brand.brand,category.category ,product.price,product.description,product.image,product.status
              FROM product
               JOIN brand ON product.idbrand=brand.id 
-              JOIN category ON product.idcategory=category.id  LIMIT ? OFFSET ?`,[limit,offset])
+              JOIN category ON product.idcategory=category.id 
+              ORDER BY product.id DESC
+               LIMIT ? OFFSET ?`,[limit,offset])
 
         res.status(200).json({
             EC:0,
@@ -154,6 +156,7 @@ router.put('/:id',upload.single('image'),async(req,res) =>{
 router.put('/:id/status',async(req,res) =>{
     const id =req.params.id;
     const {status} =req.body;
+    console.log("id product change status",id,"status",status)
     try{
         const [result] = await pool.execute(
             'UPDATE product SET status = ? WHERE id=?',[status,id]
@@ -193,7 +196,8 @@ router.get('/all',async(req,res) =>{
 // lấy 8 sản phẩm
 router.get('/4item',async(req,res) =>{
     try{
-        const [rows] = await pool.query(`SELECT  product.id,product.name,product.price,product.image ,brand.brand,category.category ,product.price,product.description ,JSON_ARRAYAGG(JSON_OBJECT('size_id',size.id,'size',size.size ,'quantity',inventory.quantity)) AS size_quantity from product
+        // truy vấn join inventory để lấy những sản phẩm có trong kho
+        const [rows] = await pool.query(`SELECT  product.id,product.name,product.price,product.image ,brand.brand,category.category ,product.price,product.description,product.status ,JSON_ARRAYAGG(JSON_OBJECT('size_id',size.id,'size',size.size ,'quantity',inventory.quantity)) AS size_quantity from product
             JOIN inventory on product.id = inventory.product_id
             JOIN size on inventory.size_id =size.id
             JOIN brand ON product.idbrand=brand.id 
@@ -219,7 +223,7 @@ router.get('/4item',async(req,res) =>{
 router.get('/nikeitem',async(req,res) =>{
     try{
         const [rows] = await pool.query
-        (`SELECT  product.id,product.name,product.price,product.image ,brand.brand,category.category ,product.price,product.description ,JSON_ARRAYAGG(JSON_OBJECT('size_id',size.id,'size',size.size ,'quantity',inventory.quantity)) AS size_quantity from product
+        (`SELECT  product.id,product.name,product.price,product.image ,brand.brand,category.category ,product.price,product.description ,product.status,JSON_ARRAYAGG(JSON_OBJECT('size_id',size.id,'size',size.size ,'quantity',inventory.quantity)) AS size_quantity from product
             JOIN inventory on product.id = inventory.product_id
             JOIN size on inventory.size_id =size.id
             JOIN brand ON product.idbrand=brand.id 
@@ -245,7 +249,7 @@ router.get('/nikeitem',async(req,res) =>{
 router.get('/adidasitem',async(req,res) =>{
     try{
         const [rows] = await pool.query
-        (`SELECT  product.id,product.name,product.price,product.image ,brand.brand,category.category ,product.price,product.description ,JSON_ARRAYAGG(JSON_OBJECT('size_id',size.id,'size',size.size ,'quantity',inventory.quantity)) AS size_quantity from product
+        (`SELECT  product.id,product.name,product.price,product.image ,brand.brand,category.category ,product.price,product.description ,product.status,JSON_ARRAYAGG(JSON_OBJECT('size_id',size.id,'size',size.size ,'quantity',inventory.quantity)) AS size_quantity from product
             JOIN inventory on product.id = inventory.product_id
             JOIN size on inventory.size_id =size.id
             JOIN brand ON product.idbrand=brand.id 
@@ -279,7 +283,7 @@ router.get('/productuser',async(req,res) =>{
         const totalProduct = countRow[0].count; //lấy ra tổng số size , dùng để tính phân trang
         const totalPages =Math.ceil(totalProduct/limit)
 
-        const [rows] =await pool.query(`SELECT product.id,product.name,brand.brand,category.category ,product.price,product.description,product.image,JSON_ARRAYAGG(JSON_OBJECT('size_id',size.id,'size',size.size ,'quantity',inventory.quantity)) AS size_quantity 
+        const [rows] =await pool.query(`SELECT product.id,product.name,brand.brand,category.category ,product.price,product.description,product.image,product.status,JSON_ARRAYAGG(JSON_OBJECT('size_id',size.id,'size',size.size ,'quantity',inventory.quantity)) AS size_quantity 
             FROM product 
             JOIN brand ON product.idbrand=brand.id 
             JOIN category ON product.idcategory=category.id 
@@ -361,7 +365,7 @@ router.get('/filter',async(req,res) =>{
 router.get('/search',async(req,res) =>{
     const {keyword} = req.query  // req.querry là để gửi dữ liệu tù URL 
     try {
-        let searchQuerry =`SELECT product.id,product.name,brand.brand,category.category ,product.price,product.description,product.image,JSON_ARRAYAGG(size.size) AS size
+        let searchQuerry =`SELECT product.id,product.name,brand.brand,category.category ,product.price,product.description,product.status,product.image,JSON_ARRAYAGG(size.size) AS size
              FROM product
               JOIN brand ON product.idbrand=brand.id 
               JOIN category ON product.idcategory=category.id 

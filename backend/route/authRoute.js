@@ -6,18 +6,45 @@ import jwt from 'jsonwebtoken';
 import { sendMail } from '../emailService.js';
 
 
-// Đăng ký người dùng
-router.post('/register',async(req,res) =>{
+// Đăng ký người dùng , lưu tạm vào bảng email_verfication để luu thông tin
+router.post('/requestRegister',async(req,res) =>{
     const {username,email,password} = req.body;
-    const role = "USER" ;
     try{
-        const [result] = await pool.execute(
-            'INSERT INTO user (email, password, username, role) VALUES (?, ?, ?, ?)',[email, password, username, role]
-        );
+
+        const [checkMail] = await pool.execute(`SELECT email FROM user WHERE email=?`,[email])
+
+        if(checkMail.length>0){
+            return res.status(404).json({
+                EC:1,
+                message:'This email has been used'
+            })
+        }
+
+        // tạo mã ngẫu nhiên có 6 chữ số
+    const code = Math.floor(100000 +Math.random()*900000)
+    //thời hạn sử dụng code 5 phút , chuyển sang kiểu bigint để có thể dễ so sánh
+    const expired_at = Date.now()+5*60*1000;
+
+    const [existing] = await pool.execute(`SELECT * FROM email_verfication WHERE email =?`,[email])
+
+    //nếu tài khoản đó đã có sẳn thì update code mới
+    if(existing.length >0){
+        await pool.execute(`UPDATE email_verfication SET code =? ,expired_at =? ,updated_at =CURRENT_TIMESTAMP WHERE email =?`,
+            [code,expired_at,email]
+        )
+    }else{
+        await pool.execute(`INSERT INTO email_verfication (email,password,username,code,expired_at) VALUES (?,?,?,?,?)`,
+                [email,password,username,code,expired_at]
+            )
+    }
+
+    await sendMail(email ,"Your confirm code account",`Your confirm code is :${code}`);
+
+
         res.status(200).json({
             EC:0, // error code =0 là success , khác 0 là lỗi
-            message:'User Register Success',
-            name:result.id});
+            message:'We have send the code to confirm, please check your email ',
+            });
     }catch(err){
         console.error(err);
         res.status(500).json({
@@ -25,6 +52,95 @@ router.post('/register',async(req,res) =>{
             error:'Something Wrong '})
     }
 }) 
+
+router.post('/resend-code-register',async(req,res) =>{
+    const {email} = req.body;
+    try{
+
+        const [checkMail] = await pool.execute(`SELECT email FROM user WHERE email=?`,[email])
+
+        if(checkMail.length>0){
+            return res.status(404).json({
+                EC:1,
+                message:'This email has been used'
+            })
+        }
+
+        // tạo mã ngẫu nhiên có 6 chữ số
+    const code = Math.floor(100000 +Math.random()*900000)
+    //thời hạn sử dụng code 5 phút , chuyển sang kiểu bigint để có thể dễ so sánh
+    const expired_at = Date.now()+5*60*1000;
+
+    const [existing] = await pool.execute(`SELECT * FROM email_verfication WHERE email =?`,[email])
+
+    //nếu tài khoản đó đã có sẳn thì update code mới
+    if(existing.length >0){
+        await pool.execute(`UPDATE email_verfication SET code =? ,expired_at =? ,updated_at =CURRENT_TIMESTAMP WHERE email =?`,
+            [code,expired_at,email]
+        )
+    }
+
+    await sendMail(email ,"Your confirm code account",`Your confirm code is :${code}`);
+
+
+        res.status(200).json({
+            EC:0, // error code =0 là success , khác 0 là lỗi
+            message:'We have send the code to confirm, please check your email ',
+            });
+    }catch(err){
+        console.error(err);
+        res.status(500).json({
+            EC:1,
+            error:'Something Wrong '})
+    }
+}) 
+
+
+router.post('/confirm-code-register' ,async(req,res) =>{
+    const {code ,email} = req.body
+
+    const connection = await pool.getConnection()
+
+    try{
+        await connection.beginTransaction(); // bắt đầu transaction
+    
+    const [row] = await pool.execute(`SELECT * FROM email_verfication WHERE code =? AND email=?`,[code,email])
+
+    //existing là mảng nên là phải sử dụng .length để ktra
+    if(row.length ===0){
+        await connection.rollback();
+            connection.release();
+         return res.status(200).json({EC:1,message:"Code Invalid"})
+    }
+
+    const record =row[0];
+
+    if(record.expired_at < Date.now()){
+        await connection.rollback();
+            connection.release();
+        return res.status(200).json({EC:1,message:"Code has expired"})
+    }
+
+    const username =row[0].username
+    const password =row[0].password
+
+    await connection.execute(`INSERT INTO user(email,password,username) VALUES(?,?,?)`,[email,username,password])
+
+    await connection.execute(`DELETE FROM email_verfication WHERE email =?`,[email])
+
+    await connection.commit();
+        connection.release();
+
+    return res.status(200).json({EC:0,message:"Verification Code Successful"})
+    }catch(err){
+        await connection.rollback();
+        connection.release();
+        console.error(err);
+        return res.status(500).json({ EC: 2, message: "Something Wrong" });
+    }
+    }
+)
+
 
 // Đăng Nhập
 router.post('/login',async(req,res) =>{

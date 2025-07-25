@@ -46,7 +46,15 @@ const postLoginGoogle = (googleUser)  =>{
 
 
 const postRegister = (username,email,password)  =>{
-    return axios.post(`api/v1/auth/register`,{username,email,password});
+    return axios.post(`api/v1/auth/requestRegister`,{username,email,password});
+}
+
+const postResendCodeRegister = (email)  =>{
+    return axios.post(`api/v1/auth/resend-code-register`,{email});
+}
+
+const postConfirmCodeRegister = (code,email)  =>{
+    return axios.post(`api/v1/auth/confirm-code-register`,{code,email});
 }
 
 const logout =(email , refresh_token) =>{
@@ -400,7 +408,7 @@ const postGeminiChatBot =(message) =>{
 
 
 export {postCreateNewUser,putUpdateUser ,deleteUser
-    ,getUserWithPaginate ,postLogin , postRegister , logout , postCodeResetPassword,postCodeConfirm,putUpdateNewPassword, postLoginGoogle,
+    ,getUserWithPaginate ,postLogin , postRegister ,postResendCodeRegister,postConfirmCodeRegister, logout , postCodeResetPassword,postCodeConfirm,putUpdateNewPassword, postLoginGoogle,
     postCreateNewSupplier , getSupplierWithPaginate , deleteSupplier ,putUpdateSupplier,getAllSupplier,
     postCreateNewSize ,getSizeWithPaginate ,deleteSize ,putUpdateSize,getAllSize,
     postCreateNewBrand ,getBrandWithPaginate ,deleteBrand ,putUpdateBrand,getAllBrand,

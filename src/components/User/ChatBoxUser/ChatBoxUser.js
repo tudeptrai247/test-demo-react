@@ -1,7 +1,6 @@
 import './ChatBoxUser.scss'
 import { useState } from 'react';
 import { RiMessage2Fill	 } from 'react-icons/ri';
-import GeminiResponse from './GeminiResponse.js';
 import MessageList from './MessageList.js';
 import MessageInput from './MessageInput.js';
 import {postGeminiChatBot} from "../../../service/apiService"
