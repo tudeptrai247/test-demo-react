@@ -13,7 +13,8 @@ const ModalUpdateCart =(props) =>{
 
     const [name,setName]=useState("")
     const [size,setSize]=useState("")
-    const [quantity,setQuantity]=useState("") 
+    const [quantity,setQuantity]=useState("")
+
     const [listSize , setListSize]=useState([])
     const [currentStock , setCurrentStock] =useState("") // currentStock là số lượng tồn kho của size đó
     const [selectSize , setSelectSize]=useState(null) //khởi tạo object rỗng
@@ -54,6 +55,7 @@ const ModalUpdateCart =(props) =>{
 
   const handleQuantityChange =(value)=>{
     const inPutQty = parseInt(value)
+    // nếu nhập ko đúng thì sẽ để trống
     if(inPutQty <0 || isNaN(inPutQty)){
         setQuantity("")
         return
@@ -79,9 +81,18 @@ const ModalUpdateCart =(props) =>{
             toast.error("Please Choose Your Quantity More 0")
             return
         }
+        
 
         let data = await putUpdateCartItem(parseInt(dataUpdate.cart_detail_id),quantity,parseInt(size))
         if(data && data.EC ===3){
+            toast.warning(data.message)
+            return
+        }
+        if(data&& data.EC ===4){
+            toast.warning(data.message)
+            return
+        }
+        if(data&& data.EC ===5){
             toast.warning(data.message)
             return
         }
@@ -89,6 +100,7 @@ const ModalUpdateCart =(props) =>{
             toast.success(data.message)
             handleClose()
             await props.fetchListCartWithPaginate(props.currentPage)
+            await props.getSumTotalCart()
         }
 
   }

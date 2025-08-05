@@ -36,7 +36,7 @@ router.post('/',async(req,res) =>{
             connection.release()
             return res.status(400).json({
             EC:3,
-            message:`These products are out of stock : ${outOfStockProductCheck}`
+            message:`These products are not enough in inventory : ${outOfStockProductCheck}`
             })
         }
 

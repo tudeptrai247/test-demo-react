@@ -30,6 +30,8 @@
             flex-direction: column;
             gap: 10px;
             overflow-y: auto;
+            word-wrap: break-word;
+            
         }
 
         .message {

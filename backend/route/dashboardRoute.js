@@ -25,6 +25,7 @@ router.get('/bestSelling', async (req ,res) =>{
 router.get('/revenue/month', async (req ,res) =>{
     const [rows] =await pool.execute(`SELECT DATE_FORMAT(order_date ,'%Y-%m') as month, 
         SUM(total) AS revenue FROM order_customer
+        WHERE status != 'canceled'
         GROUP BY month
         ORDER BY month `); //order by cho sắp xếp theo thứ tự
     res.json(rows)

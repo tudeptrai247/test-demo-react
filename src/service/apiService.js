@@ -307,6 +307,10 @@ const putUpdateCartItem =(cart_detail_id,quantity,new_size_id) =>{  //form data 
     });
 
 }
+// lấy tất cả sản phẩm trong giỏ hàng
+const getAllCartItem=(user_id)=>{
+    return axios.get(`/api/v1/cart/all/${user_id}`);
+}
 
 // Tạo Order
 const postCreateNewOrder =(address,number,payment_method,total,note,user_id,item) =>{
@@ -417,7 +421,7 @@ export {postCreateNewUser,putUpdateUser ,deleteUser
     postCreateNewReceipt ,getReceiptWithPaginate ,getReceiptDetail ,deleteSoftReceipt,
     getDeleteReceiptWithPaginate ,restoreReceipt,
     getInventorytWithPaginate,getSizeProduct,
-    postCreateNewCart ,getCartItemWithPaginate,deleteCartItem,putUpdateCartItem,
+    postCreateNewCart ,getCartItemWithPaginate,deleteCartItem,putUpdateCartItem,getAllCartItem,
     postCreateNewOrder ,postCreateBankingPayment ,getOrderWithPaginate ,deleteOrder ,getOrderListAdminWithPaginate ,putUpdateStatusOrder ,getOrderListAdminCanceledWithPaginate,
     getOrderStatus ,getProductBestSelling ,getRevenueMonthly ,getOrderRate,
     postCodeChangePassword,

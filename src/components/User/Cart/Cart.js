@@ -1,4 +1,4 @@
-import {getCartItemWithPaginate,deleteCartItem} from "../../../service/apiService"
+import {getCartItemWithPaginate,deleteCartItem,getAllCartItem} from "../../../service/apiService"
 import TableCartPaginate from "./TableCartPaginate"
 import './Cart.scss'
 import { useEffect, useState } from "react"
@@ -24,10 +24,13 @@ const Cart =() =>{
     const [currentPage,setCurrentPage]=useState(1)
     const [showModalUpdateCartItem ,setShowModalUpdateCartItem]=useState(false)
     const [showModalRule ,setShowModalRule]=useState(false)
+    const [allCartItem ,setAllCartItem]=useState([])
     
 
     useEffect(()=>{
         fetchListCartWithPaginate(1)
+        getSumTotalCart()
+        
     },[])
 
      const storedAccount =localStorage.getItem("account");
@@ -56,6 +59,7 @@ const Cart =() =>{
             toast.success(data.message)
             fetchListCartWithPaginate(currentPage)
             setCurrentPage(currentPage)
+            getSumTotalCart()
         }
     }
 
@@ -88,9 +92,18 @@ const Cart =() =>{
         setShowModalRule(true)
     }
     
+    
+    const getSumTotalCart = async()=>{
+        let res = await getAllCartItem(user_id)
+        console.log("cart item",res)
+        if(res && res.EC===0){
+            setAllCartItem(res.DT)
+        }
+    }
+
     //sd sumby để trả về tổng tất cả sp trong giỏ hàng
-    const total = sumBy(listItemCart,item =>Number(item.unit_price) * Number(item.quantity))
-    console.log('cart item',listItemCart)
+    const total = sumBy(allCartItem,item =>Number(item.unit_price) * Number(item.quantity))
+   
 
     return(
         <div className="cart-manage-container">
@@ -115,6 +128,7 @@ const Cart =() =>{
                     dataUpdate={dataUpdate}
                     fetchListCartWithPaginate={fetchListCartWithPaginate}
                     currentPage={currentPage}
+                    getSumTotalCart={getSumTotalCart}
                 />
             </div>
             

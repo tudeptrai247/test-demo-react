@@ -25,6 +25,10 @@ const ModalCreateSupplier =(props) =>{
             toast.warning("Please Fill All Information")
             return
         }
+        if(isNaN(Number(number))){
+            toast.warning("Invalid Phone Number")
+            return
+        }
       let data = await postCreateNewSupplier(name,address,number);
       console.log('<<res supplier', data)
       if(data?.EC === 0){

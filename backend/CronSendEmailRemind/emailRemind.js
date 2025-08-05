@@ -3,7 +3,7 @@ import cron from 'node-cron'
 import { sendMail } from '../emailService.js';
 
 //gửi email trong 
-cron.schedule('*0 9 * * *',async()=>{
+cron.schedule('0 9 * * *',async()=>{
     console.log("Email Remind Sent")
 
 const connection =await pool.getConnection(); 
@@ -26,7 +26,7 @@ try{
     const email =user.email
     const username =user.username
 
-    await sendMail(email,`Hello ${username},It seem you forgot some items in your cart right? Go check out now !!!`)
+    await sendMail(email,`Hello ${username},It seem you forgot some items in your cart right? Go check out OldStuff now !!!`)
     
     }
 

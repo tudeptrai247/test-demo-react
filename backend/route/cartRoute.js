@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 const router = express.Router();
 import pool from '../connectDB.js'
+import { connect } from 'react-redux';
 
 
 //thêm sản phẩm vào giỏ hàng
@@ -239,20 +240,34 @@ router.put('/:id',async(req,res) =>{
                 message:'Out Of Stock For New Size , Sorry '
             })
         }
+        if(inventoryQuantity < quantity){
+             return res.status(404).json({
+                EC:5,
+                message:'Not Enough Product , Sorry :('
+            })
+        }
 
         // Kiểm tra cart đã có size và sản phẩm đó trong cart chưa , nếu có rồi thì gộp vào khi đổi size  , phải có cả where cart_detail_id !=? để nó tìm những dòng khác để gộp vào mà ko tìm chính id của mình để gộp
 
         const [existing] = await connection.execute(`SELECT cart_detail_id , quantity FROM cart_detail WHERE
-             size_id= ? AND product_id=? AND cart_detail_id !=?`,
-        [new_size_id,product_id,cart_detail_id]
+             size_id= ? AND product_id=? AND cart_detail_id !=? and cart_id =?`,
+        [new_size_id,product_id,cart_detail_id,cart_id]
         )
 
         console.log("Found existing rows:", existing.length);
 
             // nếu tồn tại 1 dòng khác có cùng size và product
         if(existing.length >0){
+
             const existingRow = existing[0];
             const newTotalQuantity =parseInt(existingRow.quantity)+ parseInt(quantity)  //số lượng của dòng được gộp chung vào có cùng size và product
+
+            if(newTotalQuantity>inventoryQuantity){
+                 return res.status(404).json({
+                EC:4,
+                message:'Quantity of product is more than inventory'
+            })
+            }
 
             //cập nhật số lượng mới đã đc gộp vào cart_item_id khác mà có cùng size ,product
             await connection.execute(`UPDATE cart_detail SET quantity = ? WHERE cart_detail_id=?`,
@@ -294,5 +309,16 @@ router.put('/:id',async(req,res) =>{
             error:'Something Wrong '})
     }
 }) 
+
+// lấy tất cả sản phẩm trong giỏ hàng
+router.get('/all/:user_id', async(req,res) =>{
+    const {user_id} = req.params
+    const [row] = await pool.execute(`SELECT * FROM cart_detail JOIN cart on cart_detail.cart_id =cart.cart_id
+                                      WHERE cart.user_id =? `,[user_id]);
+    return res.status(200).json({
+        EC:0,
+        DT:row
+    })
+})
 
 export default router

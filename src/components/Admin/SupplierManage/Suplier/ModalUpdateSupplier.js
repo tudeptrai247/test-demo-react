@@ -36,6 +36,10 @@ const ModalUpdateSupplier =(props) =>{
             toast.warning("Please Fill All Information")
             return
         }
+        if(isNaN(Number(number))){
+            toast.warning("Invalid Phone Number")
+            return
+        }
         let data = await putUpdateSupplier(dataUpdate.id,name,address,number);
        if(data && data.EC === 0){
         toast.success(data.message);

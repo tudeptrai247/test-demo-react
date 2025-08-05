@@ -56,7 +56,7 @@ router.post('/',async (req ,res) =>{
             })
 
     }catch(err){
-        console.log("Gemini Error",err.message)
+        console.log("Gemini Error",err)
         res.status(500).json({
             reply:"Error when call Gemini"
         })
